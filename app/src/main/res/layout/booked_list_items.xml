@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="@drawable/rectangle_around_card"
+        android:orientation="vertical"
+        android:elevation="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+    <TextView
+            android:id="@+id/meeting_purpose_text_view"
+            android:paddingRight="8dp"
+            android:paddingBottom="1dp"
+            android:layout_width="match_parent"
+            android:hint="Ford Client Meeting"
+            android:drawablePadding="16dp"
+            android:textSize="28sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+    <TextView
+            android:layout_marginTop="12dp"
+            android:layout_below="@+id/meeting_purpose_text_view"
+            android:id="@+id/meeting_duration"
+            android:layout_width="wrap_content"
+            android:hint="8:00 - 10:00"
+            android:textSize="26sp"
+            android:textColor="@color/white"
+            android:drawablePadding="16dp"
+            android:drawableStart="@drawable/ic_access_time"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+    <TextView
+            android:layout_marginTop="12dp"
+            android:layout_below="@+id/meeting_duration"
+            android:id="@+id/organizer_of_meeting_text_view"
+            android:layout_width="wrap_content"
+            android:drawableStart="@drawable/ic_person"
+            android:hint="Organized by Prateek Patidar"
+            android:textSize="26sp"
+            android:textColor="@color/white"
+            android:drawablePadding="16dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+</RelativeLayout>
+
+
+
+
+
+
+
+

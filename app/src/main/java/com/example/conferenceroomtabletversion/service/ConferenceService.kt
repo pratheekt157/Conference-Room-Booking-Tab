@@ -1,0 +1,35 @@
+package com.example.conferencerommapp.services
+
+import com.example.conferenceroomtabletversion.model.*
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.http.*
+import java.util.*
+
+interface ConferenceService {
+    @GET("api/BookingsForTheDay")
+    fun getBookings(
+        @Query("RoomId") roomId: Int,
+        @Query("TodaysDate") date: String
+    ): Call<List<BookingDeatilsForTheDay>>
+
+    @PUT("api/MeetingStatus")
+    fun endMeeting(
+        @Body endMeeing: EndMeeting
+    ): Call<ResponseBody>
+
+    @POST("api/BookRoom")
+    fun addBookingDetails(
+        @Body booking: NewBookingInput
+    ): Call<ResponseBody>
+
+    @PUT("api/UpdateBooking")
+    fun update(
+        @Body updateBooking: UpdateBooking
+    ): Call<ResponseBody>
+
+    @POST("api/SubmitFeedback")
+    fun addFeedback(
+        @Body feedback: Feedback
+    ): Call<ResponseBody>
+}

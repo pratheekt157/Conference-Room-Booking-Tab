@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:override="true">
+    <color name="colorPrimary">#0072BC</color>
+    <color name="colorPrimaryDark">#F7F6F3</color>
+    <color name="colorAccent">#878383</color>
+    <color name="grey">#A9AFB1</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="royalblue">#640CA3</color>
+    <color name="colorPrimary1">#007FAF</color>
+    <color name="lightdarkOrange">#ebd6ab</color>
+    <color name="lightOrange">#fdf2df</color>
+    <color name="nonEditableValues">#56585A</color>
+    <color name="textColorGray">#3D5A6B</color>
+    <color name="lightGray">#8A8186</color>
+    <color name="dayPressed">#303F9F</color>
+    <color name="daySelected">#0072bc</color>
+    <color name="dayDeselected">@android:color/darker_gray</color>
+    <color name="error_color">#ba160c</color>
+
+</resources>
+
