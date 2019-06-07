@@ -64,5 +64,12 @@ dependencies {
     // for rating
     implementation 'com.stepstone.apprating:app-rating:2.3.1'
 
+    // for toast
+    implementation 'com.github.GrenderG:Toasty:1.4.2'
+
+    // for normal rating bar
+    implementation 'com.github.ome450901:SimpleRatingBar:1.4.3'
+
+    implementation 'com.github.sujithkanna:smileyrating:1.6.8'
 
 }

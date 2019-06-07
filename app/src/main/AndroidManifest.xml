@@ -13,17 +13,12 @@
             android:theme="@style/AppTheme">
         <activity android:name=".ui.ShowBookings">
         </activity>
-        <activity android:name=".ui.ActivityContainer">
+        <activity android:name=".ui.BookingDetailsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".ui.FeedbackDialog">
-        </activity>
-        <activity android:name=".ui.BookingDetailsActivity">
-
         </activity>
         <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts"/>
     </application>

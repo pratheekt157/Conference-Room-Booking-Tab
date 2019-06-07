@@ -24,4 +24,6 @@
     <string name="cant_extend">Can\'t be extend! next meeting is scheduled</string>
     <string name="free_for_the_day">Free for rest of the day</string>
     <string name="cant_book">can\'t use. next meeting is scheduled</string>
+    <string name="booked_successfully">Successfully Booked</string>
+    <string name="default_feedback">This app is cool!</string>
 </resources>

@@ -21,36 +21,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.conferenceroomtabletversion.R
-import com.example.conferenceroomtabletversion.helper.Constants
 import com.example.conferenceroomtabletversion.helper.GetProgress
 import com.example.conferenceroomtabletversion.helper.ShowToast
 import com.example.conferenceroomtabletversion.model.*
 import com.example.conferenceroomtabletversion.viewmodel.BookingForTheDayViewModel
-import com.stepstone.apprating.AppRatingDialog
-import com.stepstone.apprating.listener.RatingDialogListener
+import com.hsalf.smilerating.SmileRating
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_booking_details.*
-import kotlinx.android.synthetic.main.activity_container.*
 import kotlinx.android.synthetic.main.new_booking_layout.view.*
+import kotlinx.android.synthetic.main.rating_bar_dialog.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
-    override fun onNegativeButtonClicked() {
-        // do nothing
-    }
-
-    override fun onNeutralButtonClicked() {
-        // do nothing
-    }
-
-    override fun onPositiveButtonClicked(rate: Int, comment: String) {
-        mProgressDialog.show()
-        mBookingForTheDayViewModel.addFeedback(Feedback(mMeetingIdForFeedback, rate, comment))
-    }
-
+class BookingDetailsActivity : AppCompatActivity() {
     private lateinit var mBookingForTheDayViewModel: BookingForTheDayViewModel
     private lateinit var mProgressDialog: ProgressDialog
     private var mCountDownTimer: CountDownTimer? = null
@@ -66,6 +51,8 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
     var mBookingList = ArrayList<BookingDeatilsForTheDay>()
     var mNextMeeting = BookingDeatilsForTheDay()
     var isMeetingRunning = false
+    var roomId = -1
+    var buildingId = -1
     var flag = false
     var isNextMeetingPresent = false
     var mRunningMeeting = BookingDeatilsForTheDay()
@@ -75,21 +62,6 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
         setContentView(R.layout.activity_booking_details)
         setTimeToScreen()
         init()
-//        use_now_meeting.setOnClickListener {
-//            val addPhotoBottomDialogFragment =
-//                AddPhotoBottomDialogFragment(object : AddPhotoBottomDialogFragment.SendNewBookingData {
-//                    override fun sendData(name: String) {
-//                        Toast.makeText(this@BookingDetailsActivity, name, Toast.LENGTH_SHORT).show()
-//
-//                    }
-//                })
-//            addPhotoBottomDialogFragment.show(
-//                supportFragmentManager,
-//
-//                "add_photo_dialog_fragment"
-//            )
-//
-//        }
         observeData()
         makeRequestPeriodically()
         observeTimeFromBookingList()
@@ -107,6 +79,11 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
         mProgressDialog = GetProgress.getProgressDialog(getString(R.string.progress_message), this)
         mBookingForTheDayViewModel = ViewModelProviders.of(this).get(BookingForTheDayViewModel::class.java)
         setTimeToScreen()
+        setValuesFromSharedPreference()
+    }
+    private fun setValuesFromSharedPreference() {
+        roomId = getRoomIdFromSharedPreference()
+        buildingId = getBuildingIdFromSharedPreference()
     }
 
     /**
@@ -115,19 +92,13 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
     private fun observeData() {
         // get list of bookings for the day
         mBookingForTheDayViewModel.returnSuccess().observe(this, Observer {
-            mProgressDialog.dismiss()
             mBookingList.clear()
             mBookingList.addAll(it)
         })
         mBookingForTheDayViewModel.returnFailure().observe(this, Observer {
-            mProgressDialog.dismiss()
             Toast.makeText(this, "" + it.toString(), Toast.LENGTH_SHORT).show()
-            if (it == Constants.NO_CONTENT_FOUND) {
-                //upcoming_empty_view.visibility = View.VISIBLE
-                //r1_dashboard.setBackgroundColor(Color.parseColor("#F7F7F7"))
-            } else {
-                //ShowToast.show(activity!!, it as Int)
-            }
+            ShowToast.show(this, it as Int)
+
         })
 
         // positive response from server for end meeting
@@ -142,13 +113,7 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
         // negative response from server for end meeting
         mBookingForTheDayViewModel.returnFailureForEndMeeting().observe(this, Observer {
             mProgressDialog.dismiss()
-            Log.i("-----------failure", "" + it)
-            if (it == Constants.NO_CONTENT_FOUND) {
-                //upcoming_empty_view.visibility = View.VISIBLE
-                //r1_dashboard.setBackgroundColor(Color.parseColor("#F7F7F7"))
-            } else {
-                //ShowToast.show(activity!!, it as Int)
-            }
+            ShowToast.show(this, it as Int)
         })
 
         // positive response for start meeting
@@ -167,7 +132,7 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
         // negative response for start meeting
         mBookingForTheDayViewModel.returnFailureForStartMeeting().observe(this, Observer {
             mProgressDialog.dismiss()
-            Log.i("------failure for start", " " + it)
+            ShowToast.show(this, it as Int)
         })
 
         // add new booking observer
@@ -175,14 +140,13 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
         mBookingForTheDayViewModel.returnSuccessForBooking().observe(this, Observer {
             mProgressDialog.dismiss()
             getViewModel()
-            //Toasty.success(this, getString(R.string.booked_successfully), Toast.LENGTH_SHORT, true).show();
-            //Start time for this booking
+            Toasty.success(this, getString(R.string.booked_successfully), Toast.LENGTH_SHORT, true).show();
+
         })
         // negative response from server
         mBookingForTheDayViewModel.returnFailureForBooking().observe(this, Observer {
             mProgressDialog.dismiss()
-            Log.i("------failure for start", " " + it)
-            // show toast
+            ShowToast.show(this, it as Int)
         })
 
         // extend meeting
@@ -213,8 +177,13 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
     }
 
     private fun getViewModel() {
-        mProgressDialog.show()
-        mBookingForTheDayViewModel.getBookingList(22)
+        if(roomId == -1) {
+            // ask for tablet setup
+            mBookingForTheDayViewModel.getBookingList(22)
+        } else {
+            mBookingForTheDayViewModel.getBookingList(roomId)
+        }
+
     }
 
     private fun endMeeting(mEndMeeting: EndMeeting) {
@@ -266,6 +235,9 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
                                     }
                                 }
                             } else {
+                                isNextMeetingPresent = false
+                                setVisibilityToGoneForRunningMeeting()
+                                loadAvailableRoomUi()
                                 setNextMeetingTextToFree()
                             }
                         }
@@ -284,6 +256,11 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
         mBookingForTheDayViewModel.startMeeting(startNow)
     }
 
+    private fun makeCallForAddFeedback(feedback: Feedback) {
+        mProgressDialog.show()
+        mBookingForTheDayViewModel.addFeedback(feedback)
+    }
+
     fun startMeeting(view: View) {
         var startNow = EndMeeting()
         startNow.status = true
@@ -300,7 +277,7 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
         val startTime = booking.fromTime!!.split("T")[1]
         val endTime = booking.toTime!!.split("T")[1]
         mRunningMeetingId = booking.bookingId!!
-        event_name_text_view.text = booking.purpose + " " + startTime + " - " + endTime
+        event_name_text_view.text = booking.purpose + " " + changeFormat(startTime) + " - " + changeFormat(endTime)
         event_organizer_text_view.text = "Organized by ${booking.organizer}"
         status_button.text = "Occupied"
     }
@@ -374,7 +351,6 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
         }.start()
         mTimerRunning = true
     }
-
     private fun loadAvailableRoomUi() {
         status_button.text = "Available"
         mRunningBookingLayout.visibility = View.GONE
@@ -483,7 +459,6 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
         mUpdateMeeting.newStartTime = mRunningMeeting.fromTime
         mUpdateMeeting.bookingId = mRunningMeetingId
         mUpdateMeeting.newtotime = getNewExtendedEndTime(mRunningMeeting.toTime!!, duration)
-        Log.i("---------------", "" + mUpdateMeeting)
         makeCallToUpdateTimeForBooking(mUpdateMeeting)
     }
 
@@ -495,14 +470,20 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
     @SuppressLint("SetTextI18n")
     private fun setNextMeetingDetails() {
         next_meeting_details.text =
-            mNextMeeting.fromTime!!.split("T")[1] + " - " + mNextMeeting.toTime!!.split("T")[1] + " " + mNextMeeting.purpose
+            changeFormat(mNextMeeting.fromTime!!.split("T")[1]) + " - " + changeFormat(mNextMeeting.toTime!!.split("T")[1]) + " " + mNextMeeting.purpose
+    }
+    private fun changeFormat(time: String): String {
+        var simpleDateFormat = SimpleDateFormat("HH:mm:ss")
+        var simpleDateFormat1 = SimpleDateFormat("HH:mm")
+        return simpleDateFormat1.format(simpleDateFormat.parse(time))
     }
 
-    // book now meeeting
-    fun bookMeeting(view: View) {
+    private fun showDialogForBooking() {
         val builder = androidx.appcompat.app.AlertDialog.Builder(this)
         var view = layoutInflater.inflate(R.layout.new_booking_layout, null)
         setVisibilityToVisibleOfRadioButtons(view)
+        textChangeListenerOnPurposeEditText(view)
+        textChangeListenerOnpasscodeEditText(view)
         if (isNextMeetingPresent) {
             val difference = getMillisecondsDifference(mNextMeeting.fromTime!!)
             when {
@@ -525,32 +506,32 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
                 return
             }
         }
-        textChangeListenerOnPurposeEditText(view)
-        textChangeListenerOnpasscodeEditText(view)
-        builder.setPositiveButton("ok", null)
-        builder.setNegativeButton("cancel", null)
-        builder.setCancelable(false)
         builder.setView(view)
-
-        val mAlertDialog = builder.create()
-        mAlertDialog.setOnShowListener {
-            val okButton = mAlertDialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
-            okButton.setOnClickListener {
-                if (validate(view)) {
-                    // get values for meeting
-                    var mLocalBookingInput = NewBookingInput()
-                    mLocalBookingInput.passcode = view.edit_text_passcode.text.toString().toInt()
-                    mLocalBookingInput.eventName = view.edit_text_event_name.text.toString()
-                    getMillisecondsFromSelectedRadioButton(
-                        view.radio_group.checkedRadioButtonId,
-                        view,
-                        mLocalBookingInput
-                    )
-                    mAlertDialog.dismiss()
-                }
+        builder.setCancelable(false)
+        val dialog = builder.create()
+        view.book.setOnClickListener {
+            if (validate(view)) {
+                // get values for meeting
+                var mLocalBookingInput = NewBookingInput()
+                mLocalBookingInput.passcode = view.edit_text_passcode.text.toString().toInt()
+                mLocalBookingInput.eventName = view.edit_text_event_name.text.toString()
+                getMillisecondsFromSelectedRadioButton(
+                    view.radio_group.checkedRadioButtonId,
+                    view,
+                    mLocalBookingInput
+                )
+                dialog.dismiss()
             }
         }
-        mAlertDialog.show()
+        view.clear_button.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    // book now meeeting
+    fun bookMeeting(view: View) {
+        showDialogForBooking()
     }
 
     private fun getMillisecondsFromSelectedRadioButton(
@@ -581,22 +562,16 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
         val endTime = dateTimeFormat.format(cal.time)
         mLocalBookingInput.endTime = endTime
         mLocalBookingInput.startTime = dateTimeFormat.format(Date().time)
-        mLocalBookingInput.roomId = 22
-        mLocalBookingInput.buildingId = 7
-        Log.i("--------new Booking", "" + mLocalBookingInput)
+        if (roomId == -1 || buildingId == -1) {
+            // ask for tablet setup
+            mLocalBookingInput.roomId = 22
+            mLocalBookingInput.buildingId = 7
+        } else {
+            mLocalBookingInput.roomId = roomId
+            mLocalBookingInput.buildingId = buildingId
+        }
         addBookingDetails(mLocalBookingInput)
-//        //val roomId = GetPreference.getRoomId(this)
-//        if (roomId == -1) {
-//            // ask for tablget setup again
-//        } else {
-//            mLocalBookingInput.roomId = roomId
-//            Log.i("--------new Booking", "" + mLocalBookingInput)
-//            //make api call
-//            //bookNewMeeting(mLocalBookingInput)
-//        }
     }
-
-
     // make request in each minute
     private fun makeRequestPeriodically() {
         val periodicThread = object : Thread() {
@@ -606,7 +581,7 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
                         runOnUiThread {
                             getViewModel()
                         }
-                        sleep(60 * 1000)
+                        sleep(30 * 1000)
                     }
                 } catch (e: InterruptedException) {
                     Log.d("Thread Exception", e.message)
@@ -781,24 +756,37 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
 
     // feedback dialog
     private fun showDialog() {
-        AppRatingDialog.Builder()
-            .setPositiveButtonText("Submit")
-            .setNegativeButtonText("Cancel")
-            .setNeutralButtonText("Later")
-            .setNoteDescriptions(Arrays.asList("Very Bad", "Not good", "Quite ok", "Very Good", "Excellent !!!"))
-            .setDefaultRating(2)
-            .setTitle("Rate this application")
-            .setTitleTextColor(R.color.textColorGray)
-            .setDescription("Please select some stars and give your feedback")
-            .setDescriptionTextColor(R.color.textColorGray)
-            .setCommentInputEnabled(true)
-            .setDefaultComment("This app is pretty cool !")
-            .setCommentTextColor(R.color.textColorGray)
-            .setCommentBackgroundColor(R.color.defaultTextColor)
-            .setCancelable(false)
-            .setCanceledOnTouchOutside(false)
-            .create(this@BookingDetailsActivity)
-            .show()
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        var view = layoutInflater.inflate(R.layout.rating_bar_dialog, null)
+        val smileRating = view.findViewById(R.id.smile_rating) as SmileRating
+        builder.setView(view)
+        builder.setCancelable(false)
+        val dialog = builder.create()
+        view.cancel_dialog.setOnClickListener {
+            dialog.dismiss()
+        }
+        view.submit_feedback.setOnClickListener {
+            val commentEditText = view.findViewById<EditText>(R.id.comment_edit_text)
+            var comment = ""
+            var rating = -1
+            comment = if(commentEditText.text.toString().trim().isEmpty()) {
+                getString(R.string.default_feedback)
+            } else {
+                commentEditText.text.toString().trim()
+            }
+            if(smileRating.selectedSmile == -1) {
+                Toast.makeText(this@BookingDetailsActivity, "Please give some rating", Toast.LENGTH_SHORT).show()
+            } else {
+                var feedback = Feedback()
+                rating = smileRating.selectedSmile + 1
+                feedback.bookingId = mMeetingIdForFeedback
+                feedback.comment = comment
+                feedback.rating = rating
+                makeCallForAddFeedback(feedback)
+            }
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     // show Toast
@@ -814,5 +802,14 @@ class BookingDetailsActivity : AppCompatActivity(), RatingDialogListener {
         imageView.setImageResource(R.drawable.ic_layers)
         toastContentView.addView(imageView, 0)
         toast.show()
+    }
+
+    // get room id from shared preference
+    private fun getRoomIdFromSharedPreference(): Int {
+        return getSharedPreferences("Preference", Context.MODE_PRIVATE).getInt("RoomId", -1)
+    }
+    // get room id from shared preference
+    private fun getBuildingIdFromSharedPreference(): Int {
+        return getSharedPreferences("Preference", Context.MODE_PRIVATE).getInt("BuildingId", -1)
     }
 }
