@@ -2,6 +2,7 @@ package com.example.conferenceroomtabletversion.ui
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.text.Html
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -36,7 +37,9 @@ class ShowBookings : AppCompatActivity() {
     private fun init() {
         // hide status bar
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-        actionBar?.hide()
+        val actionBar = supportActionBar
+        actionBar!!.title = Html.fromHtml("<font color=\"#FFFFFF\">" + "Show Meetings" + "</font>")
+
         this.window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN

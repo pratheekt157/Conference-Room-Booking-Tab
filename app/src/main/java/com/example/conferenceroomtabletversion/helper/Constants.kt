@@ -81,5 +81,15 @@ class Constants {
 
         const val ROOM_ID = "roomID"
 
+        const val BUILDING_ID = "buildingID"
+
+        const val BUILDING_NAME = "buildingName"
+
+        const val CAPACITY = "capacity"
+
+        const val ROOM_NAME = "roomName"
+
+
+
     }
 }

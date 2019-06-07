@@ -32,4 +32,12 @@ interface ConferenceService {
     fun addFeedback(
         @Body feedback: Feedback
     ): Call<ResponseBody>
+
+    @GET("api/Building")
+    fun getBuildingList():Call<List<Buildings>>
+
+    @GET("api/ConferenceRooms")
+    fun conferencelist(
+            @Query("buildingId") id: Int
+    ): Call<List<ConferenceList>>
 }
