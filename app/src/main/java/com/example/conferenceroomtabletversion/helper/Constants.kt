@@ -6,51 +6,38 @@ class Constants {
      */
     companion object {
 
-
-        /**
-         * to check the status of user whether registered or not
-         */
-        const val EXTRA_REGISTERED = "com.example.conferencerommapp.Activity.EXTRA_REGISTERED"
-
-        /**
-         * for set and get intent data
-         */
-        const val EXTRA_INTENT_DATA = "com.example.conferencerommapp.Activity.EXTRA_INTENT_DATA"
-
         /**
          * response code for response IsSuccessfull
          */
         const val OK_RESPONSE = 200
 
-        /**
-         * building id Name for intents
-         */
-        const val EXTRA_BUILDING_ID = "com.example.conferencerommapp.Activity.EXTRA_BUILDING_ID"
 
         /**
          * ip address for api call
          */
-        var IP_ADDRESS = "http://192.168.1.189/CRB/"
+        const val IP_ADDRESS = "http://192.168.1.189/CRB/"
 
-        const val SOME_EXCEPTION = 400
+        const val API_REQUEST_TIME: Long = (30 * 1000)
 
-        const val Facility_Manager = 13
+        const val MAX_VALUE_FOR_5_DIGITS = 99999
 
-        const val HR_CODE = 11
+        const val MIN_15 = 15
 
-        const val MANAGER_CODE = 12
+        const val MIN_30 = 30
 
-        const val EMPLOYEE_CODE = 10
+        const val MIN_45 = 45
 
-        const val BOOKING_DASHBOARD_TYPE_UPCOMING = "upcoming"
+        const val MIN_60 = 60
 
-        const val BOOKING_DASHBOARD_TYPE_PREVIOUS = "previous"
+        const val MILLIS_60 = (45 * 60 * 1000)
 
-        const val BOOKING_DASHBOARD_TYPE_CANCELLED = "cancelled"
+        const val MILLIS_45 = (45 * 60 * 1000)
 
-        const val BOOKING_DASHBOARD_TAGGED = "Tagged"
+        const val MILLIS_30 = (30 * 60 * 1000)
 
-        const val INVALID_TOKEN = 401
+        const val MILLIS_15 = (15 * 60 * 1000)
+
+
 
         const val NOT_ACCEPTABLE = 406
 
@@ -62,20 +49,10 @@ class Constants {
 
         const val INTERNAL_SERVER_ERROR = 500
 
-        const val MATCHER = "^[a-zA-Z0-9_+&*-]+(?:\\." +
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                "A-Z]{2,7}$"
 
         const val UNAVAILABLE_SLOT = 409
 
         const val RES_CODE = 200
-
-        const val RES_CODE2 = 201
-
-        const val RES_CODE3 = 202
-
-        const val RES_CODE4 = 203
 
         const val PREFERENCE = "PREFERENCE"
 
@@ -89,7 +66,9 @@ class Constants {
 
         const val ROOM_NAME = "roomName"
 
+        const val DEFAULT_STRING_PREFERENCE_VALUE = "Not set"
 
+        const val DEFAULT_INT_PREFERENCE_VALUE = -1
 
     }
 }

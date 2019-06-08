@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.example.conferenceroomtabletversion.R
 import com.example.conferenceroomtabletversion.model.BookingDeatilsForTheDay
 import com.example.conferenceroomtabletversion.model.Test
+import java.text.SimpleDateFormat
 
 @Suppress("NAME_SHADOWING")
 class BookingForTheDayAdapter(
@@ -39,12 +40,14 @@ class BookingForTheDayAdapter(
         mShowMembersListener = mShowMembers
         val mBookingDetails = bookingDeatilsForTheDayItemList[position]
         holder.purposeTextView.text = mBookingDetails.purpose
-        holder.meetingDurationTextView.text = mBookingDetails.fromTime!!.split("T")[1] + " - " + mBookingDetails.toTime!!.split("T")[1]
-        holder.organizerTextView.text = "Organized by " + mBookingDetails.organizer
+        holder.meetingDurationTextView.text = changeFormat(mBookingDetails.fromTime!!.split("T")[1]) + " - " + changeFormat(mBookingDetails.toTime!!.split("T")[1])
+        holder.organizerTextView.text = "Organized by ${mBookingDetails.organizer}"
+    }
 
-        holder.itemView.setOnClickListener {
-           // mShowMembersListener!!.showMembers(mBookingDetails.cCMail!!)
-        }
+    private fun changeFormat(time: String): String {
+        var simpleDateFormat = SimpleDateFormat("HH:mm:ss")
+        var simpleDateFormat1 = SimpleDateFormat("HH:mm")
+        return simpleDateFormat1.format(simpleDateFormat.parse(time))
     }
     /**
      * it will return number of items contains in recyclerview view

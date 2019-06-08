@@ -26,4 +26,8 @@
     <string name="cant_book">can\'t use. next meeting is scheduled</string>
     <string name="booked_successfully">Successfully Booked</string>
     <string name="default_feedback">This app is cool!</string>
+    <string name="end_meeting">End Meeting</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="choose_duration">Choose Duration</string>
 </resources>

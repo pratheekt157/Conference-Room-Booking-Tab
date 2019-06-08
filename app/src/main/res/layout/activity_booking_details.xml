@@ -16,20 +16,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="230dp">
             <TextView
-                    android:hint="Jupiter [12 people]"
+                    android:hint="Tejas [12 people]"
                     android:textColorHint="@color/white"
                     android:id="@+id/room_name"
-                    android:layout_margin="24dp"
                     android:textSize="50sp"
                     android:textColor="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/abel"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
                     android:layout_marginBottom="16dp"/>
 
+            <TextView
+                    android:hint="Main Building"
+                    android:layout_below="@id/room_name"
+                    android:textColorHint="@color/white"
+                    android:id="@+id/building_name"
+                    android:textSize="40sp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/abel"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp" android:layout_marginTop="-26dp"/>
             <TextView
                     android:layout_marginTop="16dp"
                     android:layout_marginRight="16dp"
@@ -48,7 +59,8 @@
                     android:layout_below="@id/time_text_view"
                     android:textColor="@color/white"
                     android:textSize="40sp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="-26dp"
+                    android:layout_marginRight="15dp"
                     android:layout_marginLeft="16dp"
                     android:fontFamily="@font/abel"
                     android:hint="03 May, 2019"

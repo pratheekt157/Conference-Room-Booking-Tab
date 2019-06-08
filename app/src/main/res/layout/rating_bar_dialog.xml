@@ -25,6 +25,7 @@
             android:id="@+id/comment_edit_text"
             android:gravity="left"
             android:elevation="1dp"
+            android:focusable="false"
             android:focusableInTouchMode="true"
             android:fontFamily="monospace"
             android:hint="This app is cool!"
