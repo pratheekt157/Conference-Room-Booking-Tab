@@ -21,6 +21,7 @@ import com.example.conferenceroomtabletversion.R
 import com.example.conferenceroomtabletversion.helper.*
 import com.example.conferenceroomtabletversion.model.Buildings
 import com.example.conferenceroomtabletversion.model.ConferenceList
+import com.example.conferenceroomtabletversion.utils.GetPreference
 import com.example.conferenceroomtabletversion.viewmodel.BuildingViewModel
 import com.example.conferenceroomtabletversion.viewmodel.ConferenceViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -45,6 +46,9 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting_building_conference)
+        if(GetPreference.getBuildingIdFromSharedPreference(this)!=-1){
+            finish()
+        }
         init()
         buildingObserveData()
    }
@@ -142,7 +146,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
                         if (valid == false )
                             Snackbar.make(relativeLayout,"Select the Room",Snackbar.LENGTH_SHORT).show()
                         else {
-                            setValuesInsidePreferences(conferenceCapacity[position], conferenceid[position], conferencename[position], buildingName[position], buildingId[position])
+                            setValuesInsidePreferences(conferenceCapacity[position-1], conferenceid[position-1], conferencename[position-1], buildingName[position-1], buildingId[position-1])
                             startActivity(Intent(this@SettingBuildingConferenceActivity,BookingDetailsActivity::class.java))
                         }
                     }
@@ -150,9 +154,6 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         }
     }
 
-    private fun validateInputs(capacity: Int, roomId: Int, roomName: String, buildingName: String, buildingId: Int){
-
-    }
 
     private fun validate(conferenceid: Int):Boolean {
         if(conferenceid==-1)
@@ -202,5 +203,8 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         mBuildingsViewModel.getBuildingList()
     }
 
+    override fun onBackPressed(){
+       finish()
+    }
 
 }

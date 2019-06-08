@@ -63,6 +63,9 @@ class BookingDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_booking_details)
+        if(GetPreference.getBuildingIdFromSharedPreference(this)==-1){
+            startActivity(Intent(this,SettingBuildingConferenceActivity::class.java))
+        }
         setTimeToScreen()
         init()
         observeData()
@@ -808,5 +811,7 @@ class BookingDetailsActivity : AppCompatActivity() {
         toastContentView.addView(imageView, 0)
         toast.show()
     }
+
+
 
 }
