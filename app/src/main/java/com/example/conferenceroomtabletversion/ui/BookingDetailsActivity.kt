@@ -65,6 +65,7 @@ class BookingDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_booking_details)
         if(GetPreference.getOnbordingFromSharedPreference(this)==false){
             startActivity(Intent(this,SettingBuildingConferenceActivity::class.java))
+            finish()
         }
         setTimeToScreen()
         init()

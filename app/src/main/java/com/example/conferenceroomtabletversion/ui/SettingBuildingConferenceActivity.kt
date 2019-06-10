@@ -145,6 +145,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
                         else {
                             setValuesInsidePreferences(conferenceCapacity[position-1], conferenceid[position-1], conferencename[position-1], buildingName[position-1], buildingId[position-1])
                             startActivity(Intent(this@SettingBuildingConferenceActivity,BookingDetailsActivity::class.java))
+                            finish()
                         }
                     }
             }
@@ -201,8 +202,5 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         mBuildingsViewModel.getBuildingList()
     }
 
-    override fun onBackPressed(){
-       finish()
-    }
 
 }
