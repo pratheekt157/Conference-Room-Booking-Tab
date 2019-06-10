@@ -13,16 +13,8 @@ import java.text.SimpleDateFormat
 
 @Suppress("NAME_SHADOWING")
 class BookingForTheDayAdapter(
-    private val bookingDeatilsForTheDayItemList: ArrayList<BookingDeatilsForTheDay>,
-    private val mShowMembers: ShowMembersListener
+    private val bookingDeatilsForTheDayItemList: ArrayList<BookingDeatilsForTheDay>
     ) : androidx.recyclerview.widget.RecyclerView.Adapter<BookingForTheDayAdapter.ViewHolder>() {
-
-    /**
-     * a variable which will hold the 'Instance' of interface
-     */
-    companion object {
-        var mShowMembersListener: ShowMembersListener? = null
-    }
 
     /**
      * this override function will set a view for the recyclerview items
@@ -37,7 +29,6 @@ class BookingForTheDayAdapter(
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        mShowMembersListener = mShowMembers
         val mBookingDetails = bookingDeatilsForTheDayItemList[position]
         holder.purposeTextView.text = mBookingDetails.purpose
         holder.meetingDurationTextView.text = changeFormat(mBookingDetails.fromTime!!.split("T")[1]) + " - " + changeFormat(mBookingDetails.toTime!!.split("T")[1])

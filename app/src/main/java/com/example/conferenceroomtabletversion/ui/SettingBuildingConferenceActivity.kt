@@ -180,8 +180,6 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         edit.putString(Constants.ROOM_NAME, roomName)
         edit.apply()
     }
-
-
     private fun init(){
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
@@ -204,7 +202,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed(){
-       finish()
+       finishAffinity()
     }
 
 }

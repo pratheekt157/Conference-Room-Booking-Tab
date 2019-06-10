@@ -35,6 +35,8 @@ import kotlinx.android.synthetic.main.new_booking_layout.view.*
 import kotlinx.android.synthetic.main.rating_bar_dialog.view.*
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 
@@ -63,8 +65,8 @@ class BookingDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_booking_details)
-        if(GetPreference.getBuildingIdFromSharedPreference(this)==-1){
-            startActivity(Intent(this,SettingBuildingConferenceActivity::class.java))
+        if (GetPreference.getBuildingIdFromSharedPreference(this) == -1) {
+            startActivity(Intent(this, SettingBuildingConferenceActivity::class.java))
         }
         setTimeToScreen()
         init()
@@ -93,7 +95,7 @@ class BookingDetailsActivity : AppCompatActivity() {
         val roomName = GetPreference.getRoomNameFromSharedPreference(this)
         val buildingName = GetPreference.getBuildingNameFromSharedPreference(this)
         val roomCapacity = GetPreference.getCapacityFromSharedPreference(this)
-        if(
+        if (
             roomName == Constants.DEFAULT_STRING_PREFERENCE_VALUE ||
             buildingName == Constants.DEFAULT_STRING_PREFERENCE_VALUE ||
             roomCapacity == Constants.DEFAULT_INT_PREFERENCE_VALUE
@@ -218,7 +220,15 @@ class BookingDetailsActivity : AppCompatActivity() {
 
     // main functionality
     private fun observeTimeFromBookingList() {
-        val meetingListThread = object : Thread() {
+        val scheduler = Executors.newScheduledThreadPool(1)
+        val makeCallPeriodically = Runnable {
+            checkBookingListForUpcomingEvents()
+        }
+        scheduler.scheduleAtFixedRate(makeCallPeriodically, 0, 60, TimeUnit.SECONDS)
+
+
+/*
+val meetingListThread = object : Thread() {
             override fun run() {
                 try {
                     while (!isInterrupted) {
@@ -274,7 +284,55 @@ class BookingDetailsActivity : AppCompatActivity() {
                 }
             }
         }
-        meetingListThread.start()
+ */
+        //meetingListThread.start()
+    }
+
+
+    private fun checkBookingListForUpcomingEvents() {
+        if (mBookingList.isNotEmpty()) {
+            flag = false
+            for (booking in mBookingList) {
+                val timeDifference = getMillisecondsDifference(booking.fromTime!!)
+                if (timeDifference > 0) {
+                    mNextMeeting = booking
+                    flag = true
+                    isNextMeetingPresent = true
+                    setNextMeetingDetails()
+                    break
+                }
+            }
+            if (!flag) {
+                isNextMeetingPresent = false
+            }
+            if (!isNextMeetingPresent) {
+                setNextMeetingTextToFree()
+            }
+            for (booking in mBookingList) {
+                val startTimeInMillis = getMilliseconds(booking.fromTime!!)
+                val endTimeInMillis = getMilliseconds(booking.toTime!!)
+                if (System.currentTimeMillis() in startTimeInMillis..endTimeInMillis) {
+                    if (!isMeetingRunning) {
+                        mRunningMeetingId = booking.bookingId!!
+                        mRunningMeeting = booking
+                        setDataToUiForRunningMeeting(booking)
+                        if (booking.status == getString(R.string.meeting_started)) {
+                            startMeetingButton.visibility = View.GONE
+                            setVisibilityToVisibleForRunningMeeting()
+                            startTimer(getMeetingDurationInMilliseonds(booking.toTime!!))
+                        } else if (booking.status == getString(R.string.booked)) {
+                            startMeetingButton.visibility = View.VISIBLE
+                        }
+                    }
+                    break
+                }
+            }
+        } else {
+            isNextMeetingPresent = false
+            setVisibilityToGoneForRunningMeeting()
+            loadAvailableRoomUi()
+            setNextMeetingTextToFree()
+        }
     }
 
     private fun makeCallForStartMeeting(startNow: EndMeeting) {
@@ -307,6 +365,7 @@ class BookingDetailsActivity : AppCompatActivity() {
         event_organizer_text_view.text = "Organized by ${booking.organizer}"
         status_button.text = "Occupied"
     }
+
     // set visibility to visible for running meeting layout
     private fun setVisibilityToVisibleForRunningMeeting() {
         endMeetingButton.visibility = View.VISIBLE
@@ -428,8 +487,7 @@ class BookingDetailsActivity : AppCompatActivity() {
         var listItems = arrayOf<String>()
         if (!isNextMeetingPresent) {
             listItems = arrayOf("15 minutes", "30 minutes", "45 minutes", "60 minutes")
-        }
-        else {
+        } else {
             val difference = getMillisecondsDifferenceForExtendMeeting(mNextMeeting.fromTime!!)
             //this will checked the item when user open the dialog
             when {
@@ -452,8 +510,7 @@ class BookingDetailsActivity : AppCompatActivity() {
             }
             val dialog = builder.create()
             dialog.show()
-        }
-        else {
+        } else {
             showToastAtTop(getString(R.string.cant_extend))
         }
     }
@@ -464,7 +521,7 @@ class BookingDetailsActivity : AppCompatActivity() {
         when (time) {
             Constants.MIN_15 -> duration = Constants.MIN_15
             Constants.MIN_30 -> duration = Constants.MIN_30
-            Constants.MIN_45 -> duration =Constants.MIN_45
+            Constants.MIN_45 -> duration = Constants.MIN_45
             Constants.MIN_60 -> duration = Constants.MIN_60
         }
         val mUpdateMeeting = UpdateBooking()
@@ -580,23 +637,30 @@ class BookingDetailsActivity : AppCompatActivity() {
         addBookingDetails(mLocalBookingInput)
     }
 
-    // make request in each minute
+    // make request in each 30 seconds with ExecutorService
     private fun makeRequestPeriodically() {
-        val periodicThread = object : Thread() {
-            override fun run() {
-                try {
-                    while (!isInterrupted) {
-                        runOnUiThread {
-                            getViewModel()
-                        }
-                        sleep(Constants.API_REQUEST_TIME)
-                    }
-                } catch (e: InterruptedException) {
-                    Log.d("Thread Exception", e.message)
-                }
-            }
+        val scheduler = Executors.newScheduledThreadPool(1)
+        val makeCallPeriodically = Runnable {
+            getViewModel()
         }
-        periodicThread.start()
+        scheduler.scheduleAtFixedRate(makeCallPeriodically, 0, 30, TimeUnit.SECONDS)
+
+
+//        val periodicThread = object : Thread() {
+//            override fun run() {
+//                try {
+//                    while (!isInterrupted) {
+//                        runOnUiThread {
+//                            getViewModel()
+//                        }
+//                        sleep(Constants.API_REQUEST_TIME)
+//                    }
+//                } catch (e: InterruptedException) {
+//                    Log.d("Thread Exception", e.message)
+//                }
+//            }
+//        }
+//        periodicThread.start()
     }
 
     // show meetings for the day
@@ -705,31 +769,34 @@ class BookingDetailsActivity : AppCompatActivity() {
         }
     }
 
-    // set date and time on screen with another thread
+    // set date and time on screen with another ExecutorService
     private fun setTimeToScreen() {
-        val dateTimeThread = object : Thread() {
-            override fun run() {
-                try {
-                    while (!isInterrupted) {
-                        sleep(1000)
-                        runOnUiThread {
-                            val cal = Calendar.getInstance()
-                            cal.time = Date()
-                            val date = System.currentTimeMillis()
-                            val sdfForTime = SimpleDateFormat("hh:mm")
-                            val sdfForDate = SimpleDateFormat("dd MMM yyyy")
-                            val timeString = sdfForTime.format(cal.time)
-                            val dateString = sdfForDate.format(date)
-                            time_text_view.text = timeString
-                            date_text_view.text = dateString
-                        }
-                    }
-                } catch (e: InterruptedException) {
-                    Log.i("-------------", e.message)
-                }
-            }
+        val scheduler = Executors.newScheduledThreadPool(1)
+        val setTime = Runnable {
+            val (time, date) = getSystemTimeAndDate()
+            setTimeAndDataToUI(time, date)
         }
-        dateTimeThread.start()
+        scheduler.scheduleAtFixedRate(setTime, 0, 60, TimeUnit.SECONDS)
+    }
+
+    /**
+     * function will return system time and date
+     */
+    private fun getSystemTimeAndDate(): Pair<String, String> {
+        val cal = Calendar.getInstance()
+        cal.time = Date()
+        val date = System.currentTimeMillis()
+        val sdfForTime = SimpleDateFormat("hh:mm")
+        val sdfForDate = SimpleDateFormat("dd MMM yyyy")
+        return Pair(sdfForTime.format(cal.time), sdfForDate.format(date))
+    }
+
+    /**
+     * set time and date to UI
+     */
+    private fun setTimeAndDataToUI(time: String, date: String) {
+        time_text_view.text = time
+        date_text_view.text = date
     }
 
     // set next meeting text view to free
@@ -811,7 +878,6 @@ class BookingDetailsActivity : AppCompatActivity() {
         toastContentView.addView(imageView, 0)
         toast.show()
     }
-
 
 
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Html
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -13,9 +14,11 @@ import com.example.conferenceroomtabletversion.R
 import com.example.conferenceroomtabletversion.helper.BookingForTheDayAdapter
 import com.example.conferenceroomtabletversion.helper.GetProgress
 import com.example.conferenceroomtabletversion.helper.NetworkState
+import com.example.conferenceroomtabletversion.helper.ShowToast
 import com.example.conferenceroomtabletversion.model.BookingDeatilsForTheDay
 import com.example.conferenceroomtabletversion.model.Test
 import com.example.conferenceroomtabletversion.viewmodel.BookingForTheDayViewModel
+import es.dmoral.toasty.Toasty
 
 class ShowBookings : AppCompatActivity() {
 
@@ -74,36 +77,27 @@ class ShowBookings : AppCompatActivity() {
          */
         mBookingForTheDayViewModel.returnSuccess().observe(this, Observer {
             mProgressDialog.dismiss()
-            setFilteredDataToAdapter(it)
+            if(it.isEmpty()) {
+                Toasty.info(this@ShowBookings, "No Booking found for the day!", Toast.LENGTH_SHORT, true).show()
+                finish()
+            } else {
+                setFilteredDataToAdapter(it)
+            }
+
         })
         mBookingForTheDayViewModel.returnFailure().observe(this, Observer {
             mProgressDialog.dismiss()
-//             else if (it == Constants.NO_CONTENT_FOUND && finalList.size == 0) {
-//                //upcoming_empty_view.visibility = View.VISIBLE
-//                //r1_dashboard.setBackgroundColor(Color.parseColor("#F7F7F7"))
-//            } else {
-//                //ShowToast.show(activity!!, it as Int)
-//            }
+            ShowToast.show(this, it as Int)
+            finish()
         })
 
     }
     private fun setFilteredDataToAdapter(it: List<BookingDeatilsForTheDay>) {
         mBookingListAdapter = BookingForTheDayAdapter(
-            it as ArrayList<BookingDeatilsForTheDay>,
-            object : BookingForTheDayAdapter.ShowMembersListener {
-                override fun showMembers(mEmployeeList: List<String>) {
-                    showMeetingMembers(mEmployeeList)
-                }
-            }
+            it as ArrayList<BookingDeatilsForTheDay>
         )
         mRecyclerView.adapter = mBookingListAdapter
     }
-
-    //show details of the meeting in dialog
-    private fun showMeetingMembers(mEmployeeList: List<String>) {
-
-    }
-
     fun addDataToList() {
         var t1 = Test("2019-06-01T17:40:00", "2019-06-01T17:45:00", "Advantage client meeting", "Prateek Patidar")
         var t2 = Test("2019-06-01T18:44:00", "2019-06-31T18:45:00", "Planning second", "Kapil Patidar")
