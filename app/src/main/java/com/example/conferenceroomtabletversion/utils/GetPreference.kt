@@ -29,6 +29,8 @@ class GetPreference {
         fun getBuildingIdFromSharedPreference(mContext: Context): Int {
             return mContext.getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE).getInt(Constants.BUILDING_ID, Constants.DEFAULT_INT_PREFERENCE_VALUE)
         }
-
+        fun getOnbordingFromSharedPreference(mContext: Context):Boolean{
+        return mContext.getSharedPreferences(Constants.PREFERENCE,Context.MODE_PRIVATE).getBoolean(Constants.ONBORDING, Constants.DEFAULT_ONBOARDING)
+        }
     }
 }

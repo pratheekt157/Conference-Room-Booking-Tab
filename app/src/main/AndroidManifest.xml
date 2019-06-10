@@ -18,20 +18,21 @@
                 android:parentActivityName=".ui.BookingDetailsActivity"
                 android:theme="@style/AppTheme_ShowMeetings">
         </activity>
+
         <activity
-            android:launchMode="standard"
             android:name=".ui.SettingBuildingConferenceActivity">
 
         </activity>
 
         <activity android:name=".ui.BookingDetailsActivity"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <meta-data
                 android:name="preloaded_fonts"
                 android:resource="@array/preloaded_fonts"/>

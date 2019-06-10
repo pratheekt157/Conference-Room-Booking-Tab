@@ -46,9 +46,6 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting_building_conference)
-        if(GetPreference.getBuildingIdFromSharedPreference(this)!=-1){
-            finish()
-        }
         init()
         buildingObserveData()
    }
@@ -148,6 +145,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
                         else {
                             setValuesInsidePreferences(conferenceCapacity[position-1], conferenceid[position-1], conferencename[position-1], buildingName[position-1], buildingId[position-1])
                             startActivity(Intent(this@SettingBuildingConferenceActivity,BookingDetailsActivity::class.java))
+                            finish()
                         }
                     }
             }
@@ -174,12 +172,15 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
     private fun setValuesInsidePreferences(capacity: Int, roomId: Int, roomName: String, buildingName: String, buildingId: Int)  {
         val edit = getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE).edit()
         edit.putInt(Constants.ROOM_ID, roomId)
+        edit.putBoolean(Constants.ONBORDING,true)
         edit.putInt(Constants.BUILDING_ID, buildingId)
         edit.putString(Constants.BUILDING_NAME, buildingName)
         edit.putInt(Constants.CAPACITY, capacity)
         edit.putString(Constants.ROOM_NAME, roomName)
         edit.apply()
     }
+
+
     private fun init(){
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
@@ -201,8 +202,5 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         mBuildingsViewModel.getBuildingList()
     }
 
-    override fun onBackPressed(){
-       finishAffinity()
-    }
 
 }
