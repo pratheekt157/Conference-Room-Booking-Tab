@@ -63,7 +63,7 @@ class BookingDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_booking_details)
-        if(GetPreference.getBuildingIdFromSharedPreference(this)==-1){
+        if(GetPreference.getOnbordingFromSharedPreference(this)==false){
             startActivity(Intent(this,SettingBuildingConferenceActivity::class.java))
         }
         setTimeToScreen()
@@ -810,6 +810,14 @@ class BookingDetailsActivity : AppCompatActivity() {
         imageView.setImageResource(R.drawable.ic_layers)
         toastContentView.addView(imageView, 0)
         toast.show()
+    }
+
+    /**
+     * On Back Pressed finish the app
+     */
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 
 

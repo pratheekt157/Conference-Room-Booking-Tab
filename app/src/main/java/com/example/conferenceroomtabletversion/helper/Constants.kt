@@ -70,5 +70,9 @@ class Constants {
 
         const val DEFAULT_INT_PREFERENCE_VALUE = -1
 
+        const val ONBORDING = "onboarding"
+
+        const val DEFAULT_ONBOARDING = false
+
     }
 }

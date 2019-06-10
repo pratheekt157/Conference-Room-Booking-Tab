@@ -46,9 +46,6 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting_building_conference)
-        if(GetPreference.getBuildingIdFromSharedPreference(this)!=-1){
-            finish()
-        }
         init()
         buildingObserveData()
    }
@@ -174,6 +171,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
     private fun setValuesInsidePreferences(capacity: Int, roomId: Int, roomName: String, buildingName: String, buildingId: Int)  {
         val edit = getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE).edit()
         edit.putInt(Constants.ROOM_ID, roomId)
+        edit.putBoolean(Constants.ONBORDING,true)
         edit.putInt(Constants.BUILDING_ID, buildingId)
         edit.putString(Constants.BUILDING_NAME, buildingName)
         edit.putInt(Constants.CAPACITY, capacity)
