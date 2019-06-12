@@ -52,11 +52,13 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
 
 
     private fun getConference(buildingId: Int) {
+        mProgressDialog.show()
         mConferenceViewModel.getConferenceRoomList(buildingId)
     }
 
     private fun buildingObserveData() {
         mBuildingsViewModel.returnMBuildingSuccess().observe(this, Observer {
+            mProgressDialog.dismiss()
             buildingListFromBackend(it)
 
         })
@@ -68,7 +70,6 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
 
     private fun buildingListFromBackend(buildingList: List<Buildings>?) {
         sendDataForSpinner(buildingList!!)
-
     }
 
     private fun sendDataForSpinner(buildingList: List<Buildings>) {
@@ -97,10 +98,12 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
 
     private fun conferenceObserveData() {
         mConferenceViewModel.returnConferenceRoomList().observe(this, Observer {
+            mProgressDialog.dismiss()
             setAdapter(it)
+
         })
         mConferenceViewModel.returnFailureForConferenceRoom().observe(this, Observer {
-
+            mProgressDialog.dismiss()
         })
     }
 
@@ -140,7 +143,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     configure.setOnClickListener {
                         valid=validate(conferenceid[position])
-                        if (valid == false )
+                        if (!valid)
                             Snackbar.make(relativeLayout,"Select the Room",Snackbar.LENGTH_SHORT).show()
                         else {
                             setValuesInsidePreferences(conferenceCapacity[position-1], conferenceid[position-1], conferencename[position-1], buildingName[position-1], buildingId[position-1])
@@ -154,12 +157,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
 
 
     private fun validate(conferenceid: Int):Boolean {
-        if(conferenceid==-1)
-        {
-           return false
-        }
-        else
-            return true
+        return conferenceid != -1
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -182,11 +180,13 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
 
 
     private fun init(){
+
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
-        relativeLayout = findViewById(R.id.setting_activity)
         configure = findViewById(R.id.set_up_room)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        relativeLayout = findViewById(R.id.setting_activity)
+        mProgressDialog = GetProgress.getProgressDialog(getString(R.string.progress_message), this)
         mBuildingsViewModel = ViewModelProviders.of(this).get(BuildingViewModel::class.java)
         mConferenceViewModel = ViewModelProviders.of(this).get(ConferenceViewModel::class.java)
         if (NetworkState.appIsConnectedToInternet(this)) {
@@ -195,10 +195,10 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
                 Toast.makeText(this,"No Internet",Toast.LENGTH_SHORT).show()
         }
     }
-
+    // making API call
     private fun getViewModel() {
 
-        // making API call
+        mProgressDialog.show()
         mBuildingsViewModel.getBuildingList()
     }
 

@@ -20,6 +20,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.example.conferencerommapp.utils.FormatTimeAccordingToZone
+import com.example.conferencerommapp.utils.GetCurrentTimeInUTC
 import com.example.conferenceroomtabletversion.R
 import com.example.conferenceroomtabletversion.helper.Constants
 import com.example.conferenceroomtabletversion.helper.GetProgress
@@ -44,29 +46,30 @@ class BookingDetailsActivity : AppCompatActivity() {
     private lateinit var mBookingForTheDayViewModel: BookingForTheDayViewModel
     private lateinit var mProgressDialog: ProgressDialog
     private var mCountDownTimer: CountDownTimer? = null
-    private var mTimerRunning: Boolean = false
-    private var mTimeLeftInMillis: Long = 0
-    private var isCommingFromExtendedMeeting = false
     private lateinit var mRunningBookingLayout: RelativeLayout
     private lateinit var mBookNowLayout: RelativeLayout
     private lateinit var startMeetingButton: Button
     private lateinit var endMeetingButton: Button
     private lateinit var extendMeetingButton: Button
+    private var mBookingList = ArrayList<BookingDeatilsForTheDay>()
+    private var mNextMeeting = BookingDeatilsForTheDay()
+    private var mRunningMeeting = BookingDeatilsForTheDay()
     private var mRunningMeetingId = -1
-    var mBookingList = ArrayList<BookingDeatilsForTheDay>()
-    var mNextMeeting = BookingDeatilsForTheDay()
+    private var mTimerRunning: Boolean = false
+    private var mTimeLeftInMillis: Long = 0
+    private var isCommingFromExtendedMeeting = false
     var isMeetingRunning = false
-    var roomId = -1
-    var buildingId = -1
-    var flag = false
-    var isNextMeetingPresent = false
-    var mRunningMeeting = BookingDeatilsForTheDay()
-    var mMeetingIdForFeedback = -1
+    private var roomId = -1
+    private var buildingId = -1
+    private var flag = false
+    private var isNextMeetingPresent = false
+    private var mMeetingIdForFeedback = -1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_booking_details)
         if (GetPreference.getBuildingIdFromSharedPreference(this) == -1) {
             startActivity(Intent(this, SettingBuildingConferenceActivity::class.java))
+            finish()
         }
         setTimeToScreen()
         init()
@@ -76,19 +79,41 @@ class BookingDetailsActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        initStatusBar()
+        initFieldsOfUi()
+        initlateInitFields()
+        setRoomDetails()
+        setTimeToScreen()
+        setValuesFromSharedPreference()
+    }
+
+    /**
+     * function will remove the status bar from activity
+     */
+    private fun initStatusBar() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
+    }
+
+    /**
+     *  function will map local variable to UI fields
+     */
+    private fun initFieldsOfUi() {
         mRunningBookingLayout = findViewById(R.id.running_booking_layout)
         mBookNowLayout = findViewById(R.id.book_now_layout)
         startMeetingButton = findViewById(R.id.start_button)
         endMeetingButton = findViewById(R.id.end_meeting_button)
         extendMeetingButton = findViewById(R.id.extend_button)
+    }
+
+    /**
+     * initialize lateinit fields
+     */
+    private fun initlateInitFields() {
         mProgressDialog = GetProgress.getProgressDialog(getString(R.string.progress_message), this)
         mBookingForTheDayViewModel = ViewModelProviders.of(this).get(BookingForTheDayViewModel::class.java)
-        setRoomDetails()
-        setTimeToScreen()
-        setValuesFromSharedPreference()
     }
 
     private fun setRoomDetails() {
@@ -113,6 +138,19 @@ class BookingDetailsActivity : AppCompatActivity() {
         buildingId = GetPreference.getBuildingIdFromSharedPreference(this)
     }
 
+    // change start time and end time of meeting from UTC to Indian standard time zone
+    private fun changeDateTimeZone(it: List<BookingDeatilsForTheDay>) {
+        var startTimeInUtc: String
+        var endTimeInUtc: String
+        for (booking in it) {
+            startTimeInUtc = booking.fromTime!!
+            endTimeInUtc = booking.toTime!!
+            booking.fromTime = FormatTimeAccordingToZone.formatDateAsIndianStandardTime("${startTimeInUtc.split("T")[0]} ${startTimeInUtc.split("T")[1]}")
+            booking.toTime = FormatTimeAccordingToZone.formatDateAsIndianStandardTime("${endTimeInUtc.split("T")[0]} ${endTimeInUtc.split("T")[1]}")
+        }
+        mBookingList.addAll(it)
+    }
+
     /**
      * all observer for LiveData
      */
@@ -120,7 +158,8 @@ class BookingDetailsActivity : AppCompatActivity() {
         // get list of bookings for the day
         mBookingForTheDayViewModel.returnSuccess().observe(this, Observer {
             mBookingList.clear()
-            mBookingList.addAll(it)
+            changeDateTimeZone(it)
+            //mBookingList.addAll(it)
         })
         mBookingForTheDayViewModel.returnFailure().observe(this, Observer {
             Toast.makeText(this, "" + it.toString(), Toast.LENGTH_SHORT).show()
@@ -206,34 +245,25 @@ class BookingDetailsActivity : AppCompatActivity() {
     private fun getViewModel() {
         if (roomId == Constants.DEFAULT_INT_PREFERENCE_VALUE) {
             // ask for tablet setup
-            mBookingForTheDayViewModel.getBookingList(22)
+            mBookingForTheDayViewModel.getBookingList(6)
         } else {
             mBookingForTheDayViewModel.getBookingList(roomId)
         }
-
     }
 
     private fun endMeeting(mEndMeeting: EndMeeting) {
         mProgressDialog.show()
         mBookingForTheDayViewModel.endMeeting(mEndMeeting)
     }
-
     // main functionality
     private fun observeTimeFromBookingList() {
-        val scheduler = Executors.newScheduledThreadPool(1)
-        val makeCallPeriodically = Runnable {
-            checkBookingListForUpcomingEvents()
-        }
-        scheduler.scheduleAtFixedRate(makeCallPeriodically, 0, 60, TimeUnit.SECONDS)
-
-
-/*
-val meetingListThread = object : Thread() {
+        val meetingListThread = object : Thread() {
             override fun run() {
                 try {
                     while (!isInterrupted) {
                         runOnUiThread {
                             if (mBookingList.isNotEmpty()) {
+                                Log.i("---------------", "called")
                                 flag = false
                                 for (booking in mBookingList) {
                                     val timeDifference = getMillisecondsDifference(booking.fromTime!!)
@@ -284,55 +314,18 @@ val meetingListThread = object : Thread() {
                 }
             }
         }
- */
-        //meetingListThread.start()
+        meetingListThread.start()
+
+
+
+//        val scheduler = Executors.newScheduledThreadPool(1)
+//        val makeCallPeriodically = Runnable {
+//
+//        scheduler.scheduleAtFixedRate(makeCallPeriodically, 0, 1, TimeUnit.SECONDS)
     }
 
-
     private fun checkBookingListForUpcomingEvents() {
-        if (mBookingList.isNotEmpty()) {
-            flag = false
-            for (booking in mBookingList) {
-                val timeDifference = getMillisecondsDifference(booking.fromTime!!)
-                if (timeDifference > 0) {
-                    mNextMeeting = booking
-                    flag = true
-                    isNextMeetingPresent = true
-                    setNextMeetingDetails()
-                    break
-                }
-            }
-            if (!flag) {
-                isNextMeetingPresent = false
-            }
-            if (!isNextMeetingPresent) {
-                setNextMeetingTextToFree()
-            }
-            for (booking in mBookingList) {
-                val startTimeInMillis = getMilliseconds(booking.fromTime!!)
-                val endTimeInMillis = getMilliseconds(booking.toTime!!)
-                if (System.currentTimeMillis() in startTimeInMillis..endTimeInMillis) {
-                    if (!isMeetingRunning) {
-                        mRunningMeetingId = booking.bookingId!!
-                        mRunningMeeting = booking
-                        setDataToUiForRunningMeeting(booking)
-                        if (booking.status == getString(R.string.meeting_started)) {
-                            startMeetingButton.visibility = View.GONE
-                            setVisibilityToVisibleForRunningMeeting()
-                            startTimer(getMeetingDurationInMilliseonds(booking.toTime!!))
-                        } else if (booking.status == getString(R.string.booked)) {
-                            startMeetingButton.visibility = View.VISIBLE
-                        }
-                    }
-                    break
-                }
-            }
-        } else {
-            isNextMeetingPresent = false
-            setVisibilityToGoneForRunningMeeting()
-            loadAvailableRoomUi()
-            setNextMeetingTextToFree()
-        }
+
     }
 
     private fun makeCallForStartMeeting(startNow: EndMeeting) {
@@ -349,7 +342,7 @@ val meetingListThread = object : Thread() {
         var startNow = EndMeeting()
         startNow.status = true
         startNow.bookingId = mRunningMeeting.bookingId
-        startNow.currentTime = getCurrentTime()
+        startNow.currentTime = GetCurrentTimeInUTC.getCurrentTimeInUTC()
         makeCallForStartMeeting(startNow)
     }
 
@@ -358,12 +351,12 @@ val meetingListThread = object : Thread() {
         mBookNowLayout.visibility = View.GONE
         mRunningBookingLayout.visibility = View.VISIBLE
         setVisibilityToGoneForRunningMeeting()
-        val startTime = booking.fromTime!!.split("T")[1]
-        val endTime = booking.toTime!!.split("T")[1]
+        val startTime = booking.fromTime!!.split(" ")[1]
+        val endTime = booking.toTime!!.split(" ")[1]
         mRunningMeetingId = booking.bookingId!!
         event_name_text_view.text = booking.purpose + " " + changeFormat(startTime) + " - " + changeFormat(endTime)
         event_organizer_text_view.text = "Organized by ${booking.organizer}"
-        status_button.text = "Occupied"
+        status_button.text = getString(R.string.occupied)
     }
 
     // set visibility to visible for running meeting layout
@@ -380,8 +373,8 @@ val meetingListThread = object : Thread() {
 
     // get time difference in milliseconds
     fun getMillisecondsDifference(startTime: String): Long {
-        val date = startTime.split("T")[0]
-        val startTime = startTime.split("T")[1]
+        val date = startTime.split(" ")[0]
+        val startTime = startTime.split(" ")[1]
         val simpleDateFormatForDate = SimpleDateFormat("yyyy-M-dd HH:mm")
         val startTimeAndDateTimeInDateObject = simpleDateFormatForDate.parse("$date $startTime")
         val currTime = System.currentTimeMillis()
@@ -392,9 +385,9 @@ val meetingListThread = object : Thread() {
     // get time difference in milliseconds
     @SuppressLint("SimpleDateFormat")
     private fun getMillisecondsDifferenceForExtendMeeting(startTime: String): Long {
-        val date = startTime.split("T")[0]
-        val startTimeForNextMeeting = startTime.split("T")[1]
-        val endTimeForRunningMeeting = mRunningMeeting.toTime!!.split("T")[1]
+        val date = startTime.split(" ")[0]
+        val startTimeForNextMeeting = startTime.split(" ")[1]
+        val endTimeForRunningMeeting = mRunningMeeting.toTime!!.split(" ")[1]
         val simpleDateFormatForDate = SimpleDateFormat("yyyy-M-dd HH:mm")
         val startTimeAndDateTimeInDateObject = simpleDateFormatForDate.parse("$date $startTimeForNextMeeting")
         val endTimeAndDateTimeInDateObject = simpleDateFormatForDate.parse("$date $endTimeForRunningMeeting")
@@ -402,16 +395,16 @@ val meetingListThread = object : Thread() {
     }
 
     fun getMilliseconds(startTime: String): Long {
-        val date = startTime.split("T")[0]
-        val startTime = startTime.split("T")[1]
+        val date = startTime.split(" ")[0]
+        val startTime = startTime.split(" ")[1]
         val simpleDateFormatForDate = SimpleDateFormat("yyyy-M-dd HH:mm")
         val startTimeAndDateTimeInDateObject = simpleDateFormatForDate.parse("$date $startTime")
         return startTimeAndDateTimeInDateObject.time
     }
 
     private fun getMeetingDurationInMilliseonds(endTime: String): Long {
-        val date = endTime.split("T")[0]
-        val toTime = endTime.split("T")[1]
+        val date = endTime.split(" ")[0]
+        val toTime = endTime.split(" ")[1]
         val simpleDateFormatForDate = SimpleDateFormat("yyyy-M-dd HH:mm")
         val endTimeAndDateInDateObject = simpleDateFormatForDate.parse("$date $toTime")
         return endTimeAndDateInDateObject.time - System.currentTimeMillis()
@@ -466,7 +459,7 @@ val meetingListThread = object : Thread() {
             var endMeeting = EndMeeting()
             endMeeting.bookingId = mRunningMeetingId
             endMeeting.status = false
-            endMeeting.currentTime = getCurrentTime()
+            endMeeting.currentTime = GetCurrentTimeInUTC.getCurrentTimeInUTC()
             endMeeting(endMeeting)
             dialog.dismiss()
         }
@@ -525,9 +518,10 @@ val meetingListThread = object : Thread() {
             Constants.MIN_60 -> duration = Constants.MIN_60
         }
         val mUpdateMeeting = UpdateBooking()
-        mUpdateMeeting.newStartTime = mRunningMeeting.fromTime
+        mUpdateMeeting.newStartTime = FormatTimeAccordingToZone.formatDateAsUTC(mRunningMeeting.fromTime!!)
         mUpdateMeeting.bookingId = mRunningMeetingId
-        mUpdateMeeting.newtotime = getNewExtendedEndTime(mRunningMeeting.toTime!!, duration)
+        mUpdateMeeting.newtotime = FormatTimeAccordingToZone.formatDateAsUTC(getNewExtendedEndTime(mRunningMeeting.toTime!!, duration))
+        Log.i("-------------End", "" + mUpdateMeeting)
         makeCallToUpdateTimeForBooking(mUpdateMeeting)
     }
 
@@ -539,7 +533,7 @@ val meetingListThread = object : Thread() {
     @SuppressLint("SetTextI18n")
     private fun setNextMeetingDetails() {
         next_meeting_details.text =
-            changeFormat(mNextMeeting.fromTime!!.split("T")[1]) + " - " + changeFormat(mNextMeeting.toTime!!.split("T")[1]) + " " + mNextMeeting.purpose
+            changeFormat(mNextMeeting.fromTime!!.split(" ")[1]) + " - " + changeFormat(mNextMeeting.toTime!!.split(" ")[1]) + " " + mNextMeeting.purpose
     }
 
     private fun changeFormat(time: String): String {
@@ -618,18 +612,17 @@ val meetingListThread = object : Thread() {
             Constants.MIN_30 -> duration = Constants.MIN_30
             Constants.MIN_45 -> duration = Constants.MIN_45
             Constants.MIN_60 -> duration = Constants.MIN_60
-
         }
         cal.time = Date()
         cal.add(Calendar.MINUTE, duration)
-        val endTime = dateTimeFormat.format(cal.time)
+        val endTime = FormatTimeAccordingToZone.formatDateAsUTC(dateTimeFormat.format(cal.time))
         mLocalBookingInput.endTime = endTime
-        mLocalBookingInput.startTime = dateTimeFormat.format(Date().time)
+        mLocalBookingInput.startTime = GetCurrentTimeInUTC.getCurrentTimeInUTC()
         if (roomId == Constants.DEFAULT_INT_PREFERENCE_VALUE || buildingId == Constants.DEFAULT_INT_PREFERENCE_VALUE) {
             // ask for tablet setup
             showToastAtTop("Ask for tablet setup")
-            mLocalBookingInput.roomId = 22
-            mLocalBookingInput.buildingId = 7
+            mLocalBookingInput.roomId = 6
+            mLocalBookingInput.buildingId = 2
         } else {
             mLocalBookingInput.roomId = roomId
             mLocalBookingInput.buildingId = buildingId
@@ -644,23 +637,6 @@ val meetingListThread = object : Thread() {
             getViewModel()
         }
         scheduler.scheduleAtFixedRate(makeCallPeriodically, 0, 30, TimeUnit.SECONDS)
-
-
-//        val periodicThread = object : Thread() {
-//            override fun run() {
-//                try {
-//                    while (!isInterrupted) {
-//                        runOnUiThread {
-//                            getViewModel()
-//                        }
-//                        sleep(Constants.API_REQUEST_TIME)
-//                    }
-//                } catch (e: InterruptedException) {
-//                    Log.d("Thread Exception", e.message)
-//                }
-//            }
-//        }
-//        periodicThread.start()
     }
 
     // show meetings for the day
@@ -806,8 +782,8 @@ val meetingListThread = object : Thread() {
 
     // extend meeting duration
     private fun getNewExtendedEndTime(endTime: String, duration: Int): String {
-        var date = endTime.split("T")[0]
-        var endTime = endTime.split("T")[1]
+        var date = endTime.split(" ")[0]
+        var endTime = endTime.split(" ")[1]
         val timeFormat = SimpleDateFormat("HH:mm:ss")
         var d = timeFormat.parse(endTime)
         val cal = Calendar.getInstance()
@@ -878,6 +854,4 @@ val meetingListThread = object : Thread() {
         toastContentView.addView(imageView, 0)
         toast.show()
     }
-
-
 }

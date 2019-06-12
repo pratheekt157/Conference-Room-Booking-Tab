@@ -30,4 +30,5 @@
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="choose_duration">Choose Duration</string>
+    <string name="occupied">Occupied</string>
 </resources>
