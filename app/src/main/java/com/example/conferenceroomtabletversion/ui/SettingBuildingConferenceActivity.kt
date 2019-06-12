@@ -31,7 +31,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
 
     private lateinit var mBuildingsViewModel: SettingsViewModel
 
-    private lateinit var mProgressDialog: ProgressDialog
+    private lateinit var progressDialog: ProgressDialog
 
     private lateinit var configure: Button
 
@@ -51,16 +51,18 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
 
 
     private fun getConference(buildingId: Int) {
+        progressDialog.show()
         mConferenceViewModel.getConferenceRoomList(buildingId)
     }
 
     private fun settingObserveData() {
         mBuildingsViewModel.returnMBuildingSuccess().observe(this, Observer {
+            progressDialog.dismiss()
             buildingListFromBackend(it)
 
         })
         mBuildingsViewModel.returnMBuildingFailure().observe(this, Observer {
-            mProgressDialog.dismiss()
+            progressDialog.dismiss()
 
         })
 
@@ -97,10 +99,11 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
 
     private fun conferenceObserveData() {
         mConferenceViewModel.returnConferenceRoomList().observe(this, Observer {
+            progressDialog.dismiss()
             setAdapter(it)
         })
         mConferenceViewModel.returnFailureForConferenceRoom().observe(this, Observer {
-
+            progressDialog.dismiss()
         })
     }
 
@@ -190,6 +193,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
     private fun init(){
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
+        progressDialog = GetProgress.getProgressDialog(getString(R.string.progress_message), this)
         relativeLayout = findViewById(R.id.setting_activity)
         configure = findViewById(R.id.set_up_room)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -205,6 +209,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
     private fun getViewModel() {
 
         // making API call
+        progressDialog.show()
         mBuildingsViewModel.getBuildingList()
     }
 

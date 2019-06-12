@@ -135,6 +135,7 @@ class BookingDetailsActivity : AppCompatActivity() {
 
     private fun setValuesFromSharedPreference() {
         roomId = GetPreference.getRoomIdFromSharedPreference(this)
+        Log.i("-----------",roomId.toString())
         buildingId = GetPreference.getBuildingIdFromSharedPreference(this)
     }
 
@@ -263,7 +264,6 @@ class BookingDetailsActivity : AppCompatActivity() {
                     while (!isInterrupted) {
                         runOnUiThread {
                             if (mBookingList.isNotEmpty()) {
-                                Log.i("---------------", "called")
                                 flag = false
                                 for (booking in mBookingList) {
                                     val timeDifference = getMillisecondsDifference(booking.fromTime!!)
@@ -642,6 +642,7 @@ class BookingDetailsActivity : AppCompatActivity() {
     // show meetings for the day
     fun showMeetings(view: View) {
         startActivity(Intent(this@BookingDetailsActivity, ShowBookings::class.java))
+        Log.i("------------",roomId.toString())
     }
 
     private fun setVisibilityToVisibleOfRadioButtons(view: View) {
