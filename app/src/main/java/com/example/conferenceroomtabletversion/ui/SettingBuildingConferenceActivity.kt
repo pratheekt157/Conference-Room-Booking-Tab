@@ -4,38 +4,32 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
-import android.telecom.Conference
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.conferenceroomtabletversion.R
 import com.example.conferenceroomtabletversion.helper.*
 import com.example.conferenceroomtabletversion.model.Buildings
 import com.example.conferenceroomtabletversion.model.ConferenceList
-import com.example.conferenceroomtabletversion.utils.GetPreference
-import com.example.conferenceroomtabletversion.viewmodel.BuildingViewModel
-import com.example.conferenceroomtabletversion.viewmodel.ConferenceViewModel
+import com.example.conferenceroomtabletversion.viewmodel.SettingsViewModel
 import com.google.android.material.snackbar.Snackbar
-import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
 import kotlinx.android.synthetic.main.activity_setting_building_conference.*
 
 class SettingBuildingConferenceActivity : AppCompatActivity() {
+    /**
+     * Decleration of VieModel and variable
+     */
 
-
-    private lateinit var mConferenceViewModel : ConferenceViewModel
+    private lateinit var mConferenceViewModel : SettingsViewModel
 
     private lateinit var relativeLayout: RelativeLayout
 
-    private lateinit var mBuildingsViewModel: BuildingViewModel
+    private lateinit var mBuildingsViewModel: SettingsViewModel
 
     private lateinit var mProgressDialog: ProgressDialog
 
@@ -43,11 +37,16 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
 
     private var valid: Boolean = false
 
+    /**
+     * OnCreate function to create the activity
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting_building_conference)
+        //Initialization of fields and viewModel
         init()
-        buildingObserveData()
+        //Observe the
+        settingObserveData()
    }
 
 
@@ -55,7 +54,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         mConferenceViewModel.getConferenceRoomList(buildingId)
     }
 
-    private fun buildingObserveData() {
+    private fun settingObserveData() {
         mBuildingsViewModel.returnMBuildingSuccess().observe(this, Observer {
             buildingListFromBackend(it)
 
@@ -64,6 +63,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
             mProgressDialog.dismiss()
 
         })
+
     }
 
     private fun buildingListFromBackend(buildingList: List<Buildings>?) {
@@ -113,17 +113,22 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         if (it.isEmpty()) {
             conferencename.add("No Room in the Buildings")
             conferenceid.add(-1)
+            conferenceCapacity.add(-1)
+            buildingId.add(-1)
+            buildingName.add("")
         } else {
             conferencename.add("Select Room")
+            conferenceid.add(-1)
+            conferenceCapacity.add(-1)
+            buildingId.add(-1)
+            buildingName.add("")
         }
-        conferenceid.add(-1)
         for (item in it) {
             conferencename.add(item.roomName!!)
             conferenceid.add(item.roomId!!)
             conferenceCapacity.add(item.capacity!!)
             buildingId.add(item.buildingId!!)
             buildingName.add(item.buildingName!!)
-
         }
         conference_spinner.adapter =
                 ArrayAdapter<String>(
@@ -143,7 +148,8 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
                         if (valid == false )
                             Snackbar.make(relativeLayout,"Select the Room",Snackbar.LENGTH_SHORT).show()
                         else {
-                            setValuesInsidePreferences(conferenceCapacity[position-1], conferenceid[position-1], conferencename[position-1], buildingName[position-1], buildingId[position-1])
+                            Log.i("-----------",conferencename[position])
+                            setValuesInsidePreferences(conferenceCapacity[position], conferenceid[position], conferencename[position], buildingName[position], buildingId[position])
                             startActivity(Intent(this@SettingBuildingConferenceActivity,BookingDetailsActivity::class.java))
                             finish()
                         }
@@ -187,8 +193,8 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         relativeLayout = findViewById(R.id.setting_activity)
         configure = findViewById(R.id.set_up_room)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        mBuildingsViewModel = ViewModelProviders.of(this).get(BuildingViewModel::class.java)
-        mConferenceViewModel = ViewModelProviders.of(this).get(ConferenceViewModel::class.java)
+        mBuildingsViewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
+        mConferenceViewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
         if (NetworkState.appIsConnectedToInternet(this)) {
             getViewModel()
         } else {
