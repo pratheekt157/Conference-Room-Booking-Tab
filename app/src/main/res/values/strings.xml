@@ -31,4 +31,21 @@
     <string name="yes">Yes</string>
     <string name="choose_duration">Choose Duration</string>
     <string name="occupied">Occupied</string>
+    <string name="end_the_booking_now">End the booking now?</string>
+    <string name="got_feedback">Got feedback?</string>
+    <string name="available">Available</string>
+    <string name="extend">EXTEND</string>
+    <string name="end_now">END NOW</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="_45">45</string>
+    <string name="_60">60</string>
+    <string name="_30">30</string>
+    <string name="_15">15</string>
+    <string name="minutes_to_extend">Minutes to extend</string>
+    <string name="back">BACK</string>
+    <string name="submit">SUBMIT</string>
+    <string name="local_booking">Local Booking</string>
+    <string name="book">Book</string>
+    <string name="start">START</string>
+
 </resources>

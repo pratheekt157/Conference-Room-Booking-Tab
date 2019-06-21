@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.example.conferencerommapp.utils.FormatTimeAccordingToZone
 import com.example.conferenceroomtabletversion.R
 import com.example.conferenceroomtabletversion.helper.*
 import com.example.conferenceroomtabletversion.model.BookingDeatilsForTheDay
@@ -82,6 +83,19 @@ class ShowBookings : AppCompatActivity() {
         mBookingForTheDayViewModel.getBookingList(roomId)
     }
 
+    // change start time and end time of meeting from UTC to Indian standard time zone
+    private fun changeDateTimeZone(it: List<BookingDeatilsForTheDay>) {
+        var startTimeInUtc: String
+        var endTimeInUtc: String
+        for (booking in it) {
+            startTimeInUtc = booking.fromTime!!
+            endTimeInUtc = booking.toTime!!
+            booking.fromTime = FormatTimeAccordingToZone.formatDateAsIndianStandardTime("${startTimeInUtc.split("T")[0]} ${startTimeInUtc.split("T")[1]}")
+            booking.toTime = FormatTimeAccordingToZone.formatDateAsIndianStandardTime("${endTimeInUtc.split("T")[0]} ${endTimeInUtc.split("T")[1]}")
+        }
+        mBookingList.addAll(it)
+    }
+
     /**
      * all observer for LiveData
      */
@@ -92,10 +106,12 @@ class ShowBookings : AppCompatActivity() {
          */
         mBookingForTheDayViewModel.returnSuccess().observe(this, Observer {
             mProgressDialog.dismiss()
+            mBookingList.clear()
             if(it.isEmpty()) {
                 Toasty.info(this@ShowBookings, "No Booking found for the day!", Toast.LENGTH_SHORT, true).show()
                 finish()
             } else {
+                changeDateTimeZone(it)
                 setFilteredDataToAdapter(it)
             }
 
@@ -115,7 +131,7 @@ class ShowBookings : AppCompatActivity() {
     }
     private fun showToastAtTop(message: String) {
         var toast =
-                Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT)
+            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT)
         toast.setGravity(Gravity.TOP, 0, 0)
         val toastContentView = toast!!.view as LinearLayout
         var group = toast.view as ViewGroup
@@ -126,5 +142,4 @@ class ShowBookings : AppCompatActivity() {
         toastContentView.addView(imageView, 0)
         toast.show()
     }
-
 }

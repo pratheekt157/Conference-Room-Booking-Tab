@@ -35,6 +35,7 @@ import kotlinx.android.synthetic.main.activity_booking_details.*
 import kotlinx.android.synthetic.main.end_meeting_layout.view.*
 import kotlinx.android.synthetic.main.new_booking_layout.view.*
 import kotlinx.android.synthetic.main.rating_bar_dialog.view.*
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Executors
@@ -43,6 +44,7 @@ import kotlin.collections.ArrayList
 
 
 class BookingDetailsActivity : AppCompatActivity() {
+
     private lateinit var mBookingForTheDayViewModel: BookingForTheDayViewModel
     private lateinit var mProgressDialog: ProgressDialog
     private var mCountDownTimer: CountDownTimer? = null
@@ -94,7 +96,6 @@ class BookingDetailsActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
-
     }
 
     /**
@@ -125,17 +126,20 @@ class BookingDetailsActivity : AppCompatActivity() {
             buildingName == Constants.DEFAULT_STRING_PREFERENCE_VALUE ||
             roomCapacity == Constants.DEFAULT_INT_PREFERENCE_VALUE
         ) {
-            // ask for tab setup again
-            showToastAtTop("Ask for tablet setup again")
+           goForSetup()
         } else {
             room_name.text = "$roomName [$roomCapacity people]"
             building_name.text = buildingName
         }
     }
 
+    private fun goForSetup() {
+        startActivity(Intent(this@BookingDetailsActivity, SettingBuildingConferenceActivity::class.java))
+        finish()
+    }
+
     private fun setValuesFromSharedPreference() {
         roomId = GetPreference.getRoomIdFromSharedPreference(this)
-        Log.i("-----------",roomId.toString())
         buildingId = GetPreference.getBuildingIdFromSharedPreference(this)
     }
 
@@ -160,7 +164,7 @@ class BookingDetailsActivity : AppCompatActivity() {
         mBookingForTheDayViewModel.returnSuccess().observe(this, Observer {
             mBookingList.clear()
             changeDateTimeZone(it)
-            //mBookingList.addAll(it)
+
         })
         mBookingForTheDayViewModel.returnFailure().observe(this, Observer {
             Toast.makeText(this, "" + it.toString(), Toast.LENGTH_SHORT).show()
@@ -186,7 +190,7 @@ class BookingDetailsActivity : AppCompatActivity() {
         // positive response for start meeting
         mBookingForTheDayViewModel.returnSuccessForStartMeeting().observe(this, Observer {
             mProgressDialog.dismiss()
-            setMeetingStartedData(true)
+            //setMeetingStartedData(true)
             startMeetingButton.visibility = View.GONE
             setVisibilityToVisibleForRunningMeeting()
             isMeetingRunning = true
@@ -245,8 +249,8 @@ class BookingDetailsActivity : AppCompatActivity() {
 
     private fun getViewModel() {
         if (roomId == Constants.DEFAULT_INT_PREFERENCE_VALUE) {
-            // ask for tablet setup
-            mBookingForTheDayViewModel.getBookingList(6)
+            startActivity(Intent(this@BookingDetailsActivity, SettingBuildingConferenceActivity::class.java))
+            finish()
         } else {
             mBookingForTheDayViewModel.getBookingList(roomId)
         }
@@ -315,16 +319,6 @@ class BookingDetailsActivity : AppCompatActivity() {
             }
         }
         meetingListThread.start()
-
-
-
-//        val scheduler = Executors.newScheduledThreadPool(1)
-//        val makeCallPeriodically = Runnable {
-//
-//        scheduler.scheduleAtFixedRate(makeCallPeriodically, 0, 1, TimeUnit.SECONDS)
-    }
-
-    private fun checkBookingListForUpcomingEvents() {
 
     }
 
@@ -521,7 +515,6 @@ class BookingDetailsActivity : AppCompatActivity() {
         mUpdateMeeting.newStartTime = FormatTimeAccordingToZone.formatDateAsUTC(mRunningMeeting.fromTime!!)
         mUpdateMeeting.bookingId = mRunningMeetingId
         mUpdateMeeting.newtotime = FormatTimeAccordingToZone.formatDateAsUTC(getNewExtendedEndTime(mRunningMeeting.toTime!!, duration))
-        Log.i("-------------End", "" + mUpdateMeeting)
         makeCallToUpdateTimeForBooking(mUpdateMeeting)
     }
 
@@ -577,7 +570,7 @@ class BookingDetailsActivity : AppCompatActivity() {
             if (validate(view)) {
                 // get values for meeting
                 var mLocalBookingInput = NewBookingInput()
-                mLocalBookingInput.passcode = view.edit_text_passcode.text.toString().toInt()
+                mLocalBookingInput.passcode = view.edit_text_passcode.text.toString()
                 mLocalBookingInput.eventName = view.edit_text_event_name.text.toString()
                 getMillisecondsFromSelectedRadioButton(
                     view.radio_group.checkedRadioButtonId,
@@ -619,10 +612,7 @@ class BookingDetailsActivity : AppCompatActivity() {
         mLocalBookingInput.endTime = endTime
         mLocalBookingInput.startTime = GetCurrentTimeInUTC.getCurrentTimeInUTC()
         if (roomId == Constants.DEFAULT_INT_PREFERENCE_VALUE || buildingId == Constants.DEFAULT_INT_PREFERENCE_VALUE) {
-            // ask for tablet setup
-            showToastAtTop("Ask for tablet setup")
-            mLocalBookingInput.roomId = 6
-            mLocalBookingInput.buildingId = 2
+            goForSetup()
         } else {
             mLocalBookingInput.roomId = roomId
             mLocalBookingInput.buildingId = buildingId
@@ -642,7 +632,6 @@ class BookingDetailsActivity : AppCompatActivity() {
     // show meetings for the day
     fun showMeetings(view: View) {
         startActivity(Intent(this@BookingDetailsActivity, ShowBookings::class.java))
-        Log.i("------------",roomId.toString())
     }
 
     private fun setVisibilityToVisibleOfRadioButtons(view: View) {
@@ -711,8 +700,8 @@ class BookingDetailsActivity : AppCompatActivity() {
             view.passcode_layout.error = getString(R.string.field_cant_be_empty)
             false
         } else {
-            val input = view.edit_text_passcode.text.toString().toInt()
-            if (input <= 0 || input <= Constants.MAX_VALUE_FOR_5_DIGITS) {
+            val input = view.edit_text_passcode.text.toString()
+            if (input.length < 6) {
                 view.passcode_layout.error = getString(R.string.room_capacity_must_be_more_than_0)
                 false
             } else {
@@ -748,12 +737,27 @@ class BookingDetailsActivity : AppCompatActivity() {
 
     // set date and time on screen with another ExecutorService
     private fun setTimeToScreen() {
-        val scheduler = Executors.newScheduledThreadPool(1)
-        val setTime = Runnable {
-            val (time, date) = getSystemTimeAndDate()
-            setTimeAndDataToUI(time, date)
+        val timeThread = object : Thread() {
+            override fun run() {
+                try {
+                    while (!isInterrupted) {
+                        runOnUiThread {
+                            val cal = Calendar.getInstance()
+                            val sdfForTime = SimpleDateFormat("hh:mm a")
+                            val sdfForDate = SimpleDateFormat("EEEE, MMMM d")
+                            Log.e("-------------",sdfForTime.format(cal.time))
+                            Log.e("-------------",sdfForDate.format(cal.time))
+                            time_text_view.text = sdfForTime.format(cal.time)
+                            date_text_view.text =  sdfForDate.format(cal.time)
+                        }
+                        sleep(1000)
+                    }
+                } catch (e: InterruptedException) {
+                    Log.i("-------------", e.message)
+                }
+            }
         }
-        scheduler.scheduleAtFixedRate(setTime, 0, 60, TimeUnit.SECONDS)
+        timeThread.start()
     }
 
     /**

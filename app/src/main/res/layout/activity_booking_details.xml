@@ -71,7 +71,7 @@
         </RelativeLayout>
         <Button
                 android:id="@+id/status_button"
-                android:background="@drawable/rectangle_for_running_meeting"
+                android:background="@drawable/oval_text_view_shape"
                 android:textColor="@color/white"
                 android:layout_marginStart="20dp"
                 android:fontFamily="@font/abel"
@@ -80,9 +80,9 @@
                 android:textColorHint="@color/white"
                 android:gravity="center"
                 android:textAllCaps="false"
-                android:textSize="55sp"
-                android:layout_width="450dp"
-                android:layout_height="wrap_content"/>
+                android:textSize="20sp"
+                android:layout_width="83dp"
+                android:layout_height="27dp"/>
 
         <Button
                 android:gravity="center"
@@ -220,6 +220,7 @@
                 android:textSize="30sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+
         <TextView
                 android:layout_alignParentRight="true"
                 android:drawablePadding="8dp"
@@ -233,7 +234,6 @@
                 android:textSize="30sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-
     </RelativeLayout>
 </RelativeLayout>
 

@@ -31,7 +31,7 @@ class BookingForTheDayAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val mBookingDetails = bookingDeatilsForTheDayItemList[position]
         holder.purposeTextView.text = mBookingDetails.purpose
-        holder.meetingDurationTextView.text = changeFormat(mBookingDetails.fromTime!!.split("T")[1]) + " - " + changeFormat(mBookingDetails.toTime!!.split("T")[1])
+        holder.meetingDurationTextView.text = changeFormat(mBookingDetails.fromTime!!.split(" ")[1]) + " - " + changeFormat(mBookingDetails.toTime!!.split(" ")[1])
         holder.organizerTextView.text = "Organized by ${mBookingDetails.organizer}"
     }
 

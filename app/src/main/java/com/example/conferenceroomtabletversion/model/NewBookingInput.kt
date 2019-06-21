@@ -8,7 +8,7 @@ data class NewBookingInput(
     var eventName: String? = null,
 
     @SerializedName("Passcode")
-    var passcode: Int? = null,
+    var passcode: String? = null,
 
     @SerializedName("StartTime")
     var startTime: String? = null,

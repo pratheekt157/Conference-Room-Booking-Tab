@@ -47,7 +47,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         init()
         //Observe the
         settingObserveData()
-   }
+    }
 
 
     private fun getConference(buildingId: Int) {
@@ -134,11 +134,11 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
             buildingName.add(item.buildingName!!)
         }
         conference_spinner.adapter =
-                ArrayAdapter<String>(
-                        this@SettingBuildingConferenceActivity,
-                        R.layout.custom_spinner,R.id.list,
-                        conferencename
-                )
+            ArrayAdapter<String>(
+                this@SettingBuildingConferenceActivity,
+                R.layout.custom_spinner,R.id.list,
+                conferencename
+            )
         conference_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 /**
@@ -146,17 +146,17 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
                  */
             }
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    configure.setOnClickListener {
-                        valid=validate(conferenceid[position])
-                        if (valid == false )
-                            Snackbar.make(relativeLayout,"Select the Room",Snackbar.LENGTH_SHORT).show()
-                        else {
-                            Log.i("-----------",conferencename[position])
-                            setValuesInsidePreferences(conferenceCapacity[position], conferenceid[position], conferencename[position], buildingName[position], buildingId[position])
-                            startActivity(Intent(this@SettingBuildingConferenceActivity,BookingDetailsActivity::class.java))
-                            finish()
-                        }
+                configure.setOnClickListener {
+                    valid=validate(conferenceid[position])
+                    if (valid == false )
+                        Snackbar.make(relativeLayout,"Select the Room",Snackbar.LENGTH_SHORT).show()
+                    else {
+                        Log.i("-----------",conferencename[position])
+                        setValuesInsidePreferences(conferenceCapacity[position], conferenceid[position], conferencename[position], buildingName[position], buildingId[position])
+                        startActivity(Intent(this@SettingBuildingConferenceActivity,BookingDetailsActivity::class.java))
+                        finish()
                     }
+                }
             }
         }
     }
@@ -165,7 +165,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
     private fun validate(conferenceid: Int):Boolean {
         if(conferenceid==-1)
         {
-           return false
+            return false
         }
         else
             return true
@@ -202,7 +202,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         if (NetworkState.appIsConnectedToInternet(this)) {
             getViewModel()
         } else {
-                Toast.makeText(this,"No Internet",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"No Internet",Toast.LENGTH_SHORT).show()
         }
     }
 

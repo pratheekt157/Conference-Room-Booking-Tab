@@ -15,7 +15,7 @@ class Constants {
         /**
          * ip address for api call
          */
-        const val IP_ADDRESS = "http://192.168.1.192/CRB/"
+        const val IP_ADDRESS = "http://192.168.1.189/CRB/"
 
         const val API_REQUEST_TIME: Long = (30 * 1000)
 
