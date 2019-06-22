@@ -47,5 +47,6 @@
     <string name="local_booking">Local Booking</string>
     <string name="book">Book</string>
     <string name="start">START</string>
+    <string name="welcome_to_nineleaps">Welcome to Nineleaps</string>
 
 </resources>

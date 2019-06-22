@@ -27,7 +27,6 @@ data class BookingDeatilsForTheDay (
     @SerializedName("Status")
     var status: String? = null,
 
-
     @SerializedName("MeetId")
     var bookingId: Int? = null,
 
@@ -41,5 +40,8 @@ data class BookingDeatilsForTheDay (
     var amenities: List<String>? = null,
 
     @SerializedName("NameOfOrganizer")
-    var organizer: String? = null
+    var organizer: String? = null,
+
+    @SerializedName("MeetingInHours")
+    var meetingDuration: String? = null
 )

@@ -2,6 +2,8 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/abel</item>
+        <item>@font/audiowide</item>
+        <item>@font/krona_one</item>
         <item>@font/nunito</item>
     </array>
 </resources>

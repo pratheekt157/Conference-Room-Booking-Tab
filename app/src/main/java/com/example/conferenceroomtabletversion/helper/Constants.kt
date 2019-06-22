@@ -21,6 +21,9 @@ class Constants {
 
         const val MAX_VALUE_FOR_5_DIGITS = 99999
 
+
+        const val ROOM_AMINITIES = "Room Amenities"
+
         const val MIN_15 = 15
 
         const val MIN_30 = 30

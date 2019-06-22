@@ -5,10 +5,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.conferenceroomtabletversion.R
 import com.example.conferenceroomtabletversion.model.BookingDeatilsForTheDay
 import com.example.conferenceroomtabletversion.model.Test
+import com.example.conferenceroomtabletversion.utils.ConvertTimeTo12HourFormat
 import java.text.SimpleDateFormat
 
 @Suppress("NAME_SHADOWING")
@@ -20,7 +22,7 @@ class BookingForTheDayAdapter(
      * this override function will set a view for the recyclerview items
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.booked_list_items, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.today_booking_list, parent, false)
         return ViewHolder(view)
     }
 
@@ -30,9 +32,14 @@ class BookingForTheDayAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val mBookingDetails = bookingDeatilsForTheDayItemList[position]
-        holder.purposeTextView.text = mBookingDetails.purpose
-        holder.meetingDurationTextView.text = changeFormat(mBookingDetails.fromTime!!.split(" ")[1]) + " - " + changeFormat(mBookingDetails.toTime!!.split(" ")[1])
-        holder.organizerTextView.text = "Organized by ${mBookingDetails.organizer}"
+        if(mBookingDetails.status == "Available") {
+            holder.available.text = "Available from: " + ConvertTimeTo12HourFormat.convert12(changeFormat(mBookingDetails.fromTime!!.split(" ")[1])) + " - " + ConvertTimeTo12HourFormat.convert12(changeFormat(mBookingDetails.toTime!!.split(" ")[1]))
+            //holder.bookingDetailsRelativeLayout.visibility = View.GONE
+        } else if(mBookingDetails.status == "Booked") {
+            holder.available.visibility = View.GONE
+            holder.meetingDurationTextView.text = ConvertTimeTo12HourFormat.convert12(changeFormat(mBookingDetails.fromTime!!.split(" ")[1])) + " - " + ConvertTimeTo12HourFormat.convert12(changeFormat(mBookingDetails.toTime!!.split(" ")[1]))
+            holder.organizerTextView.text = "Booked by ${mBookingDetails.organizer} ${bookingDeatilsForTheDayItemList[position].meetingDuration}"
+        }
     }
 
     private fun changeFormat(time: String): String {
@@ -46,11 +53,11 @@ class BookingForTheDayAdapter(
     override fun getItemCount(): Int {
         return bookingDeatilsForTheDayItemList.size
     }
-
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-        var purposeTextView: TextView = itemView.findViewById(R.id.meeting_purpose_text_view)
-        var meetingDurationTextView: TextView = itemView.findViewById(R.id.meeting_duration)
-        var organizerTextView: TextView = itemView.findViewById(R.id.organizer_of_meeting_text_view)
+        //var bookingDetailsRelativeLayout: RelativeLayout = itemView.findViewById(R.id.meeting_details_relative_layout)
+        var available: TextView = itemView.findViewById(R.id.available_for_duration_text_view)
+        var meetingDurationTextView: TextView = itemView.findViewById(R.id.meeting_time)
+        var organizerTextView: TextView = itemView.findViewById(R.id.meeting_organiser_with_duration)
     }
 
     /**

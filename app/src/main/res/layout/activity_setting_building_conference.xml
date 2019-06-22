@@ -1,69 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_gravity="center"
-    android:background="#363636"
-    android:id="@+id/setting_activity"
-    android:layout_height="match_parent"
-    tools:context=".ui.SettingBuildingConferenceActivity">
-
-    <RelativeLayout
-    android:id="@+id/room_details_layout"
-    android:background="#363636"
-    android:layout_width="match_parent"
-    android:layout_height="270dp">
-    <RelativeLayout
+<LinearLayout
+        android:weightSum="3"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="230dp">
+        android:layout_height="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+            android:background="#404756"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="80sp"
-        android:fontFamily="@font/abel"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="70dp"
-        android:textColor="@color/white"
-        android:text="Setup"/>
+        <TextView
+                android:textSize="32sp"
+                android:gravity="center"
+                android:fontFamily="@font/audiowide"
+                android:textColor="@color/white"
+                android:text="Conference Booking \n Smart Way To Book Conference Room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_centerInParent="true"/>
     </RelativeLayout>
+    <RelativeLayout
+            android:background="@drawable/room_details_gradiant"
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+    <TextView
+            android:fontFamily="@font/nunito"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:layout_margin="@dimen/dp_24"
+            android:text="Setup"
+            android:id="@+id/setup_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-</RelativeLayout>
-       <Spinner
-        android:layout_width="500dp"
-        android:layout_height="90dp"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/building_spinner"
-        android:layout_marginStart="300dp"
-        android:textColorHint="#FFFFFF"
-        android:layout_marginTop="300dp"
-        android:dropDownVerticalOffset="50dp"
-        android:background="@drawable/border_around_set_up"
-        />
-    <Spinner
-        android:layout_width="500dp"
-        android:layout_height="90dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/building_spinner"
-        android:id="@+id/conference_spinner"
-        android:textColorHint="#FFFFFF"
-        android:layout_marginTop="50dp"
-        android:dropDownVerticalOffset="50dp"
-        android:background="@drawable/border_around_set_up"
-        />
-    <Button
-        android:id="@+id/set_up_room"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/border_arround_start_button"
-        android:text="Configure"
-        android:fontFamily="@font/abel"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="40sp"
-        android:layout_below="@id/conference_spinner"
-        android:layout_marginTop="120dp"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"/>
-</RelativeLayout>
+        <Spinner
+                android:layout_width="500dp"
+                android:layout_height="64dp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/building_spinner"
+                android:layout_marginStart="300dp"
+
+                android:layout_below="@id/setup_label"
+                android:textColorHint="#FFFFFF"
+                android:dropDownVerticalOffset="50dp"
+                android:background="@drawable/border_around_set_up"/>
+
+        <Spinner
+                android:layout_width="500dp"
+                android:layout_height="64dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/building_spinner"
+                android:id="@+id/conference_spinner"
+                android:textColorHint="#FFFFFF"
+                android:layout_marginTop="32dp"
+                android:dropDownVerticalOffset="50dp"
+                android:background="@drawable/border_around_set_up"/>
+
+        <TextView
+                android:id="@+id/set_up_room"
+                android:gravity="center"
+                android:layout_width="135dp"
+                android:layout_height="45dp"
+                android:layout_alignParentBottom="true"
+                android:text="SUBMIT"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:onClick="startMeeting"
+                android:visibility="visible"
+                android:background="@drawable/action_button_border"
+                android:fontFamily="@font/nunito"
+                android:textColor="@color/white"
+                android:layout_marginBottom="32dp"
+                android:textSize="18sp"/>
+    </RelativeLayout>
+</LinearLayout>
+

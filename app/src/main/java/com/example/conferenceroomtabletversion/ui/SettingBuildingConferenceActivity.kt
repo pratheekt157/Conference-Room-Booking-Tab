@@ -27,13 +27,11 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
 
     private lateinit var mConferenceViewModel : SettingsViewModel
 
-    private lateinit var relativeLayout: RelativeLayout
-
     private lateinit var mBuildingsViewModel: SettingsViewModel
 
     private lateinit var progressDialog: ProgressDialog
 
-    private lateinit var configure: Button
+    private lateinit var configure: TextView
 
     private var valid: Boolean = false
 
@@ -149,11 +147,10 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
                 configure.setOnClickListener {
                     valid=validate(conferenceid[position])
                     if (valid == false )
-                        Snackbar.make(relativeLayout,"Select the Room",Snackbar.LENGTH_SHORT).show()
+                        //
                     else {
-                        Log.i("-----------",conferencename[position])
                         setValuesInsidePreferences(conferenceCapacity[position], conferenceid[position], conferencename[position], buildingName[position], buildingId[position])
-                        startActivity(Intent(this@SettingBuildingConferenceActivity,BookingDetailsActivity::class.java))
+                        startActivity(Intent(this@SettingBuildingConferenceActivity,ConferenceBookingActivity::class.java))
                         finish()
                     }
                 }
@@ -194,7 +191,6 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
         progressDialog = GetProgress.getProgressDialog(getString(R.string.progress_message), this)
-        relativeLayout = findViewById(R.id.setting_activity)
         configure = findViewById(R.id.set_up_room)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         mBuildingsViewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
@@ -207,7 +203,6 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
     }
 
     private fun getViewModel() {
-
         // making API call
         progressDialog.show()
         mBuildingsViewModel.getBuildingList()
