@@ -33,10 +33,12 @@ class BookingForTheDayAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val mBookingDetails = bookingDeatilsForTheDayItemList[position]
         if(mBookingDetails.status == "Available") {
-            holder.available.text = "Available from: " + ConvertTimeTo12HourFormat.convert12(changeFormat(mBookingDetails.fromTime!!.split(" ")[1])) + " - " + ConvertTimeTo12HourFormat.convert12(changeFormat(mBookingDetails.toTime!!.split(" ")[1]))
-            //holder.bookingDetailsRelativeLayout.visibility = View.GONE
-        } else if(mBookingDetails.status == "Booked") {
+            holder.available.visibility = View.VISIBLE
+            holder.available.text = "Available: " + ConvertTimeTo12HourFormat.convert12(changeFormat(mBookingDetails.fromTime!!.split(" ")[1])) + " - " + ConvertTimeTo12HourFormat.convert12(changeFormat(mBookingDetails.toTime!!.split(" ")[1]))
+            holder.bookingDetailsRelativeLayout.visibility = View.GONE
+        } else if(mBookingDetails.status == "Booked" || mBookingDetails.status == "Started") {
             holder.available.visibility = View.GONE
+            holder.bookingDetailsRelativeLayout.visibility = View.VISIBLE
             holder.meetingDurationTextView.text = ConvertTimeTo12HourFormat.convert12(changeFormat(mBookingDetails.fromTime!!.split(" ")[1])) + " - " + ConvertTimeTo12HourFormat.convert12(changeFormat(mBookingDetails.toTime!!.split(" ")[1]))
             holder.organizerTextView.text = "Booked by ${mBookingDetails.organizer} ${bookingDeatilsForTheDayItemList[position].meetingDuration}"
         }
@@ -54,18 +56,12 @@ class BookingForTheDayAdapter(
         return bookingDeatilsForTheDayItemList.size
     }
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-        //var bookingDetailsRelativeLayout: RelativeLayout = itemView.findViewById(R.id.meeting_details_relative_layout)
+        var bookingDetailsRelativeLayout: RelativeLayout = itemView.findViewById(R.id.meeting_details_main_layout)
         var available: TextView = itemView.findViewById(R.id.available_for_duration_text_view)
         var meetingDurationTextView: TextView = itemView.findViewById(R.id.meeting_time)
         var organizerTextView: TextView = itemView.findViewById(R.id.meeting_organiser_with_duration)
     }
 
-    /**
-     * An interface which will be implemented by UserDashboardBookingActivity activity to pass employeeList to the activity
-     */
-    interface ShowMembersListener {
-        fun showMembers(mEmployeeList: List<String>)
-    }
 
 
 }

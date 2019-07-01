@@ -3,45 +3,45 @@ package com.example.conferenceroomtabletversion.model
 import com.google.gson.annotations.SerializedName
 
 data class BookingDeatilsForTheDay (
-    @SerializedName("RoomId")
+    @SerializedName("roomId")
     var roomId : Int? = null,
 
-    @SerializedName("EmailId")
+    @SerializedName("emailId")
     var email: String? = null,
 
-    @SerializedName("StartTime")
+    @SerializedName("startTime")
     var fromTime : String? = null,
 
-    @SerializedName("EndTime")
+    @SerializedName("endTime")
     var toTime : String? = null,
 
-    @SerializedName("BuildingName")
+    @SerializedName("buildingName")
     var buildingName : String? = null,
 
-    @SerializedName("RoomName")
+    @SerializedName("roomName")
     var roomName : String? = null,
 
-    @SerializedName("Purpose")
+    @SerializedName("purpose")
     var purpose: String? = null,
 
-    @SerializedName("Status")
+    @SerializedName("status")
     var status: String? = null,
 
-    @SerializedName("MeetId")
+    @SerializedName("meetId")
     var bookingId: Int? = null,
 
-    @SerializedName("NameOfAttendees")
+    @SerializedName("nameOfAttendees")
     var name: List<String>? = null,
 
-    @SerializedName("AttendeesMail")
+    @SerializedName("attendeesMail")
     var cCMail: List<String>? = null,
 
-    @SerializedName("Amenities")
+    @SerializedName("amenities")
     var amenities: List<String>? = null,
 
-    @SerializedName("NameOfOrganizer")
+    @SerializedName("nameOfOrganizer")
     var organizer: String? = null,
 
-    @SerializedName("MeetingInHours")
+    @SerializedName("meetingInHours")
     var meetingDuration: String? = null
 )

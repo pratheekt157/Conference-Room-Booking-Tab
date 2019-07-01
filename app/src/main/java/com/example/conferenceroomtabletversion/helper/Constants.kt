@@ -15,7 +15,7 @@ class Constants {
         /**
          * ip address for api call
          */
-        const val IP_ADDRESS = "http://192.168.1.189/CRB/"
+        const val IP_ADDRESS = "http://192.168.0.78/CRB/"
 
         const val API_REQUEST_TIME: Long = (30 * 1000)
 
@@ -47,6 +47,8 @@ class Constants {
         const val NO_CONTENT_FOUND = 204
 
         const val NOT_FOUND = 400
+
+        const val NOT_FOUND_TAB = 404
 
         const val SUCCESSFULLY_CREATED = 201
 

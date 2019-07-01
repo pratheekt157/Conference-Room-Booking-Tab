@@ -6,7 +6,7 @@
         android:layout_height="wrap_content">
     <TextView
             android:id="@+id/available_for_duration_text_view"
-            android:textSize="14sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:drawablePadding="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_24"
@@ -29,11 +29,10 @@
                 android:id="@+id/line"
                 android:background="#F39723"
                 android:layout_width="4dp"
-                android:layout_height="56dp"
+                android:layout_height="64dp"
                 android:layout_marginStart="27dp"
                 android:layout_marginTop="24dp"
         />
-
         <TextView
                 android:id="@+id/meeting_organiser_with_duration"
                 android:layout_toRightOf="@id/line"
@@ -41,10 +40,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="22dp"
                 android:layout_marginTop="24dp"
-                android:textSize="14sp"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 android:fontFamily="@font/nunito"
                 android:textColor="#F39723"
-                android:text="Booked by Prateek for 1.5 hours"/>
+                android:text="Booked by Prateek for 1 hours 15 min"/>
 
         <TextView
                 android:id="@+id/meeting_time"
@@ -54,7 +54,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="22dp"
                 android:layout_marginTop="8dp"
-                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textSize="16sp"
                 android:fontFamily="@font/nunito"
                 android:textColor="#F39723"
                 android:text="4:30PM - 6:00PM"/>

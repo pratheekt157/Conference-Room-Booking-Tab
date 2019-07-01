@@ -21,10 +21,13 @@ import com.example.conferencerommapp.utils.FormatTimeAccordingToZone
 import com.example.conferenceroomtabletversion.R
 import com.example.conferenceroomtabletversion.helper.*
 import com.example.conferenceroomtabletversion.model.BookingDeatilsForTheDay
-import com.example.conferenceroomtabletversion.model.Test
 import com.example.conferenceroomtabletversion.utils.GetPreference
 import com.example.conferenceroomtabletversion.viewmodel.BookingForTheDayViewModel
 import es.dmoral.toasty.Toasty
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 class ShowBookings : AppCompatActivity() {
 
@@ -38,10 +41,28 @@ class ShowBookings : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_bookings)
-        init()
-        getBuildingIdFromSharedPreference()
-        makeCall()
-        observeData()
+
+        val myDate = "18:00:00"
+        val sdf = SimpleDateFormat("HH:mm:ss")
+        val sdfDate = SimpleDateFormat("yyyy-MM-dd")
+
+        val date = sdf.parse(myDate)
+        Log.e("------------error", "" +FormatTimeAccordingToZone.formatDateAsUTC("${sdfDate.format(Date())} 20:10"))
+        Log.e("------------error", "" +FormatTimeAccordingToZone.formatDateAsUTC("${sdfDate.format(Date())} ${addDurationToTheTimeSlot("20:10", 10)}"))
+
+        //init()
+        //getBuildingIdFromSharedPreference()
+        //makeCall()
+        //observeData()
+    }
+
+    private fun addDurationToTheTimeSlot(timeSlot: String, duration: Int): String {
+        val sdf = SimpleDateFormat(getString(R.string.format_in_hh_mm))
+        val time = sdf.parse(timeSlot)
+        val cal = Calendar.getInstance()
+        cal.time = time
+        cal.add(Calendar.MINUTE, duration)
+        return sdf.format(cal.time)
     }
 
     private fun init() {

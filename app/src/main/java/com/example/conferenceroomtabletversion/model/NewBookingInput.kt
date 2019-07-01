@@ -4,21 +4,21 @@ import com.google.gson.annotations.SerializedName
 
 data class NewBookingInput(
 
-    @SerializedName("Purpose")
+    @SerializedName("purpose")
     var eventName: String? = null,
 
-    @SerializedName("Passcode")
+    @SerializedName("passcode")
     var passcode: String? = null,
 
-    @SerializedName("StartTime")
+    @SerializedName("startTime")
     var startTime: String? = null,
 
     @SerializedName("endTime")
     var endTime: String? = null,
 
-    @SerializedName("RoomId")
+    @SerializedName("roomId")
     var roomId: Int? = null,
 
-    @SerializedName("BuildingId")
+    @SerializedName("buildingId")
     var buildingId: Int? = null
 )

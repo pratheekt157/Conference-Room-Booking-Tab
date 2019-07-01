@@ -32,7 +32,7 @@
     <string name="choose_duration">Choose Duration</string>
     <string name="occupied">Occupied</string>
     <string name="end_the_booking_now">End the booking now?</string>
-    <string name="got_feedback">Got feedback?</string>
+    <string name="got_feedback">How was the booking experience??</string>
     <string name="available">Available</string>
     <string name="extend">EXTEND</string>
     <string name="end_now">END NOW</string>
@@ -48,5 +48,18 @@
     <string name="book">Book</string>
     <string name="start">START</string>
     <string name="welcome_to_nineleaps">Welcome to Nineleaps</string>
+    <string name="bad_feedback_placeholder">What went bad?</string>
+    <string name="average_feedback_placehoolder">What can be improved?</string>
+    <string name="good_feedback_placeholder">Any feedback?</string>
+    <string name="bad_feedback_default_messgae">Application is not good!</string>
+    <string name="average_feedback_default_message">Application is good!</string>
+    <string name="good_feedback_default_message">Application is pretty cool!</string>
+    <string name="format_in_hh_mm">HH:mm</string>
+    <string name="format_in_hh_mm_a">HH:mm a</string>
+    <string name="middle_slot">Middle</string>
+    <string name="format_in_hh_mm_ss">HH:mm:ss</string>
+    <string name="format_in_yyyy_M_dd_hh_mm">yyyy-M-dd HH:mm</string>
+    <string name="format_in_yyyy_mm_dd_hh_mm_ss">YYYY-MM-dd HH:mm:ss</string>
+    <string name="incorrect_passcode">Incorrect passcode!</string>
 
 </resources>

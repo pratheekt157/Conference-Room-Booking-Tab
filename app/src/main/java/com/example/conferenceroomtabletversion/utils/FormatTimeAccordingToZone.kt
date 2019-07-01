@@ -30,9 +30,20 @@ class FormatTimeAccordingToZone {
         fun formatDateAsIndianStandardTime(timeInUtc: String): String {
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             sdf.timeZone = TimeZone.getTimeZone("UTC")
-            var localTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            var localTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
             localTimeFormat.timeZone = TimeZone.getTimeZone(getCurrentTimeZone())
             return localTimeFormat.format((sdf.parse(timeInUtc)))
         }
     }
+
+/*
+ @SuppressLint("SimpleDateFormat")
+        fun formatDateAsIndianStandardTime(timeInUtc: String): String {
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            sdf.timeZone = TimeZone.getTimeZone("UTC")
+            var localTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+            localTimeFormat.timeZone = TimeZone.getTimeZone(getCurrentTimeZone())
+            return localTimeFormat.format((sdf.parse(timeInUtc)))
+        }
+ */
 }

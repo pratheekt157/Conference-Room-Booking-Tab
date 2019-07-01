@@ -5,12 +5,12 @@ import com.google.gson.annotations.SerializedName
 
 //Model Class Of the Buildings
 data class Buildings(
-        @SerializedName("BuildingId")
+        @SerializedName("buildingId")
         var buildingId: Int? = null,
 
-        @SerializedName("BuildingName")
+        @SerializedName("buildingName")
         var buildingName: String? = null,
 
-        @SerializedName("Place")
+        @SerializedName("place")
         var buildingPlace: String? = null
 )

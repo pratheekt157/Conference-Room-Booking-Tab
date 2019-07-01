@@ -9,13 +9,14 @@ import java.util.*
 interface ConferenceService {
     @GET("api/BookingsForTheDay")
     fun getBookings(
-        @Query("RoomId") roomId: Int,
-        @Query("TodaysDate") date: String
+       @Query("RoomId") roomI: Int,
+        //@Body bookingList: BookingList
+       @Query("TodaysDate") date: String
     ): Call<List<BookingDeatilsForTheDay>>
 
     @PUT("api/MeetingStatus")
     fun endMeeting(
-        @Body endMeeing: EndMeeting
+        @Body endMeeting: EndMeeting
     ): Call<ResponseBody>
 
     @POST("api/BookRoom")

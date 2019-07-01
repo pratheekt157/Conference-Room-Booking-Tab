@@ -16,9 +16,10 @@
                 android:gravity="center"
                 android:fontFamily="@font/audiowide"
                 android:textColor="@color/white"
-                android:text="Conference Booking \n Smart Way To Book Conference Room"
+                android:text="Conference Room Booking \n Smart Way To Book Conference Room"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:layout_centerInParent="true"/>
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"/>
     </RelativeLayout>
     <RelativeLayout
             android:background="@drawable/room_details_gradiant"
@@ -41,7 +42,6 @@
                 android:layout_centerHorizontal="true"
                 android:id="@+id/building_spinner"
                 android:layout_marginStart="300dp"
-
                 android:layout_below="@id/setup_label"
                 android:textColorHint="#FFFFFF"
                 android:dropDownVerticalOffset="50dp"

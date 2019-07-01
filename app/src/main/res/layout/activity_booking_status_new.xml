@@ -107,7 +107,7 @@
         <!--running and available meeting layout-->
         <RelativeLayout
                 android:visibility="visible"
-                android:background="@drawable/room_details_gradiant"
+                android:background="@drawable/gradiant_for_available_room"
                 android:id="@+id/booking_details_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -123,6 +123,7 @@
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
                     android:hint="@string/available"/>
+
 
 
             <View
@@ -254,7 +255,7 @@
                     android:layout_width="match_parent"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:layout_height="wrap_content"
-                    tools:listitem="@layout/layout_for_time_slot"/>
+                    tools:listitem="@layout/meeting_list_layout"/>
 
             <TextView
                     android:textColor="@color/white"
@@ -278,8 +279,6 @@
             android:layout_width="match_parent"
             android:layout_weight="3"
             android:layout_height="0dp">
-
-
         <RelativeLayout
                 android:background="#1AFFFFFF"
                 android:id="@+id/end_meeting_confirm_layout"
@@ -319,16 +318,15 @@
                     android:layout_width="135dp"
                     android:layout_height="48dp"
                     android:layout_alignParentBottom="true"
-                    android:text="@string/confirm"
+                    android:text="CONFIRM"
                     android:layout_marginBottom="60dp"
                     android:textStyle="bold"
                     android:background="@drawable/action_button_border"
                     android:fontFamily="@font/nunito"
                     android:textColor="@color/white"
-                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginStart="24dp"
                     android:textSize="18sp"/>
         </RelativeLayout>
-
 
     </RelativeLayout>
 
@@ -432,7 +430,6 @@
                     android:textSize="18sp"/>
         </RelativeLayout>
     </RelativeLayout>
-
 
     <!--Book new meeting-->
     <RelativeLayout
@@ -587,9 +584,7 @@
 
         </RelativeLayout>
 
-
     </RelativeLayout>
-
 
     <!--Extend Meeting-->
     <RelativeLayout
@@ -710,3 +705,35 @@
 
 </LinearLayout>
 
+<!--
+<androidx.recyclerview.widget.RecyclerView
+                    android:layout_below="@id/today_s_boo"
+                    android:layout_marginTop="8dp"
+                    android:visibility="visible"
+                    android:id="@+id/recycler_view_todays_booking_list"
+                    android:layout_width="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_height="match_parent"
+                    tools:listitem="@layout/layout_for_time_slot"/>
+
+            <ImageView
+                    android:id="@+id/no_meetings_image_view"
+                    android:src="@drawable/ic_no_meeting"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:id="@+id/no_meetings_text_view"
+                    android:textColor="#99FFFFFF"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nunito"
+                    android:text="No meetings for the day"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/no_meetings_image_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </RelativeLayout>-->

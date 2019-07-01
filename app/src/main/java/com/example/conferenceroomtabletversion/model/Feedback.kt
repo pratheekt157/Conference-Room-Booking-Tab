@@ -4,12 +4,12 @@ import com.google.gson.annotations.SerializedName
 import org.w3c.dom.Comment
 
 data class Feedback(
-    @SerializedName("MeetId")
+    @SerializedName("meetId")
     var bookingId: Int? = null,
 
-    @SerializedName("Rating")
+    @SerializedName("rating")
     var rating: Int? = null,
 
-    @SerializedName("Comment")
+    @SerializedName("comment")
     var comment: String? = null
 )

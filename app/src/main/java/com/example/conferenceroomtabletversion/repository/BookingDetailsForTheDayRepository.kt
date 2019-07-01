@@ -1,7 +1,8 @@
 package com.example.conferenceroomtabletversion.repository
 
-import android.provider.SyncStateContract
+import android.annotation.SuppressLint
 import android.util.Log
+import com.example.conferencerommapp.utils.GetCurrentTimeInUTC
 import com.example.conferenceroomtabletversion.helper.Constants
 import com.example.conferenceroomtabletversion.model.*
 import com.example.conferenceroomtabletversion.service.ResponseListener
@@ -35,17 +36,13 @@ class BookingDetailsForTheDayRepository {
      * function will make api call for making a booking
      * and call the interface method with data from server
      */
+    @SuppressLint("SimpleDateFormat")
     fun getBookingList(roomId: Int, listener: ResponseListener) {
         /**
          * API call using retrofit
          */
-
-        val date = Date()
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
-        var currentDate = dateFormat.parse(dateFormat.format(date))
-        Log.d("date------", date.toString())
         val service = ServiceBuilder.getObject()
-        val requestCall: Call<List<BookingDeatilsForTheDay>> = service.getBookings(roomId, dateFormat.format(date))
+        val requestCall: Call<List<BookingDeatilsForTheDay>> = service.getBookings(roomId, GetCurrentTimeInUTC.getCurrentTimeInUTC().split(" ")[0])
         requestCall.enqueue(object : Callback<List<BookingDeatilsForTheDay>> {
             override fun onFailure(call: Call<List<BookingDeatilsForTheDay>>, t: Throwable) {
                 listener.onFailure(Constants.INTERNAL_SERVER_ERROR)

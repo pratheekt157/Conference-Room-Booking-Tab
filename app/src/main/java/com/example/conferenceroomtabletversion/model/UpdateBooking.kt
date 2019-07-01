@@ -7,15 +7,15 @@ data class UpdateBooking(
 //    @SerializedName("NewStartTime")
 //    var newFromTime: String? = null,
 
-    @SerializedName("NewEndTime")
+    @SerializedName("newEndTime")
     var newtotime: String? = null,
 
-    @SerializedName("MeetId")
+    @SerializedName("meetId")
     var bookingId: Int? = null,
 
-    @SerializedName("NewStartTime")
+    @SerializedName("newStartTime")
     var newStartTime: String? = null,
 
-    @SerializedName("ExtendMeeting")
+    @SerializedName("extendMeeting")
     val status: Boolean = true
 )

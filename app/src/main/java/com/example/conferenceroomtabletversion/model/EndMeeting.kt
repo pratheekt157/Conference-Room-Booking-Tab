@@ -3,12 +3,12 @@ package com.example.conferenceroomtabletversion.model
 import com.google.gson.annotations.SerializedName
 
 data class EndMeeting(
-    @SerializedName("MeetId")
+    @SerializedName("meetId")
     var bookingId: Int? = 0,
 
-    @SerializedName("StartOrEnd")
+    @SerializedName("startOrEnd")
     var status: Boolean? = null,
 
-    @SerializedName("CurrentTime")
+    @SerializedName("currentTime")
     var currentTime: String? = null
 )
