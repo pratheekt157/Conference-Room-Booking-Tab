@@ -32,7 +32,7 @@ class Constants {
 
         const val MIN_60 = 60
 
-        const val MILLIS_60 = (45 * 60 * 1000)
+        const val MILLIS_60 = (60 * 60 * 1000)
 
         const val MILLIS_45 = (45 * 60 * 1000)
 
