@@ -61,5 +61,12 @@
     <string name="format_in_yyyy_M_dd_hh_mm">yyyy-M-dd HH:mm</string>
     <string name="format_in_yyyy_mm_dd_hh_mm_ss">YYYY-MM-dd HH:mm:ss</string>
     <string name="incorrect_passcode">Incorrect passcode!</string>
+    <string name="end">End</string>
+    <string name="middle">Middle</string>
+    <string name="confirm_booking">CONFIRM BOOKING</string>
+    <string name="started">Started</string>
+    <string name="format_in_yyyy_mm_dd">yyyy-MM-dd</string>
+    <string name="message_for_invalid_time_selection">Start time must be earlier than end time</string>
+    <string name="_2_30pm">2:30pm</string>
 
 </resources>

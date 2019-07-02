@@ -19,7 +19,10 @@ import androidx.lifecycle.ViewModelProviders
 import com.example.conferencerommapp.utils.FormatTimeAccordingToZone
 import com.example.conferenceroomtabletversion.helper.ShowToast
 import com.example.conferenceroomtabletversion.viewmodel.BookingForTheDayViewModel
+import kotlinx.android.synthetic.main.activity_booking_status.*
+import kotlinx.android.synthetic.main.activity_booking_status_new.recycler_view_todays_booking_list
 import java.lang.Exception
+import java.time.LocalTime
 
 
 class Main2Activity : AppCompatActivity()  {
@@ -33,16 +36,21 @@ class Main2Activity : AppCompatActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_booking_status_new)
-        mBookingForTheDayViewModel = ViewModelProviders.of(this).get(BookingForTheDayViewModel::class.java)
-        getTimeSlot()
-        initAdapter()
+        val sdf = SimpleDateFormat("mm")
+        sdf.format(Date())
+        Log.e("-----------------time", "" + sdf.format(Date()))
+
+        Log.e("-----------------time", "" + LocalTime.parse("12:10").isBefore(LocalTime.parse("11:10")))
+        //mBookingForTheDayViewModel = ViewModelProviders.of(this).get(BookingForTheDayViewModel::class.java)
+        //getTimeSlot()
+        //initAdapter()
     }
     private fun initAdapter() {
         mBookingListAdapter = TimeSlotAdapter(
             finalSlotList as ArrayList<SlotFinalList>,
             this,
             object: TimeSlotAdapter.BookMeetingClickListener {
-                override fun BookSlot(time: String) {
+                override fun bookSlot(time: String) {
 
                 }
 

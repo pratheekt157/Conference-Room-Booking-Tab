@@ -8,18 +8,33 @@
             android:id="@+id/card"
             android:layout_width="97dp"
             android:layout_height="88dp">
-        <TextView
-                android:id="@+id/time_card_view_text"
+
+        <RelativeLayout
+                android:id="@+id/main_relative_layout"
                 android:background="#00D4AB"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:fontFamily="@font/nunito"
-                android:textStyle="bold"
-                android:text="2:30pm"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent">
+            <View
+                    android:layout_centerInParent="true"
+                    android:id="@+id/line_horizontal"
+                    android:visibility="gone"
+                    android:background="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"/>
+
+            <TextView
+                    android:id="@+id/time_card_view_text"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/nunito"
+                    android:textStyle="bold"
+                    android:text="@string/_2_30pm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </RelativeLayout>
     </androidx.cardview.widget.CardView>
     <View
             android:id="@+id/line0"
