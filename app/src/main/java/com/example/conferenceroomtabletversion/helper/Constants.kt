@@ -11,6 +11,8 @@ class Constants {
          */
         const val OK_RESPONSE = 200
 
+        const val TAG = "ConferenceBookingActivity"
+
 
         /**
          * ip address for api call

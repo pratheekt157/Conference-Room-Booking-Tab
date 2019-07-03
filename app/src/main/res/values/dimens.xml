@@ -16,6 +16,22 @@
     <dimen name="dp_160">160dp</dimen>
 
     <dimen name="md_bottom_sheet_separator_top_margin">7dp</dimen>
+    <dimen name="sp_18">18sp</dimen>
+    <dimen name="sp_36">36sp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+    <dimen name="dp_177">177dp</dimen>
+    <dimen name="sp_14">14sp</dimen>
+    <dimen name="sp_24">24sp</dimen>
+    <dimen name="dp_60">60dp</dimen>
+    <dimen name="dp_135">135dp</dimen>
+    <dimen name="dp_36">36dp</dimen>
+    <dimen name="dp_90">90dp</dimen>
+    <dimen name="dp_456">456dp</dimen>
+    <dimen name="dp_49">49dp</dimen>
+    <dimen name="dp_350">350dp</dimen>
+    <dimen name="dp_290">290dp</dimen>
+    <dimen name="dp_244">244dp</dimen>
+    <dimen name="dp_94">94dp</dimen>
 
 
 </resources>

@@ -19,6 +19,9 @@
     <color name="daySelected">#0072bc</color>
     <color name="dayDeselected">@android:color/darker_gray</color>
     <color name="error_color">#ba160c</color>
+    <color name="room_details_background_color">#404756</color>
+    <color name="amenities_text_color">#99FFFFFF</color>
+    <color name="light_color_gradiant">#1AFFFFFF</color>
 
 </resources>
 

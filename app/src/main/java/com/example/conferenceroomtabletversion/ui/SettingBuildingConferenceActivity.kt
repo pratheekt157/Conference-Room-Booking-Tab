@@ -111,18 +111,22 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         val buildingName = mutableListOf<String>()
         val buildingId = mutableListOf<Int>()
         val conferenceCapacity = mutableListOf<Int>()
+        val conferenceAminities= mutableListOf<List<String>>()
+
         if (it.isEmpty()) {
             conferencename.add("No Room in the Buildings")
             conferenceid.add(-1)
             conferenceCapacity.add(-1)
             buildingId.add(-1)
             buildingName.add("")
+            conferenceAminities.add(emptyList())
         } else {
             conferencename.add("Select Room")
             conferenceid.add(-1)
             conferenceCapacity.add(-1)
             buildingId.add(-1)
             buildingName.add("")
+            conferenceAminities.add(emptyList())
         }
         for (item in it) {
             conferencename.add(item.roomName!!)
@@ -130,6 +134,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
             conferenceCapacity.add(item.capacity!!)
             buildingId.add(item.buildingId!!)
             buildingName.add(item.buildingName!!)
+            conferenceAminities.add(item.amenities!!)
         }
         conference_spinner.adapter =
             ArrayAdapter<String>(
@@ -147,9 +152,9 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
                 configure.setOnClickListener {
                     valid=validate(conferenceid[position])
                     if (valid == false )
-                        //
+                    //
                     else {
-                        setValuesInsidePreferences(conferenceCapacity[position], conferenceid[position], conferencename[position], buildingName[position], buildingId[position])
+                        setValuesInsidePreferences(conferenceCapacity[position], conferenceid[position], conferencename[position], buildingName[position], buildingId[position],conferenceAminities[position])
                         startActivity(Intent(this@SettingBuildingConferenceActivity,ConferenceBookingActivity::class.java))
                         finish()
                     }
@@ -160,12 +165,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
 
 
     private fun validate(conferenceid: Int):Boolean {
-        if(conferenceid==-1)
-        {
-            return false
-        }
-        else
-            return true
+        return conferenceid != -1
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -175,7 +175,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         }
     }
 
-    private fun setValuesInsidePreferences(capacity: Int, roomId: Int, roomName: String, buildingName: String, buildingId: Int)  {
+    private fun setValuesInsidePreferences(capacity: Int, roomId: Int, roomName: String, buildingName: String, buildingId: Int , aminities: List<String>)  {
         val edit = getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE).edit()
         edit.putInt(Constants.ROOM_ID, roomId)
         edit.putBoolean(Constants.ONBORDING,true)
@@ -183,6 +183,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         edit.putString(Constants.BUILDING_NAME, buildingName)
         edit.putInt(Constants.CAPACITY, capacity)
         edit.putString(Constants.ROOM_NAME, roomName)
+        edit.putString(Constants.ROOM_AMINITIES,aminities.joinToString())
         edit.apply()
     }
 

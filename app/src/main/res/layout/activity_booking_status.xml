@@ -10,7 +10,7 @@
 
     <!--for room details,current time and date-->
     <RelativeLayout
-            android:background="#404756"
+            android:background="@color/room_details_background_color"
             android:layout_weight="1"
             android:id="@+id/room_details_layout"
             android:layout_width="match_parent"
@@ -21,14 +21,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:hint="Conference Room Name, Main Building"
+                android:hint="@string/room_name_hint"
                 android:textColorHint="@color/white"
-                android:layout_marginTop="24dp"
-                android:textSize="18sp"
+                android:layout_marginTop="@dimen/dp_24"
+                android:textSize="@dimen/sp_18"
                 android:textStyle="bold"
                 android:fontFamily="@font/nunito"
                 android:textColor="@color/white"
-                android:gravity="top"
         />
 
         <TextView
@@ -36,15 +35,14 @@
                 android:layout_below="@+id/room_name_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:hint="5 seater"
+                android:layout_marginStart="@dimen/dp_24"
+                android:hint="@string/room_capacity_hint"
                 android:layout_centerVertical="true"
                 android:textColorHint="@color/white"
                 android:layout_marginTop="@dimen/dp_8"
-                android:textSize="18sp"
+                android:textSize="@dimen/sp_18"
                 android:fontFamily="@font/nunito"
                 android:textColor="@color/white"
-                android:gravity="top"
         />
 
         <TextView
@@ -53,27 +51,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:hint="Extension Board, Whiteboard marker, Monitor, Projector, Speaker"
-                android:layout_marginTop="8dp"
+                android:hint="@string/amenities_hint"
+                android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_24"
-                android:textColorHint="#99FFFFFF"
-                android:textSize="18sp"
+                android:textColorHint="@color/amenities_text_color"
+                android:textSize="@dimen/sp_18"
                 android:fontFamily="@font/nunito"
-                android:textColor="#99FFFFFF"
-                android:gravity="top"
+                android:textColor="@color/amenities_text_color"
         />
 
         <TextClock
-                android:hint="4:04 PM"
+                android:hint="@string/current_time_hint"
                 android:textColorHint="@color/white"
                 android:format12Hour="hh:mm a"
                 android:layout_alignParentEnd="true"
                 android:id="@+id/current_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:layout_marginTop="24dp"
-                android:textSize="36sp"
+                android:layout_marginEnd="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_24"
+                android:textSize="@dimen/sp_36"
                 android:fontFamily="@font/nunito"
                 android:textColor="@color/white"/>
 
@@ -84,11 +81,11 @@
                 android:id="@+id/current_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Tuesday, June 18"
+                android:hint="@string/day_date_hint"
                 android:textColorHint="@color/white"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="24dp"
-                android:textSize="18sp"
+                android:layout_marginEnd="@dimen/dp_24"
+                android:layout_marginBottom="@dimen/dp_24"
+                android:textSize="@dimen/sp_18"
                 android:fontFamily="@font/nunito"
                 android:textColor="@color/white"/>
 
@@ -116,9 +113,9 @@
                     android:id="@+id/status_of_room"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="24dp"
-                    android:textSize="36sp"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:textSize="@dimen/sp_36"
                     android:fontFamily="@font/nunito"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
@@ -129,13 +126,13 @@
                     android:layout_below="@+id/status_of_room"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="24dp"
-                    android:textSize="20sp"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:textSize="@dimen/sp_20"
                     android:fontFamily="@font/nunito"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
-                    android:hint="Available till 11:45 PM"/>
+                    android:hint="@string/available_till_11_45_pm"/>
 
 
 
@@ -161,30 +158,30 @@
                         android:id="@+id/meeting_organiser"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textSize="18sp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:textSize="@dimen/sp_18"
+                        android:layout_marginTop="@dimen/dp_8"
                         android:fontFamily="@font/nunito"
                         android:textColor="@color/white"
                         android:textColorHint="@color/white"
-                        android:hint="Booked by Prateek for 1 hour and 15 minutes"/>
+                        android:hint="@string/booked_by_prateek_for_1_hour_and_15_minutes"/>
 
                 <TextView
                         android:id="@+id/meeting_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="40dp"
-                        android:layout_marginBottom="8dp"
-                        android:textSize="18sp"
+                        android:layout_marginTop="@dimen/dp_40"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:textSize="@dimen/sp_18"
                         android:fontFamily="@font/nunito"
                         android:textColor="@color/white"
                         android:textColorHint="@color/white"
-                        android:hint="4:30PM - 6:00PM"/>
+                        android:hint="@string/start_end_time_hint"/>
             </RelativeLayout>
             <LinearLayout
                     android:layout_below="@+id/meeting_details_relative_layout"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="@dimen/dp_32"
                     android:orientation="horizontal"
                     android:id="@+id/end_extend_action_layout"
                     android:layout_width="match_parent"
@@ -194,7 +191,6 @@
                         android:gravity="center"
                         android:layout_width="135dp"
                         android:layout_height="45dp"
-                        android:layout_alignParentBottom="true"
                         android:text="@string/start"
                         android:textStyle="bold"
                         android:onClick="startMeeting"
@@ -209,31 +205,29 @@
                         android:gravity="center"
                         android:layout_width="135dp"
                         android:onClick="extendMeeting"
-                        android:layout_height="48dp"
-                        android:layout_alignParentBottom="true"
+                        android:layout_height="@dimen/dp_48"
                         android:text="@string/extend"
                         android:visibility="visible"
                         android:textStyle="bold"
                         android:background="@drawable/action_button_border"
                         android:fontFamily="@font/nunito"
                         android:textColor="@color/white"
-                        android:layout_marginStart="24dp"
-                        android:textSize="18sp"/>
+                        android:layout_marginStart="@dimen/dp_24"
+                        android:textSize="@dimen/sp_18"/>
                 <TextView
                         android:id="@+id/end_meeting"
                         android:gravity="center"
                         android:textStyle="bold"
                         android:onClick="endMeeting"
                         android:layout_width="155dp"
-                        android:layout_height="48dp"
-                        android:layout_alignParentBottom="true"
+                        android:layout_height="@dimen/dp_48"
                         android:text="@string/end_now"
                         android:visibility="gone"
                         android:background="@drawable/action_button_border"
                         android:fontFamily="@font/nunito"
-                        android:layout_marginStart="24dp"
+                        android:layout_marginStart="@dimen/dp_24"
                         android:textColor="@color/white"
-                        android:textSize="18sp"/>
+                        android:textSize="@dimen/sp_18"/>
             </LinearLayout>
 
             <TextView
@@ -258,9 +252,9 @@
             <TextView
                     android:textColor="@color/white"
                     android:fontFamily="@font/nunito"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/sp_20"
                     android:layout_marginBottom="@dimen/dp_24"
-                    android:text="Today's Booking"
+                    android:text="@string/today_s_booking"
                     android:layout_centerHorizontal="true"
                     android:layout_alignParentBottom="true"
                     android:layout_width="wrap_content"
@@ -277,13 +271,11 @@
             android:layout_width="match_parent"
             android:layout_weight="3"
             android:layout_height="0dp">
-
-
         <RelativeLayout
-                android:background="#1AFFFFFF"
+                android:background="@color/light_color_gradiant"
                 android:id="@+id/end_meeting_confirm_layout"
-                android:layout_marginStart="177dp"
-                android:layout_marginEnd="177dp"
+                android:layout_marginStart="@dimen/dp_177"
+                android:layout_marginEnd="@dimen/dp_177"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -293,10 +285,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="BACK"
+                    android:text="@string/back"
                     android:padding="@dimen/dp_16"
                     android:fontFamily="@font/nunito"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/sp_14"
                     android:textColor="@color/white"
             />
             <TextView
@@ -304,9 +296,9 @@
                     android:id="@+id/end_the_boo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="48dp"
-                    android:textSize="24sp"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_48"
+                    android:textSize="@dimen/sp_24"
                     android:fontFamily="@font/nunito"
                     android:textColor="@color/white"
                     android:text="@string/end_the_booking_now"
@@ -315,17 +307,17 @@
                     android:id="@+id/end_meeting_confirm"
                     android:gravity="center"
                     android:onClick="confirmEndMeeting"
-                    android:layout_width="135dp"
-                    android:layout_height="48dp"
+                    android:layout_width="@dimen/dp_135"
+                    android:layout_height="@dimen/dp_48"
                     android:layout_alignParentBottom="true"
                     android:text="@string/confirm"
-                    android:layout_marginBottom="60dp"
+                    android:layout_marginBottom="@dimen/dp_60"
                     android:textStyle="bold"
                     android:background="@drawable/action_button_border"
                     android:fontFamily="@font/nunito"
                     android:textColor="@color/white"
                     android:layout_marginStart="@dimen/dp_24"
-                    android:textSize="18sp"/>
+                    android:textSize="@dimen/sp_18"/>
         </RelativeLayout>
 
 
@@ -341,10 +333,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
         <RelativeLayout
-                android:background="#1AFFFFFF"
+                android:background="@color/light_color_gradiant"
                 android:id="@+id/feedback_confirm_layout"
-                android:layout_marginStart="177dp"
-                android:layout_marginEnd="177dp"
+                android:layout_marginStart="@dimen/dp_177"
+                android:layout_marginEnd="@dimen/dp_177"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -352,19 +344,17 @@
                     android:id="@+id/got_feedback"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginStart="@dimen/dp_24"
                     android:textColor="@color/white"
                     android:text="@string/got_feedback"
-                    android:textSize="24sp"
-                    android:fontFamily="@font/nunito"
-                    android:gravity="top"
-            />
+                    android:textSize="@dimen/sp_24"
+                    android:fontFamily="@font/nunito"/>
 
             <LinearLayout
                     android:orientation="horizontal"
-                    android:layout_marginTop="36dp"
-                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="@dimen/dp_36"
+                    android:layout_marginStart="@dimen/dp_24"
                     android:layout_below="@+id/got_feedback"
                     android:id="@+id/feedback_layout"
                     android:layout_width="match_parent"
@@ -372,7 +362,7 @@
 
 
                 <ImageView
-                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
                         android:id="@+id/img_1"
                         android:onClick="badFeedback"
                         android:src="@drawable/ic_rate_2"
@@ -381,7 +371,7 @@
 
                 <ImageView
                         android:id="@+id/img_2"
-                        android:layout_marginLeft="@dimen/dp_64"
+                        android:layout_marginStart="@dimen/dp_64"
                         android:src="@drawable/ic_rate_3"
                         android:onClick="averageFeedback"
                         android:layout_width="wrap_content"
@@ -389,7 +379,7 @@
 
                 <ImageView
                         android:id="@+id/img_3"
-                        android:layout_marginLeft="@dimen/dp_64"
+                        android:layout_marginStart="@dimen/dp_64"
                         android:src="@drawable/ic_rate_5"
                         android:onClick="goodFeedback"
                         android:layout_width="wrap_content"
@@ -402,33 +392,50 @@
                     android:paddingTop="@dimen/dp_8"
                     android:paddingRight="@dimen/dp_16"
                     android:paddingBottom="@dimen/dp_8"
-                    android:layout_margin="24dp"
+                    android:layout_margin="@dimen/dp_24"
                     android:textColor="#80FFFFFF"
                     android:textColorHint="#80FFFFFF"
                     android:fontFamily="@font/nunito"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/sp_18"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:hint="@string/good_feedback_placeholder"
                     android:background="@drawable/feedback_background"
                     android:layout_centerVertical="true"
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"/>
+                    android:layout_height="@dimen/dp_90"/>
             <TextView
                     android:id="@+id/send_feedback"
                     android:gravity="center"
-                    android:layout_width="135dp"
-                    android:layout_height="48dp"
+                    android:layout_width="@dimen/dp_135"
+                    android:layout_height="@dimen/dp_48"
                     android:layout_alignParentBottom="true"
                     android:text="@string/submit"
+                    android:layout_toRightOf="@id/cancel_feedback"
                     android:onClick="submitFeedback"
-                    android:layout_marginBottom="60dp"
+                    android:layout_marginBottom="@dimen/dp_60"
                     android:textStyle="bold"
                     android:background="@drawable/action_button_border"
                     android:fontFamily="@font/nunito"
                     android:textColor="@color/white"
-                    android:layout_marginStart="24dp"
-                    android:textSize="18sp"/>
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:textSize="@dimen/sp_18"/>
+
+            <TextView
+                    android:id="@+id/cancel_feedback"
+                    android:gravity="center"
+                    android:layout_width="@dimen/dp_135"
+                    android:layout_height="@dimen/dp_48"
+                    android:layout_alignParentBottom="true"
+                    android:text="@string/cancel"
+                    android:onClick="cancelFeedback"
+                    android:layout_marginBottom="@dimen/dp_60"
+                    android:textStyle="bold"
+                    android:background="@drawable/action_button_border"
+                    android:fontFamily="@font/nunito"
+                    android:textColor="@color/white"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:textSize="@dimen/sp_18"/>
         </RelativeLayout>
     </RelativeLayout>
 
@@ -438,30 +445,29 @@
             android:background="@drawable/gradiant_for_available_room"
             android:id="@+id/book_now_main_layout"
             android:visibility="gone"
-            android:layout_below="@+id/room_details_layout"
             android:layout_width="match_parent"
             android:layout_weight="3"
             android:layout_height="0dp">
         <RelativeLayout
-                android:background="#1AFFFFFF"
+                android:background="@color/light_color_gradiant"
                 android:id="@+id/book_now_layout"
-                android:layout_marginStart="177dp"
-                android:layout_marginEnd="177dp"
+                android:layout_marginStart="@dimen/dp_177"
+                android:layout_marginEnd="@dimen/dp_177"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
             <TextView
                     android:id="@+id/book_back"
                     android:gravity="center"
-                    android:padding="16dp"
+                    android:padding="@dimen/dp_16"
                     android:onClick="bookBack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginStart="8dp"
-                    android:text="BACK"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:text="@string/back"
                     android:fontFamily="@font/nunito"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/sp_14"
                     android:textColor="@color/white"
             />
             <TextView
@@ -469,11 +475,11 @@
                     android:id="@+id/passcode_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:text="Passcode"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:text="@string/passcode"
+                    android:layout_marginTop="@dimen/dp_16"
                     android:fontFamily="@font/nunito"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/sp_24"
                     android:textColor="@color/white"
             />
 
@@ -482,23 +488,23 @@
                     android:layout_marginStart="@dimen/dp_24"
                     android:id="@+id/passcode_edit_text"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/sp_18"
                     android:letterSpacing="2"
                     android:inputType="textPassword"
-                    android:paddingLeft="24dp"
+                    android:paddingStart="@dimen/dp_24"
                     android:maxLength="6"
                     android:fontFamily="@font/nunito"
                     android:layout_below="@+id/passcode_label"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:layout_width="456dp"
-                    android:layout_height="49dp"/>
+                    android:layout_width="@dimen/dp_456"
+                    android:layout_height="@dimen/dp_49"/>
 
             <TextView
                     android:id="@+id/passcode_error_message"
                     android:layout_below="@id/passcode_edit_text"
                     android:layout_width="wrap_content"
                     android:textColor="@color/error_color"
-                    android:layout_marginStart="350dp"
+                    android:layout_marginStart="@dimen/dp_350"
                     android:visibility="invisible"
                     android:text="@string/field_cant_be_empty"
                     android:layout_height="wrap_content"/>
@@ -506,7 +512,7 @@
             <TextView
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginStart="@dimen/dp_32"
-                    android:text="Start-Time"
+                    android:text="@string/start_time"
                     android:textColor="@color/white"
                     android:fontFamily="@font/nunito"
                     android:layout_below="@+id/passcode_edit_text"
@@ -515,8 +521,8 @@
                     android:layout_height="wrap_content"/>
             <TextView
                     android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginStart="290dp"
-                    android:text="End-Time"
+                    android:layout_marginStart="@dimen/dp_290"
+                    android:text="@string/end_time"
                     android:textColor="@color/white"
                     android:fontFamily="@font/nunito"
                     android:layout_below="@+id/passcode_edit_text"
@@ -534,12 +540,13 @@
 
                 <TextView
                         android:background="@drawable/passcode_background"
-                        android:text="12:45"
+                        android:hint="@string/time_hint"
+                        android:textColorHint="@color/white"
                         android:padding="@dimen/dp_16"
                         android:drawablePadding="@dimen/dp_16"
                         android:drawableStart="@drawable/ic_meeting_time_new"
                         android:fontFamily="@font/nunito"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/sp_18"
                         android:textColor="@color/white"
                         android:id="@+id/start_time_text_view"
                         android:layout_weight="1"
@@ -554,7 +561,7 @@
                         android:drawableStart="@drawable/ic_meeting_time_new"
                         android:layout_marginStart="@dimen/dp_64"
                         android:fontFamily="@font/nunito"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/sp_18"
                         android:textColor="@color/white"
                         android:id="@+id/end_time_text_view"
                         android:layout_weight="1"
@@ -576,17 +583,17 @@
                     android:id="@+id/book_confirm"
                     android:gravity="center"
                     android:onClick="confirmBookMeeting"
-                    android:layout_width="244dp"
-                    android:layout_height="48dp"
+                    android:layout_width="@dimen/dp_244"
+                    android:layout_height="@dimen/dp_48"
                     android:layout_alignParentBottom="true"
                     android:text="@string/confirm_booking"
-                    android:layout_marginBottom="60dp"
+                    android:layout_marginBottom="@dimen/dp_60"
                     android:textStyle="bold"
                     android:background="@drawable/action_button_border"
                     android:fontFamily="@font/nunito"
                     android:textColor="@color/white"
-                    android:layout_marginStart="24dp"
-                    android:textSize="18sp"/>
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:textSize="@dimen/sp_18"/>
 
         </RelativeLayout>
 
@@ -599,15 +606,14 @@
             android:background="@drawable/room_details_gradiant"
             android:id="@+id/extend_main_layout"
             android:visibility="gone"
-            android:layout_below="@+id/room_details_layout"
             android:layout_width="match_parent"
             android:layout_weight="3"
             android:layout_height="0dp">
         <RelativeLayout
-                android:background="#1AFFFFFF"
+                android:background="@color/light_color_gradiant"
                 android:id="@+id/extend_layout"
-                android:layout_marginStart="177dp"
-                android:layout_marginEnd="177dp"
+                android:layout_marginStart="@dimen/dp_177"
+                android:layout_marginEnd="@dimen/dp_177"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -615,14 +621,14 @@
                     android:id="@+id/extend_back"
                     android:gravity="center"
                     android:onClick="extendBack"
-                    android:padding="16dp"
+                    android:padding="@dimen/dp_16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_8"
                     android:text="@string/back"
                     android:fontFamily="@font/nunito"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/sp_14"
                     android:textColor="@color/white"
             />
             <TextView
@@ -630,11 +636,11 @@
                     android:id="@+id/min_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
+                    android:layout_marginStart="@dimen/dp_24"
                     android:text="@string/minutes_to_extend"
                     android:fontFamily="@font/nunito"
-                    android:layout_marginTop="24dp"
-                    android:textSize="24sp"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:textSize="@dimen/sp_24"
                     android:textColor="@color/white"/>
             <LinearLayout
                     android:id="@+id/extend_min_layout"
@@ -650,61 +656,61 @@
                         android:gravity="center"
                         android:text="@string/_15"
                         android:fontFamily="@font/nunito"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/sp_18"
                         android:textColor="#F4733F"
                         android:id="@+id/extend_min_15"
-                        android:layout_width="94dp"
-                        android:layout_height="49dp"/>
+                        android:layout_width="@dimen/dp_94"
+                        android:layout_height="@dimen/dp_49"/>
                 <TextView
                         android:background="@drawable/passcode_background"
                         android:gravity="center"
                         android:text="@string/_30"
-                        android:layout_marginStart="24dp"
+                        android:layout_marginStart="@dimen/dp_24"
                         android:fontFamily="@font/nunito"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/sp_18"
                         android:textColor="@color/white"
                         android:id="@+id/extend_min_30"
-                        android:layout_width="94dp"
-                        android:layout_height="49dp"/>
+                        android:layout_width="@dimen/dp_94"
+                        android:layout_height="@dimen/dp_49"/>
                 <TextView
                         android:background="@drawable/passcode_background"
                         android:gravity="center"
                         android:text="@string/_45"
-                        android:layout_marginStart="24dp"
+                        android:layout_marginStart="@dimen/dp_24"
                         android:fontFamily="@font/nunito"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/sp_18"
                         android:textColor="@color/white"
                         android:id="@+id/extend_min_45"
-                        android:layout_width="94dp"
-                        android:layout_height="49dp"/>
+                        android:layout_width="@dimen/dp_94"
+                        android:layout_height="@dimen/dp_49"/>
                 <TextView
                         android:background="@drawable/passcode_background"
                         android:gravity="center"
                         android:text="@string/_60"
-                        android:layout_marginStart="24dp"
+                        android:layout_marginStart="@dimen/dp_24"
                         android:fontFamily="@font/nunito"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/sp_18"
                         android:textColor="@color/white"
                         android:id="@+id/extend_min_60"
-                        android:layout_width="94dp"
-                        android:layout_height="49dp"/>
+                        android:layout_width="@dimen/dp_94"
+                        android:layout_height="@dimen/dp_49"/>
             </LinearLayout>
 
             <TextView
                     android:id="@+id/extend_confirm"
                     android:gravity="center"
                     android:onClick="confirmExtendMeeting"
-                    android:layout_width="244dp"
-                    android:layout_height="48dp"
+                    android:layout_width="@dimen/dp_244"
+                    android:layout_height="@dimen/dp_48"
                     android:layout_alignParentBottom="true"
                     android:text="@string/confirm"
-                    android:layout_marginBottom="60dp"
+                    android:layout_marginBottom="@dimen/dp_60"
                     android:textStyle="bold"
                     android:background="@drawable/action_button_border"
                     android:fontFamily="@font/nunito"
                     android:textColor="@color/white"
-                    android:layout_marginStart="24dp"
-                    android:textSize="18sp"/>
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:textSize="@dimen/sp_18"/>
 
         </RelativeLayout>
 

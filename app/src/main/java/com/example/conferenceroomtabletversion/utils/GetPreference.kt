@@ -17,7 +17,7 @@ class GetPreference {
         }
 
         // get room Name from shared preference
-        fun getRoomNameFromSharedPreference(mContext: Context): String {
+        fun getRoomNameFromSharedPreference(mContext: Context): String? {
             return mContext.getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE).getString(Constants.ROOM_NAME, Constants.DEFAULT_STRING_PREFERENCE_VALUE)
         }
 
@@ -28,6 +28,11 @@ class GetPreference {
         // get building id from shared preference
         fun getBuildingIdFromSharedPreference(mContext: Context): Int {
             return mContext.getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE).getInt(Constants.BUILDING_ID, Constants.DEFAULT_INT_PREFERENCE_VALUE)
+        }
+
+        // get room amenities from shared preference
+        fun getRoomAmenitiesFromSharedPreference(mContext: Context): String? {
+            return mContext.getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE).getString(Constants.ROOM_AMINITIES, Constants.DEFAULT_STRING_PREFERENCE_VALUE)
         }
         fun getOnbordingFromSharedPreference(mContext: Context):Boolean{
         return mContext.getSharedPreferences(Constants.PREFERENCE,Context.MODE_PRIVATE).getBoolean(Constants.ONBORDING, Constants.DEFAULT_ONBOARDING)

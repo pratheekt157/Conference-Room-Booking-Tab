@@ -49,6 +49,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
     private lateinit var mProgressDialog: ProgressDialog
     private var finalSlotList = mutableListOf<SlotFinalList>()
     private var mCountDownTimer: CountDownTimer? = null
+    private var mCountDownTimerForFeedback: CountDownTimer? = null
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mBookingListAdapter: TimeSlotAdapter
     private var mBookingList = ArrayList<BookingDeatilsForTheDay>()
@@ -58,6 +59,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
     private var mDurationForExtendBooking = 15
     private var mTimerRunning: Boolean = false
     private var mTimeLeftInMillis: Long = 0
+    private var mTimeLeftInMillisForFeedback: Long = 0
     private var isCommingFromExtendedMeeting = false
     var isMeetingRunning = false
     var isBookingForFuture = false
@@ -75,11 +77,24 @@ class ConferenceBookingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_booking_status)
-        setValuesInsidePreferences()
+        checkForSetup()
         init()
         observeData()
         makeRequestPeriodically()
         observeTimeFromBookingList()
+    }
+
+    private fun checkForSetup() {
+        val roomName = GetPreference.getRoomNameFromSharedPreference(this)
+        val buildingName = GetPreference.getBuildingNameFromSharedPreference(this)
+        val roomCapacity = GetPreference.getCapacityFromSharedPreference(this)
+        if (
+            roomName == Constants.DEFAULT_STRING_PREFERENCE_VALUE ||
+            buildingName == Constants.DEFAULT_STRING_PREFERENCE_VALUE ||
+            roomCapacity == Constants.DEFAULT_INT_PREFERENCE_VALUE
+        ) {
+            goForSetup()
+        }
     }
 
     /**
@@ -142,6 +157,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
         val roomName = GetPreference.getRoomNameFromSharedPreference(this)
         val buildingName = GetPreference.getBuildingNameFromSharedPreference(this)
         val roomCapacity = GetPreference.getCapacityFromSharedPreference(this)
+        val roomAmenities = GetPreference.getRoomAmenitiesFromSharedPreference(this)
         if (
             roomName == Constants.DEFAULT_STRING_PREFERENCE_VALUE ||
             buildingName == Constants.DEFAULT_STRING_PREFERENCE_VALUE ||
@@ -151,7 +167,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
         } else {
             room_name_text_view.text = "$roomName, $buildingName"
             room_capacity.text = "$roomCapacity seater"
-            //room_amenities.text = ""
+            room_amenities.text = roomAmenities!!
         }
     }
 
@@ -182,7 +198,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
                             if (mBookingList.isNotEmpty()) {
                                 flag = false
                                 for (booking in mBookingList) {
-                                    if (booking.status == "Booked") {
+                                    if (booking.status == getString(R.string.booked)) {
                                         val timeDifference = getMillisecondsDifference(booking.fromTime!!)
                                         if (timeDifference > 0) {
                                             mNextMeeting = booking
@@ -205,7 +221,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
                                 }
                                 if (!isNextMeetingPresent && !isMeetingRunning) {
                                     available_till_text_view.visibility = View.VISIBLE
-                                    available_till_text_view.text = "Free for rest of the day"
+                                    available_till_text_view.text = getString(R.string.free_for_the_day)
                                     loadAvailableRoomUi()
                                     visibilityToGoneForLayoutForNextMeeting()
                                 }
@@ -215,6 +231,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
                                         val endTimeInMillis = getMilliseconds(booking.toTime!!)
                                         if (System.currentTimeMillis() in startTimeInMillis..endTimeInMillis) {
                                             if (!isMeetingRunning) {
+                                                available_till_text_view.visibility = View.GONE
                                                 visibilityToVisibleForLayoutForNextMeeting()
                                                 mRunningMeetingId = booking.bookingId!!
                                                 mRunningMeeting = booking
@@ -243,7 +260,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
                         sleep(1000)
                     }
                 } catch (e: InterruptedException) {
-                    Log.i("-------------", e.message)
+                    Log.e(Constants.TAG, e.message)
                 }
             }
         }
@@ -405,6 +422,12 @@ class ConferenceBookingActivity : AppCompatActivity() {
         feedbackRating = 2
     }
 
+    fun cancelFeedback(view: View) {
+        makeVisibilityVisibleForMainLayout()
+        makeVisibilityGoneForFeedbackLayout()
+        setDefaultImageForFeedback()
+    }
+
     fun endBack(view: View) {
         makeVisibilityGoneForEndMeetingMainLayout()
         makeVisibilityVisibleForMainLayout()
@@ -507,7 +530,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
         val mUpdateMeeting = UpdateBooking()
         mUpdateMeeting.newStartTime = FormatTimeAccordingToZone.formatDateAsUTC(mRunningMeeting.fromTime!!)
         mUpdateMeeting.bookingId = mRunningMeetingId
-        Log.e("-------------extended time", getNewExtendedEndTime(mRunningMeeting.toTime!!, mDurationForExtendBooking))
         mUpdateMeeting.newtotime = FormatTimeAccordingToZone.formatDateAsUTC(
             getNewExtendedEndTime(
                 mRunningMeeting.toTime!!,
@@ -841,6 +863,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
                     ShowToast.show(this, it as Int)
                     makeVisibilityGoneForBookMeetingMainLayout()
                     makeVisibilityVisibleForMainLayout()
+                    clearTextAndEditTextAfterBooking()
                 }
             }
         })
@@ -1325,5 +1348,24 @@ class ConferenceBookingActivity : AppCompatActivity() {
             }
         }.start()
         mTimerRunning = true
+    }
+
+
+    /**
+     * function will set the timer for a duration
+     */
+    private fun startTimerForFeedback(duration: Long) {
+        mTimeLeftInMillisForFeedback = duration
+        mCountDownTimerForFeedback = object : CountDownTimer(mTimeLeftInMillisForFeedback, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                mTimeLeftInMillisForFeedback = millisUntilFinished
+
+            }
+
+            override fun onFinish() {
+                makeVisibilityGoneForFeedbackLayout()
+                makeVisibilityVisibleForMainLayout()
+            }
+        }.start()
     }
 }

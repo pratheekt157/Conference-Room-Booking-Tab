@@ -14,17 +14,17 @@ import com.example.conferenceroomtabletversion.utils.ConvertTimeTo12HourFormat
 
 
 class TimeSlotAdapter(
-    private val bookingDeatilsForTheDayItemList: ArrayList<SlotFinalList>,
+    private val bookingDetailsForTheDayItemList: ArrayList<SlotFinalList>,
     private val mContext: Context,
     private val listener: BookMeetingClickListener
 
 ) : androidx.recyclerview.widget.RecyclerView.Adapter<TimeSlotAdapter.ViewHolder>() {
 
     /**
-     * this override function will set a view for the recyclerview items
+     * this override function will set a view for the recycler view items
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.time_line_view, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_for_time_slot, parent, false)
         return ViewHolder(view)
     }
 
@@ -34,11 +34,11 @@ class TimeSlotAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.meetingDurationTextView.text =
-            ConvertTimeTo12HourFormat.convert12(bookingDeatilsForTheDayItemList[position].slot.toString())
-        if (bookingDeatilsForTheDayItemList[position].isBooked!!) {
+            ConvertTimeTo12HourFormat.convert12(bookingDetailsForTheDayItemList[position].slot.toString())
+        if (bookingDetailsForTheDayItemList[position].isBooked!!) {
             changeColorToOccupied(holder)
             makeVisibilityGoneForVerticalLine(holder)
-            if (bookingDeatilsForTheDayItemList[position].status == mContext.getString(R.string.middle_slot)) {
+            if (bookingDetailsForTheDayItemList[position].status == mContext.getString(R.string.middle_slot)) {
                 makeVisibilityGoneForVerticalLine(holder)
                 holder.horizontalLine.visibility = View.VISIBLE
                 clearTextOfTimeSlot(holder)
@@ -46,22 +46,22 @@ class TimeSlotAdapter(
                 holder.horizontalLine.visibility = View.GONE
                 makeVisibilityGoneForVerticalLine(holder)
                 holder.meetingDurationTextView.text =
-                    ConvertTimeTo12HourFormat.convert12(bookingDeatilsForTheDayItemList[position].slot.toString())
+                    ConvertTimeTo12HourFormat.convert12(bookingDetailsForTheDayItemList[position].slot.toString())
             }
         } else {
             holder.horizontalLine.visibility = View.GONE
             makeVisibilityVisibleForVerticalLine(holder)
             holder.mainLayout.setBackgroundColor(Color.parseColor("#00D4AB"))
         }
-        if (bookingDeatilsForTheDayItemList[position].inPast == false && bookingDeatilsForTheDayItemList[position].isBooked != true) {
+        if (bookingDetailsForTheDayItemList[position].inPast == false && bookingDetailsForTheDayItemList[position].isBooked != true) {
             holder.mainLayout.setBackgroundColor(Color.parseColor("#808080"))
         } else {
-            if (!bookingDeatilsForTheDayItemList[position].isBooked!!)
+            if (!bookingDetailsForTheDayItemList[position].isBooked!!)
                 holder.mainLayout.setBackgroundColor(Color.parseColor("#00D4AB"))
         }
         holder.itemView.setOnClickListener {
-            if (bookingDeatilsForTheDayItemList[position].inPast!! && !bookingDeatilsForTheDayItemList[position].isBooked!!) {
-                listener.bookSlot(bookingDeatilsForTheDayItemList[position].slot!!)
+            if (bookingDetailsForTheDayItemList[position].inPast!! && !bookingDetailsForTheDayItemList[position].isBooked!!) {
+                listener.bookSlot(bookingDetailsForTheDayItemList[position].slot!!)
             }
         }
     }
@@ -83,7 +83,7 @@ class TimeSlotAdapter(
     }
 
     override fun getItemCount(): Int {
-        return bookingDeatilsForTheDayItemList.size
+        return bookingDetailsForTheDayItemList.size
     }
 
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
