@@ -2,7 +2,6 @@ package com.example.conferenceroomtabletversion.ui
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -11,10 +10,7 @@ import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -35,7 +31,6 @@ import com.example.conferenceroomtabletversion.viewmodel.BookingForTheDayViewMod
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_booking_status.*
 import java.text.SimpleDateFormat
-import java.time.LocalTime
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -49,20 +44,18 @@ class ConferenceBookingActivity : AppCompatActivity() {
     private lateinit var mProgressDialog: ProgressDialog
     private var finalSlotList = mutableListOf<SlotFinalList>()
     private var mCountDownTimer: CountDownTimer? = null
-    private var mCountDownTimerForFeedback: CountDownTimer? = null
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mBookingListAdapter: TimeSlotAdapter
     private var mBookingList = ArrayList<BookingDeatilsForTheDay>()
+    private var mBookingListForSlotArrangment = ArrayList<BookingDeatilsForTheDay>()
     private var mNextMeeting = BookingDeatilsForTheDay()
     private var mRunningMeeting = BookingDeatilsForTheDay()
     private var mRunningMeetingId = -1
     private var mDurationForExtendBooking = 15
     private var mTimerRunning: Boolean = false
     private var mTimeLeftInMillis: Long = 0
-    private var mTimeLeftInMillisForFeedback: Long = 0
     private var isCommingFromExtendedMeeting = false
     var isMeetingRunning = false
-    var isBookingForFuture = false
     var startTimeFromSelectedSlot = ""
     private var roomId = -1
     private val zero: Long = 0
@@ -70,7 +63,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
     private var flag = false
     private var isNextMeetingPresent = false
     private var mMeetingIdForFeedback = -1
-    private var feedbackMessage = "The app is pretty cool!"
+    private var feedbackMessage = Constants.DEFAULT_FEEDBACK_MEESAGE
     private var feedbackRating = 2
     private lateinit var mEndMeetingMainRelativeLayout: RelativeLayout
     private lateinit var mBookMeetingMainRelativeLayout: RelativeLayout
@@ -95,6 +88,17 @@ class ConferenceBookingActivity : AppCompatActivity() {
         ) {
             goForSetup()
         }
+    }
+
+    private fun hideSoftKeyboard1() {
+        book_now_main_layout.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                hideSoftKeyboard()
+                return false
+            }
+
+
+        })
     }
 
     /**
@@ -122,12 +126,15 @@ class ConferenceBookingActivity : AppCompatActivity() {
         var flag = false
         var nextMeetingStartTime = ""
         for (booking in mBookingList) {
-            val timeDifference = getMillisecondDifferenceForTimeSlot(booking.fromTime!!, slotTime)
-            if (timeDifference > 0) {
-                flag = true
-                nextMeetingStartTime = booking.fromTime!!
-                break
+            if (booking.status == getString(R.string.ended)) {
+                val timeDifference = getMillisecondDifferenceForTimeSlot(booking.fromTime!!, slotTime)
+                if (timeDifference > 0) {
+                    flag = true
+                    nextMeetingStartTime = booking.fromTime!!
+                    break
+                }
             }
+
         }
         if (flag) {
             val difference = getMillisecondDifferenceForTimeSlot(nextMeetingStartTime, slotTime)
@@ -136,7 +143,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
                 return
             }
         }
-        isBookingForFuture = true
         makeVisibilityGoneForMainLayout()
         makeVisibilityVisibilityForBookMeetingMainLayout()
     }
@@ -149,7 +155,15 @@ class ConferenceBookingActivity : AppCompatActivity() {
         setClickListenerOnExtendMeetingSlots()
         setValuesFromSharedPreference()
         initRecyclerView()
+        hideSoftKeyboard()
         getTimeSlot()
+    }
+
+    /**
+     * hind soft keyboard
+     */
+    private fun hideSoftKeyboard() {
+        this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
     }
 
     @SuppressLint("SetTextI18n")
@@ -204,9 +218,12 @@ class ConferenceBookingActivity : AppCompatActivity() {
                                             mNextMeeting = booking
                                             flag = true
                                             isNextMeetingPresent = true
-                                            if(!isMeetingRunning) {
+                                            if (!isMeetingRunning) {
                                                 available_till_text_view.visibility = View.VISIBLE
-                                                available_till_text_view.text = "Free till ${ConvertTimeTo12HourFormat.convert12(mNextMeeting.fromTime!!.split(" ")[1])}"
+                                                available_till_text_view.text =
+                                                    "Free till ${ConvertTimeTo12HourFormat.convert12(
+                                                        mNextMeeting.fromTime!!.split(" ")[1]
+                                                    )}"
                                             } else {
                                                 available_till_text_view.visibility = View.GONE
                                             }
@@ -226,7 +243,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
                                     visibilityToGoneForLayoutForNextMeeting()
                                 }
                                 for (booking in mBookingList) {
-                                    if (booking.status == getString(R.string.booked) || booking.status == getString(R.string.started)) {
+                                    if (booking.status == getString(R.string.booked) || booking.status == getString(R.string.started) || booking.status == "Blocked") {
                                         val startTimeInMillis = getMilliseconds(booking.fromTime!!)
                                         val endTimeInMillis = getMilliseconds(booking.toTime!!)
                                         if (System.currentTimeMillis() in startTimeInMillis..endTimeInMillis) {
@@ -241,10 +258,18 @@ class ConferenceBookingActivity : AppCompatActivity() {
                                                     setVisibilityToGoneForStartMeeting()
                                                     setVisibilityToVisibleForEndMeeting()
                                                     setVisibilityToVisibleForExtendMeeting()
+                                                    unblock_room.visibility = View.GONE
                                                     startTimer(getMeetingDurationInMilliseonds(booking.toTime!!))
                                                 } else if (booking.status == getString(R.string.booked)) {
                                                     visibilityToVisibleForLayoutForNextMeeting()
+                                                    unblock_room.visibility = View.GONE
                                                     setVisibilityToVisibleForStartMeeting()
+                                                } else if(booking.status == "Blocked") {
+                                                    status_of_room.text = "Under Maintenance"
+                                                    setVisibilityToGoneForStartMeeting()
+                                                    setVisibilityToGoneForStartMeeting()
+                                                    setVisibilityToGoneForStartMeeting()
+                                                    unblock_room.visibility = View.VISIBLE
                                                 }
                                             }
                                             break
@@ -281,17 +306,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
                 changeFormat(endTime)
             )
         meeting_organiser.text = "Booked by ${booking.organizer} ${booking.meetingDuration}"
-    }
-
-    private fun setValuesInsidePreferences() {
-        val edit = getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE).edit()
-        edit.putInt(Constants.ROOM_ID, 34)
-        edit.putBoolean(Constants.ONBORDING, true)
-        edit.putInt(Constants.BUILDING_ID, 14)
-        edit.putString(Constants.BUILDING_NAME, "Pasta")
-        edit.putInt(Constants.CAPACITY, 4)
-        edit.putString(Constants.ROOM_NAME, "Sharanam")
-        edit.apply()
     }
 
     // set visibility to gone for running meeting layout
@@ -361,18 +375,14 @@ class ConferenceBookingActivity : AppCompatActivity() {
         makeCallForStartMeeting(startNow)
     }
 
-    // function for book new meeting (load UI for book new meeting)
-    fun bookNowMeeting(view: View) {
-        bookMeeting()
-    }
-
+    // confirm new booking
     @SuppressLint("SimpleDateFormat")
     fun confirmBookMeeting(view: View) {
         if (validatePasscode() && validateEndTime()) {
             val mLocalBookingInput = NewBookingInput()
             mLocalBookingInput.passcode = passcode_edit_text.text.toString()
             mLocalBookingInput.eventName = getString(R.string.local_booking)
-            if (LocalTime.parse(startTimeFromSelectedSlot.trim()).isBefore(LocalTime.parse(end_time_text_view.text.toString().trim()))) {
+            if (!startAndTimeTimeValidate(startTimeFromSelectedSlot, end_time_text_view.text.toString())) {
                 val sdfDate = SimpleDateFormat(getString(R.string.format_in_yyyy_mm_dd))
                 val currentDate = sdfDate.format(Date())
                 val startTimeInLocal = "$currentDate ${startTimeFromSelectedSlot.trim()}"
@@ -390,6 +400,13 @@ class ConferenceBookingActivity : AppCompatActivity() {
                 showToastAtTop(getString(R.string.message_for_invalid_time_selection))
             }
         }
+    }
+
+    private fun startAndTimeTimeValidate(startTime: String, endTime: String): Boolean {
+        Log.e("----------", "$startTime  $endTime")
+        val simpleDateFormat = SimpleDateFormat("hh:mm")
+        val difference = simpleDateFormat.parse(startTime).time - simpleDateFormat.parse(endTime).time
+        return difference >= 0
     }
 
     // end meeting before completion of meeting
@@ -486,21 +503,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
     }
 
 
-//---------------------------------------------------------------------------------------book New Meeting -------------------------------------------------------------------------
-
-    private fun bookMeeting() {
-        if (isNextMeetingPresent) {
-            val difference = getMillisecondsDifference(mNextMeeting.fromTime!!)
-            if (difference < (Constants.MILLIS_15)) {
-                showToastAtTop(getString(R.string.cant_book))
-                return
-            }
-        }
-        // load layout for book meeting
-        makeVisibilityGoneForMainLayout()
-        makeVisibilityVisibilityForBookMeetingMainLayout()
-    }
-
 //------------------------------------------------------------------------------------- all code related to time in milliseconds ---------------------------------------------------
 
     // get time difference in milliseconds
@@ -551,14 +553,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
         cal.add(Calendar.MINUTE, duration)
         val newEndTime = timeFormat.format(cal.time)
         return "$date $newEndTime"
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    fun getCurrentTime(): String {
-        val dateTimeFormat = SimpleDateFormat(getString(R.string.format_in_yyyy_mm_dd_hh_mm_ss))
-        val cal = Calendar.getInstance()
-        cal.time = Date()
-        return dateTimeFormat.format(cal.time)
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -724,12 +718,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
 
     //call api to get the updated data
     private fun getViewModel() {
-        if (roomId == Constants.DEFAULT_INT_PREFERENCE_VALUE) {
-            startActivity(Intent(this@ConferenceBookingActivity, SettingBuildingConferenceActivity::class.java))
-            finish()
-        } else {
-            mBookingForTheDayViewModel.getBookingList(roomId)
-        }
+        mBookingForTheDayViewModel.getBookingList(roomId)
     }
 
     //-----------------------------------------------------------------------------------click listener on image view for feedback ------------------------------------------------
@@ -887,6 +876,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
             mProgressDialog.dismiss()
             makeVisibilityGoneForExtendMeetingMainLayout()
             makeVisibilityVisibleForMainLayout()
+            loadDefaultTimeSlotForExtendMeeting()
             ShowToast.show(this, it as Int)
         })
     }
@@ -960,6 +950,10 @@ class ConferenceBookingActivity : AppCompatActivity() {
             )
         }
         mBookingList.addAll(it)
+        mBookingListForSlotArrangment.clear()
+        timeSlotList.clear()
+        getTimeSlot()
+        mBookingListForSlotArrangment.addAll(it)
         Log.i("-------------list", mBookingList.toString())
         makeList()
     }
@@ -979,26 +973,44 @@ class ConferenceBookingActivity : AppCompatActivity() {
     }
 
 
-    // list for adapter
     private fun makeList() {
         finalSlotList.clear()
-        for (slot in timeSlotList) {
+        var size = timeSlotList.size
+        var index = 0
+        while (index < size) {
             var flag = false
+            var flagForRemoveItem = false
             val finalSlot = SlotFinalList()
-            finalSlot.slot = slot
-            for (item in mBookingList) {
-                val startTimeDifference = getMilliSecondDifference(slot, item.fromTime!!.split(" ")[1])
-                val endTimeDifference = getMilliSecondDifference(slot, item.toTime!!.split(" ")[1])
+            val finalSlotNew = SlotFinalList()
+            var flagForNewSlot = false
+            finalSlot.slot = timeSlotList[index]
+            finalSlotNew.slot = timeSlotList[index]
+            for (itemIndex in mBookingListForSlotArrangment.indices) {
+                finalSlot.meetingDuration = mBookingListForSlotArrangment[itemIndex].meetingDuration
+                val startTimeDifference = getMilliSecondDifference(
+                    timeSlotList[index],
+                    mBookingListForSlotArrangment[itemIndex].fromTime!!.split(" ")[1]
+                )
+                val endTimeDifference = getMilliSecondDifference(
+                    timeSlotList[index],
+                    mBookingListForSlotArrangment[itemIndex].toTime!!.split(" ")[1]
+                )
                 when {
                     startTimeDifference == zero -> {
                         finalSlot.isBooked = true
                         flag = true
                         finalSlot.status = getString(R.string.start)
+                        if (mBookingListForSlotArrangment[itemIndex].meetingDuration == getString(R.string.for_15_minutes)) {
+                            flagForNewSlot = false
+                            flagForRemoveItem = true
+                        }
                     }
                     endTimeDifference == zero -> {
                         finalSlot.isBooked = true
-                        flag = true
+                        flagForNewSlot = true
                         finalSlot.status = getString(R.string.end)
+                        flag = true
+                        flagForRemoveItem = true
                     }
                     startTimeDifference < 0 && endTimeDifference > 0 -> {
                         finalSlot.isBooked = true
@@ -1010,15 +1022,25 @@ class ConferenceBookingActivity : AppCompatActivity() {
                     }
                 }
                 if (flag) {
+                    if (flagForRemoveItem) {
+                        mBookingListForSlotArrangment.remove(mBookingListForSlotArrangment[itemIndex])
+                    }
                     break
                 }
             }
-            finalSlot.inPast = !LocalTime.now().isAfter(LocalTime.parse(slot))
+            finalSlot.inPast = !checkTimeInFuture(timeSlotList[index])
             finalSlotList.add(finalSlot)
+            if (flagForNewSlot && !checkTimeInFuture(timeSlotList[index])) {
+                finalSlotNew.inPast = !checkTimeInFuture(timeSlotList[index])
+                finalSlotNew.isBooked = false
+                timeSlotList.add(index + 1, timeSlotList[index])
+                size += 1
+            }
+            index++
         }
         var position = 0
         for (index in timeSlotList.indices) {
-            if (!LocalTime.now().isAfter(LocalTime.parse(timeSlotList[index]))) {
+            if (!checkTimeInFuture(timeSlotList[index])) {
                 position = index
                 break
             }
@@ -1030,8 +1052,8 @@ class ConferenceBookingActivity : AppCompatActivity() {
         } else {
             Handler().postDelayed({ recycler_view_todays_booking_list.scrollToPosition(position) }, 200)
         }
-
     }
+
 
     @SuppressLint("SimpleDateFormat")
     private fun getMilliSecondDifference(timeSlot: String, bookingTime: String): Long {
@@ -1039,6 +1061,14 @@ class ConferenceBookingActivity : AppCompatActivity() {
         val timeSlotInDateObject = sdf.parse(timeSlot)
         val bookingTimeInDateObject = sdf.parse(bookingTime)
         return bookingTimeInDateObject.time - timeSlotInDateObject.time
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun checkTimeInFuture(slotTime: String): Boolean {
+        val simpleDateFormat = SimpleDateFormat(getString(R.string.format_in_hh_mm))
+        val difference =
+            simpleDateFormat.parse(simpleDateFormat.format(Date())).time - simpleDateFormat.parse(slotTime).time
+        return difference >= 0
     }
 
 
@@ -1134,7 +1164,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
             extend_min_45.setTextColor(Color.parseColor("#F4733F"))
             mDurationForExtendBooking = 45
         }
-
         extend_min_60.setOnClickListener {
             extend_min_15.background = resources.getDrawable(R.drawable.passcode_background)
             extend_min_30.background = resources.getDrawable(R.drawable.passcode_background)
@@ -1312,7 +1341,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
     // extend meeting duration
     @SuppressLint("SimpleDateFormat")
     private fun getNewExtendedEndTime(duration: Int): String {
-        val dateFormat = SimpleDateFormat("YYYY-MM-dd")
+        val dateFormat = SimpleDateFormat("yyyy-mm-dd")
         val timeFormat = SimpleDateFormat("HH:mm")
         val timeFormatInHHMM = SimpleDateFormat("HH")
         val cal = Calendar.getInstance()
@@ -1343,29 +1372,16 @@ class ConferenceBookingActivity : AppCompatActivity() {
                 if (isCommingFromExtendedMeeting) {
                     isCommingFromExtendedMeeting = false
                 } else {
-                    endMeetingNow(EndMeeting(mRunningMeetingId, false, getCurrentTime()))
+                    endMeetingNow(
+                        EndMeeting(
+                            mRunningMeetingId,
+                            false,
+                            FormatTimeAccordingToZone.formatDateAsUTC(mRunningMeeting.toTime!!)
+                        )
+                    )
                 }
             }
         }.start()
         mTimerRunning = true
-    }
-
-
-    /**
-     * function will set the timer for a duration
-     */
-    private fun startTimerForFeedback(duration: Long) {
-        mTimeLeftInMillisForFeedback = duration
-        mCountDownTimerForFeedback = object : CountDownTimer(mTimeLeftInMillisForFeedback, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                mTimeLeftInMillisForFeedback = millisUntilFinished
-
-            }
-
-            override fun onFinish() {
-                makeVisibilityGoneForFeedbackLayout()
-                makeVisibilityVisibleForMainLayout()
-            }
-        }.start()
     }
 }

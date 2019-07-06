@@ -37,14 +37,20 @@ class TimeSlotAdapter(
             ConvertTimeTo12HourFormat.convert12(bookingDetailsForTheDayItemList[position].slot.toString())
         if (bookingDetailsForTheDayItemList[position].isBooked!!) {
             changeColorToOccupied(holder)
-            makeVisibilityGoneForVerticalLine(holder)
             if (bookingDetailsForTheDayItemList[position].status == mContext.getString(R.string.middle_slot)) {
                 makeVisibilityGoneForVerticalLine(holder)
                 holder.horizontalLine.visibility = View.VISIBLE
                 clearTextOfTimeSlot(holder)
             } else {
                 holder.horizontalLine.visibility = View.GONE
-                makeVisibilityGoneForVerticalLine(holder)
+                if (bookingDetailsForTheDayItemList[position].meetingDuration != mContext.getString(R.string.for_15_minutes) && bookingDetailsForTheDayItemList[position].status == mContext.getString(
+                        R.string.start
+                    )
+                ) {
+                    makeVisibilityGoneForVerticalLine(holder)
+                } else {
+                    makeVisibilityVisibleForVerticalLine(holder)
+                }
                 holder.meetingDurationTextView.text =
                     ConvertTimeTo12HourFormat.convert12(bookingDetailsForTheDayItemList[position].slot.toString())
             }
@@ -97,3 +103,4 @@ class TimeSlotAdapter(
         fun bookSlot(time: String)
     }
 }
+

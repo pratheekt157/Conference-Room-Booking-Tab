@@ -47,7 +47,6 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         settingObserveData()
     }
 
-
     private fun getConference(buildingId: Int) {
         progressDialog.show()
         mConferenceViewModel.getConferenceRoomList(buildingId)
@@ -74,7 +73,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
     private fun sendDataForSpinner(buildingList: List<Buildings>) {
         val items = mutableListOf<String>()
         val itemsId = mutableListOf<Int>()
-        items.add("Select Building")
+        items.add(getString(R.string.select_building))
         itemsId.add(-1)
         for (item in buildingList) {
             items.add(item.buildingName!!)
@@ -151,9 +150,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 configure.setOnClickListener {
                     valid=validate(conferenceid[position])
-                    if (valid == false )
-                    //
-                    else {
+                    if (valid) {
                         setValuesInsidePreferences(conferenceCapacity[position], conferenceid[position], conferencename[position], buildingName[position], buildingId[position],conferenceAminities[position])
                         startActivity(Intent(this@SettingBuildingConferenceActivity,ConferenceBookingActivity::class.java))
                         finish()
@@ -208,6 +205,4 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         progressDialog.show()
         mBuildingsViewModel.getBuildingList()
     }
-
-
 }

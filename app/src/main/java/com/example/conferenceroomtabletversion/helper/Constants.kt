@@ -11,9 +11,13 @@ class Constants {
          */
         const val OK_RESPONSE = 200
 
-        const val TAG = "ConferenceBookingActivity"
+        const val TAG = "ConferenceBooking"
 
+        const val DEFAULT_FEEDBACK_MEESAGE = "The app is pretty cool!"
 
+        const val DATE_TIME_FORMAT_IN_LOCAL_TIME_ZONE = "yyyy-MM-dd HH:mm"
+
+        const val DATE_TIME_FORMAT_IN_UTC = "yyyy-MM-dd HH:mm:ss'Z'"
         /**
          * ip address for api call
          */

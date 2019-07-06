@@ -20,11 +20,11 @@
                 android:id="@+id/room_name_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="@dimen/dp_24"
                 android:hint="@string/room_name_hint"
                 android:textColorHint="@color/white"
                 android:layout_marginTop="@dimen/dp_24"
-                android:textSize="@dimen/sp_18"
+                android:textSize="@dimen/sp_28"
                 android:textStyle="bold"
                 android:fontFamily="@font/nunito"
                 android:textColor="@color/white"
@@ -40,7 +40,7 @@
                 android:layout_centerVertical="true"
                 android:textColorHint="@color/white"
                 android:layout_marginTop="@dimen/dp_8"
-                android:textSize="@dimen/sp_18"
+                android:textSize="@dimen/sp_24"
                 android:fontFamily="@font/nunito"
                 android:textColor="@color/white"
         />
@@ -55,15 +55,14 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_24"
                 android:textColorHint="@color/amenities_text_color"
-                android:textSize="@dimen/sp_18"
+                android:textSize="@dimen/sp_24"
                 android:fontFamily="@font/nunito"
                 android:textColor="@color/amenities_text_color"
         />
 
         <TextClock
-                android:hint="@string/current_time_hint"
                 android:textColorHint="@color/white"
-                android:format12Hour="hh:mm a"
+                android:format24Hour="hh:mm a"
                 android:layout_alignParentEnd="true"
                 android:id="@+id/current_time"
                 android:layout_width="wrap_content"
@@ -75,17 +74,16 @@
                 android:textColor="@color/white"/>
 
         <TextClock
-                android:format12Hour="EEEE MMMM, dd"
+                android:format24Hour="EEEE MMMM, dd"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:id="@+id/current_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/day_date_hint"
                 android:textColorHint="@color/white"
                 android:layout_marginEnd="@dimen/dp_24"
                 android:layout_marginBottom="@dimen/dp_24"
-                android:textSize="@dimen/sp_18"
+                android:textSize="@dimen/sp_24"
                 android:fontFamily="@font/nunito"
                 android:textColor="@color/white"/>
 
@@ -131,8 +129,7 @@
                     android:textSize="@dimen/sp_20"
                     android:fontFamily="@font/nunito"
                     android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    android:hint="@string/available_till_11_45_pm"/>
+                    android:textColorHint="@color/white"/>
 
 
 
@@ -187,6 +184,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 <TextView
+                        android:id="@+id/unblock_room"
+                        android:gravity="center"
+                        android:layout_width="135dp"
+                        android:layout_height="45dp"
+                        android:text="@string/unblock"
+                        android:textStyle="bold"
+                        android:onClick="startMeeting"
+                        android:visibility="gone"
+                        android:background="@drawable/action_button_border"
+                        android:fontFamily="@font/nunito"
+                        android:textColor="@color/white"
+                        android:layout_marginStart="24dp"
+                        android:textSize="18sp"/>
+                <TextView
                         android:id="@+id/start_meeting"
                         android:gravity="center"
                         android:layout_width="135dp"
@@ -207,7 +218,7 @@
                         android:onClick="extendMeeting"
                         android:layout_height="@dimen/dp_48"
                         android:text="@string/extend"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         android:textStyle="bold"
                         android:background="@drawable/action_button_border"
                         android:fontFamily="@font/nunito"
@@ -288,7 +299,7 @@
                     android:text="@string/back"
                     android:padding="@dimen/dp_16"
                     android:fontFamily="@font/nunito"
-                    android:textSize="@dimen/sp_14"
+                    android:textSize="@dimen/sp_18"
                     android:textColor="@color/white"
             />
             <TextView
@@ -460,6 +471,7 @@
                     android:id="@+id/book_back"
                     android:gravity="center"
                     android:padding="@dimen/dp_16"
+                    android:drawablePadding="@dimen/dp_16"
                     android:onClick="bookBack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -467,7 +479,7 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:text="@string/back"
                     android:fontFamily="@font/nunito"
-                    android:textSize="@dimen/sp_14"
+                    android:textSize="@dimen/sp_18"
                     android:textColor="@color/white"
             />
             <TextView
@@ -510,7 +522,7 @@
                     android:layout_height="wrap_content"/>
 
             <TextView
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_32"
                     android:layout_marginStart="@dimen/dp_32"
                     android:text="@string/start_time"
                     android:textColor="@color/white"
@@ -520,8 +532,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             <TextView
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginStart="@dimen/dp_290"
+                    android:layout_marginTop="@dimen/dp_32"
+                    android:layout_marginStart="@dimen/dp_380"
                     android:text="@string/end_time"
                     android:textColor="@color/white"
                     android:fontFamily="@font/nunito"
@@ -543,8 +555,8 @@
                         android:hint="@string/time_hint"
                         android:textColorHint="@color/white"
                         android:padding="@dimen/dp_16"
-                        android:drawablePadding="@dimen/dp_16"
                         android:drawableStart="@drawable/ic_meeting_time_new"
+                        android:drawablePadding="@dimen/dp_16"
                         android:fontFamily="@font/nunito"
                         android:textSize="@dimen/sp_18"
                         android:textColor="@color/white"
@@ -628,7 +640,7 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:text="@string/back"
                     android:fontFamily="@font/nunito"
-                    android:textSize="@dimen/sp_14"
+                    android:textSize="@dimen/sp_18"
                     android:textColor="@color/white"
             />
             <TextView

@@ -1,6 +1,7 @@
 package com.example.conferencerommapp.utils
 
 import android.annotation.SuppressLint
+import com.example.conferenceroomtabletversion.helper.Constants
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -9,15 +10,14 @@ class FormatTimeAccordingToZone {
         @SuppressLint("SimpleDateFormat")
 
         fun formatDateAsUTC(localTime: String): String {
-            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
-            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss'Z'")
+            val simpleDateFormat = SimpleDateFormat(Constants.DATE_TIME_FORMAT_IN_LOCAL_TIME_ZONE)
+            val sdf = SimpleDateFormat(Constants.DATE_TIME_FORMAT_IN_UTC)
 
             // parse local date time to get the date object
             var date = simpleDateFormat.parse(localTime)
 
             // set time zone to UTC
             sdf.timeZone = TimeZone.getTimeZone("UTC")
-
             return sdf.format(date)
         }
 
@@ -30,20 +30,9 @@ class FormatTimeAccordingToZone {
         fun formatDateAsIndianStandardTime(timeInUtc: String): String {
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             sdf.timeZone = TimeZone.getTimeZone("UTC")
-            var localTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+            var localTimeFormat = SimpleDateFormat(Constants.DATE_TIME_FORMAT_IN_LOCAL_TIME_ZONE)
             localTimeFormat.timeZone = TimeZone.getTimeZone(getCurrentTimeZone())
             return localTimeFormat.format((sdf.parse(timeInUtc)))
         }
     }
-
-/*
- @SuppressLint("SimpleDateFormat")
-        fun formatDateAsIndianStandardTime(timeInUtc: String): String {
-            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-            sdf.timeZone = TimeZone.getTimeZone("UTC")
-            var localTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
-            localTimeFormat.timeZone = TimeZone.getTimeZone(getCurrentTimeZone())
-            return localTimeFormat.format((sdf.parse(timeInUtc)))
-        }
- */
 }

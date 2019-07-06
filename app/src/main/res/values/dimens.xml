@@ -32,6 +32,9 @@
     <dimen name="dp_290">290dp</dimen>
     <dimen name="dp_244">244dp</dimen>
     <dimen name="dp_94">94dp</dimen>
+    <dimen name="sp_22">22sp</dimen>
+    <dimen name="sp_28">28sp</dimen>
+    <dimen name="dp_380">380dp</dimen>
 
 
 </resources>
