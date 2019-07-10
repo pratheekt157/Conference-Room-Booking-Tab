@@ -4,11 +4,12 @@
 >
     <stroke
             android:width="2dp"
-            android:color="#F29921"/>
+            android:color="@color/white"/>
     <corners android:radius="1dp"/>
     <padding
             android:bottom="2dp"
             android:left="2dp"
             android:right="2dp"
             android:top="2dp"/>
+    <solid android:color="@color/light_color_gradiant"/>
 </shape>

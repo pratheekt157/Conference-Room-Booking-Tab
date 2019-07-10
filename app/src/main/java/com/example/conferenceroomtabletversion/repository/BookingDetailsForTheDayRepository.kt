@@ -2,6 +2,7 @@ package com.example.conferenceroomtabletversion.repository
 
 import android.annotation.SuppressLint
 import android.util.Log
+import com.example.conferencerommapp.services.ConferenceService
 import com.example.conferencerommapp.utils.GetCurrentTimeInUTC
 import com.example.conferenceroomtabletversion.helper.Constants
 import com.example.conferenceroomtabletversion.model.*
@@ -11,6 +12,8 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -176,6 +179,26 @@ class BookingDetailsForTheDayRepository {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if ((response.code() == Constants.OK_RESPONSE) or (response.code() == Constants.SUCCESSFULLY_CREATED)) {
                     listener.onSuccess(response.code())
+                } else {
+                    listener.onFailure(response.code())
+                }
+            }
+        })
+    }
+
+    /**
+     * make request to server for unblock room
+     */
+    fun unblockRoom(bookingId: Int, listener: ResponseListener) {
+        val unBlockApi = ServiceBuilder.buildService(ConferenceService::class.java)
+        val requestCall: Call<ResponseBody> = unBlockApi.unBlockingConferenceRoom(bookingId)
+        requestCall.enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                listener.onFailure(Constants.INTERNAL_SERVER_ERROR)
+            }
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if ((response.code() == Constants.OK_RESPONSE) or (response.code() == Constants.SUCCESSFULLY_CREATED)) {
+                    listener.onSuccess(response.body()!!)
                 } else {
                     listener.onFailure(response.code())
                 }

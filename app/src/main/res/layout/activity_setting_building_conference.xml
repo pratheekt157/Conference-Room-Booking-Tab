@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:weightSum="3"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:layout_height="match_parent">
     <RelativeLayout
             android:background="#404756"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="0dp">
+
 
         <TextView
                 android:textSize="32sp"
@@ -26,20 +27,28 @@
             android:layout_weight="2"
             android:layout_width="match_parent"
             android:layout_height="0dp">
-    <TextView
-            android:fontFamily="@font/nunito"
-            android:textColor="@color/white"
-            android:textSize="28sp"
-            android:layout_margin="@dimen/dp_24"
-            android:text="Setup"
-            android:id="@+id/setup_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        <ImageView
+                android:layout_margin="@dimen/dp_24"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/nineleaps_logo_in_white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:fontFamily="@font/nunito"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:layout_margin="@dimen/dp_24"
+                android:text="Setup"
+                android:id="@+id/setup_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
         <Spinner
                 android:layout_width="500dp"
                 android:layout_height="64dp"
                 android:layout_centerHorizontal="true"
+
                 android:id="@+id/building_spinner"
                 android:layout_marginStart="300dp"
                 android:layout_below="@id/setup_label"

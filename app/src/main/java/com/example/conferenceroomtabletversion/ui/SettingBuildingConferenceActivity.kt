@@ -25,7 +25,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
      * Decleration of VieModel and variable
      */
 
-    private lateinit var mConferenceViewModel : SettingsViewModel
+    private lateinit var mConferenceViewModel: SettingsViewModel
 
     private lateinit var mBuildingsViewModel: SettingsViewModel
 
@@ -41,9 +41,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting_building_conference)
-        //Initialization of fields and viewModel
         init()
-        //Observe the
         settingObserveData()
     }
 
@@ -79,13 +77,15 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
             items.add(item.buildingName!!)
             itemsId.add(item.buildingId!!.toInt())
         }
-        building_spinner.adapter = ArrayAdapter<String>(this@SettingBuildingConferenceActivity,R.layout.custom_spinner,R.id.list,items)
+        building_spinner.adapter =
+            ArrayAdapter<String>(this@SettingBuildingConferenceActivity, R.layout.custom_spinner, R.id.list, items)
         building_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 /**
                  * It selects the first building
                  */
             }
+
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 getConference(itemsId[position])
                 conferenceObserveData()
@@ -104,23 +104,23 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         })
     }
 
-    private fun setAdapter(it:List<ConferenceList>) {
+    private fun setAdapter(it: List<ConferenceList>) {
         val conferencename = mutableListOf<String>()
         val conferenceid = mutableListOf<Int>()
         val buildingName = mutableListOf<String>()
         val buildingId = mutableListOf<Int>()
         val conferenceCapacity = mutableListOf<Int>()
-        val conferenceAminities= mutableListOf<List<String>>()
+        val conferenceAminities = mutableListOf<List<String>>()
 
         if (it.isEmpty()) {
-            conferencename.add("No Room in the Buildings")
+            conferencename.add(getString(R.string.no_rooms_in_building))
             conferenceid.add(-1)
             conferenceCapacity.add(-1)
             buildingId.add(-1)
             buildingName.add("")
             conferenceAminities.add(emptyList())
         } else {
-            conferencename.add("Select Room")
+            conferencename.add(getString(R.string.select_rooms))
             conferenceid.add(-1)
             conferenceCapacity.add(-1)
             buildingId.add(-1)
@@ -138,7 +138,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         conference_spinner.adapter =
             ArrayAdapter<String>(
                 this@SettingBuildingConferenceActivity,
-                R.layout.custom_spinner,R.id.list,
+                R.layout.custom_spinner, R.id.list,
                 conferencename
             )
         conference_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -147,12 +147,25 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
                  * It selects the first conference room
                  */
             }
+
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 configure.setOnClickListener {
-                    valid=validate(conferenceid[position])
+                    valid = validate(conferenceid[position])
                     if (valid) {
-                        setValuesInsidePreferences(conferenceCapacity[position], conferenceid[position], conferencename[position], buildingName[position], buildingId[position],conferenceAminities[position])
-                        startActivity(Intent(this@SettingBuildingConferenceActivity,ConferenceBookingActivity::class.java))
+                        setValuesInsidePreferences(
+                            conferenceCapacity[position],
+                            conferenceid[position],
+                            conferencename[position],
+                            buildingName[position],
+                            buildingId[position],
+                            conferenceAminities[position]
+                        )
+                        startActivity(
+                            Intent(
+                                this@SettingBuildingConferenceActivity,
+                                ConferenceBookingActivity::class.java
+                            )
+                        )
                         finish()
                     }
                 }
@@ -161,7 +174,7 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
     }
 
 
-    private fun validate(conferenceid: Int):Boolean {
+    private fun validate(conferenceid: Int): Boolean {
         return conferenceid != -1
     }
 
@@ -172,22 +185,28 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         }
     }
 
-    private fun setValuesInsidePreferences(capacity: Int, roomId: Int, roomName: String, buildingName: String, buildingId: Int , aminities: List<String>)  {
+    private fun setValuesInsidePreferences(
+        capacity: Int,
+        roomId: Int,
+        roomName: String,
+        buildingName: String,
+        buildingId: Int,
+        aminities: List<String>
+    ) {
         val edit = getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE).edit()
         edit.putInt(Constants.ROOM_ID, roomId)
-        edit.putBoolean(Constants.ONBORDING,true)
+        edit.putBoolean(Constants.ONBORDING, true)
         edit.putInt(Constants.BUILDING_ID, buildingId)
         edit.putString(Constants.BUILDING_NAME, buildingName)
         edit.putInt(Constants.CAPACITY, capacity)
         edit.putString(Constants.ROOM_NAME, roomName)
-        edit.putString(Constants.ROOM_AMINITIES,aminities.joinToString())
+        edit.putString(Constants.ROOM_AMINITIES, aminities.joinToString())
         edit.apply()
     }
 
 
-    private fun init(){
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-        actionBar?.hide()
+    private fun init() {
+        hideStatusBar()
         progressDialog = GetProgress.getProgressDialog(getString(R.string.progress_message), this)
         configure = findViewById(R.id.set_up_room)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -196,8 +215,14 @@ class SettingBuildingConferenceActivity : AppCompatActivity() {
         if (NetworkState.appIsConnectedToInternet(this)) {
             getViewModel()
         } else {
-            Toast.makeText(this,"No Internet",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun hideStatusBar() {
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        actionBar?.hide()
+
     }
 
     private fun getViewModel() {

@@ -24,7 +24,7 @@
                 android:hint="@string/room_name_hint"
                 android:textColorHint="@color/white"
                 android:layout_marginTop="@dimen/dp_24"
-                android:textSize="@dimen/sp_28"
+                android:textSize="@dimen/sp_22"
                 android:textStyle="bold"
                 android:fontFamily="@font/nunito"
                 android:textColor="@color/white"
@@ -32,15 +32,14 @@
 
         <TextView
                 android:id="@+id/room_capacity"
-                android:layout_below="@+id/room_name_text_view"
+                android:layout_below="@id/room_name_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_24"
                 android:hint="@string/room_capacity_hint"
-                android:layout_centerVertical="true"
                 android:textColorHint="@color/white"
                 android:layout_marginTop="@dimen/dp_8"
-                android:textSize="@dimen/sp_24"
+                android:textSize="@dimen/sp_18"
                 android:fontFamily="@font/nunito"
                 android:textColor="@color/white"
         />
@@ -55,7 +54,7 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_24"
                 android:textColorHint="@color/amenities_text_color"
-                android:textSize="@dimen/sp_24"
+                android:textSize="@dimen/sp_18"
                 android:fontFamily="@font/nunito"
                 android:textColor="@color/amenities_text_color"
         />
@@ -83,9 +82,9 @@
                 android:textColorHint="@color/white"
                 android:layout_marginEnd="@dimen/dp_24"
                 android:layout_marginBottom="@dimen/dp_24"
-                android:textSize="@dimen/sp_24"
-                android:fontFamily="@font/nunito"
-                android:textColor="@color/white"/>
+                android:textSize="@dimen/sp_18"
+                android:fontFamily="@font/nunito_light"
+                android:textColor="#FFFFFF"/>
 
     </RelativeLayout>
 
@@ -102,7 +101,7 @@
         <!--running and available meeting layout-->
         <RelativeLayout
                 android:visibility="visible"
-                android:background="@drawable/gradiant_for_available_room"
+                android:background="@drawable/room_details_gradiant"
                 android:id="@+id/booking_details_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -125,10 +124,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_24"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_32"
                     android:textSize="@dimen/sp_20"
                     android:fontFamily="@font/nunito"
-                    android:textColor="@color/white"
+                    android:textColor="#BFFFFFFF"
                     android:textColorHint="@color/white"/>
 
 
@@ -136,16 +135,16 @@
             <View
                     android:layout_below="@+id/available_till_text_view"
                     android:id="@+id/line"
-                    android:background="#80FFFFFF"
+                    android:background="@drawable/view_border_line"
                     android:layout_width="4dp"
-                    android:layout_height="74dp"
+                    android:layout_height="78dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="32dp"
             />
             <RelativeLayout
                     android:id="@+id/meeting_details_relative_layout"
                     android:layout_marginStart="24dp"
-                    android:background="#0FFFFFFF"
+                    android:background="@drawable/meeting_detail_layout_border"
                     android:layout_marginTop="32dp"
                     android:layout_below="@+id/available_till_text_view"
                     android:layout_width="445dp"
@@ -190,7 +189,7 @@
                         android:layout_height="45dp"
                         android:text="@string/unblock"
                         android:textStyle="bold"
-                        android:onClick="startMeeting"
+                        android:onClick="unBlockRoom"
                         android:visibility="gone"
                         android:background="@drawable/action_button_border"
                         android:fontFamily="@font/nunito"
@@ -241,35 +240,37 @@
                         android:textSize="@dimen/sp_18"/>
             </LinearLayout>
 
-            <TextView
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/dp_64"
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:background="#0F000000"
+                    android:layout_marginTop="@dimen/dp_32"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginStart="@dimen/dp_24"
-                    android:layout_marginEnd="@dimen/dp_24"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:visibility="visible"
-                    android:id="@+id/recycler_view_todays_booking_list"
                     android:layout_width="match_parent"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    android:layout_height="wrap_content"
-                    tools:listitem="@layout/layout_for_time_slot"/>
+                    android:layout_height="189dp">
+                <TextView
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/nunito"
+                        android:textSize="@dimen/sp_24"
+                        android:text="@string/today_s_booking"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/dp_24"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                <androidx.recyclerview.widget.RecyclerView
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/dp_24"
+                        android:layout_marginBottom="@dimen/dp_24"
+                        android:visibility="visible"
+                        android:id="@+id/recycler_view_todays_booking_list"
+                        android:layout_width="match_parent"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/layout_for_time_slot"/>
+            </LinearLayout>
 
-            <TextView
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/nunito"
-                    android:textSize="@dimen/sp_20"
-                    android:layout_marginBottom="@dimen/dp_24"
-                    android:text="@string/today_s_booking"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+
+
+
 
         </RelativeLayout>
     </LinearLayout>
@@ -329,6 +330,65 @@
                     android:textColor="@color/white"
                     android:layout_marginStart="@dimen/dp_24"
                     android:textSize="@dimen/sp_18"/>
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <!-- unblock meeting now-->
+    <RelativeLayout
+            android:visibility="gone"
+            android:background="@drawable/room_details_gradiant"
+            android:id="@+id/unblock_room_main_layout"
+            android:layout_width="match_parent"
+            android:layout_weight="3"
+            android:layout_height="0dp">
+        <RelativeLayout
+                android:background="@color/light_color_gradiant"
+                android:id="@+id/unblock_room_confirm_layout"
+                android:layout_marginStart="@dimen/dp_177"
+                android:layout_marginEnd="@dimen/dp_177"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <TextView
+                    android:id="@+id/backUnblock"
+                    android:onClick="unblockBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="@string/back"
+                    android:padding="@dimen/dp_16"
+                    android:fontFamily="@font/nunito"
+                    android:textSize="@dimen/sp_20"
+                    android:textColor="@color/white"
+            />
+            <TextView
+                    android:layout_below="@+id/backUnblock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_48"
+                    android:textSize="@dimen/sp_28"
+                    android:fontFamily="@font/nunito"
+                    android:textColor="@color/white"
+                    android:text="@string/unblock_room_now"
+            />
+            <TextView
+                    android:id="@+id/unblock_room_confirm_button"
+                    android:gravity="center"
+                    android:onClick="confirmUnblockRoom"
+                    android:layout_width="@dimen/dp_135"
+                    android:layout_height="@dimen/dp_48"
+                    android:layout_alignParentBottom="true"
+                    android:text="@string/confirm"
+                    android:layout_marginBottom="@dimen/dp_60"
+                    android:textStyle="bold"
+                    android:background="@drawable/action_button_border"
+                    android:fontFamily="@font/nunito"
+                    android:textColor="@color/white"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:textSize="@dimen/sp_20"/>
         </RelativeLayout>
 
 
@@ -397,13 +457,16 @@
                         android:layout_height="wrap_content"/>
             </LinearLayout>
             <EditText
+                    android:layout_below="@id/feedback_layout"
                     android:id="@+id/feedback_edit_text"
                     android:gravity="left"
+                    android:layout_marginTop="@dimen/dp_48"
                     android:paddingStart="@dimen/dp_16"
                     android:paddingTop="@dimen/dp_8"
                     android:paddingRight="@dimen/dp_16"
                     android:paddingBottom="@dimen/dp_8"
-                    android:layout_margin="@dimen/dp_24"
+                    android:layout_marginRight="@dimen/dp_24"
+                    android:layout_marginLeft="@dimen/dp_24"
                     android:textColor="#80FFFFFF"
                     android:textColorHint="#80FFFFFF"
                     android:fontFamily="@font/nunito"
@@ -412,9 +475,8 @@
                     android:focusableInTouchMode="true"
                     android:hint="@string/good_feedback_placeholder"
                     android:background="@drawable/feedback_background"
-                    android:layout_centerVertical="true"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_90"/>
+                    android:layout_height="@dimen/dp_135"/>
             <TextView
                     android:id="@+id/send_feedback"
                     android:gravity="center"

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <RelativeLayout
+            android:id="@+id/main_relative_layout"
+            android:background="#E54B4B"
+            android:layout_width="147dp"
+            android:layout_height="84dp">
+        <TextView
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="@dimen/dp_16"
+                android:id="@+id/time_card_view_text"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_18"
+                android:alpha="0.75"
+                android:fontFamily="@font/nunito"
+                android:text="@string/_2_30pm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <View
+                android:layout_toRightOf="@+id/time_card_view_text"
+                android:id="@+id/line_horizontal"
+                android:alpha="0.6"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_32"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+
+        <TextView
+                android:layout_marginStart="16dp"
+                android:id="@+id/slot_status_text_view"
+                android:fontFamily="@font/nunito"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_below="@+id/time_card_view_text"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:paddingRight="1dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+    </RelativeLayout>
+</LinearLayout>
+

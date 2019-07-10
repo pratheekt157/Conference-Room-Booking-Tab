@@ -76,4 +76,7 @@ dependencies {
 
     implementation 'com.github.sujithkanna:smileyrating:1.6.8'
 
+    // for socket IO
+    implementation 'com.github.nkzawa:socket.io-client:0.6.0'
 }
+

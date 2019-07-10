@@ -5,5 +5,7 @@ data class SlotFinalList (
     var isBooked: Boolean? = false,
     var status: String? = null,
     var meetingDuration: String? = null,
-    var inPast: Boolean? = null
+    var inPast: Boolean? = null,
+    var organiser: String? = null,
+    var endTime: String? = null
 )

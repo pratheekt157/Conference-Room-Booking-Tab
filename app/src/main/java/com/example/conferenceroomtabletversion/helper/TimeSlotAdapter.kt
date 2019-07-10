@@ -33,10 +33,10 @@ class TimeSlotAdapter(
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.meetingDurationTextView.text =
-            ConvertTimeTo12HourFormat.convert12(bookingDetailsForTheDayItemList[position].slot.toString())
+        holder.meetingDurationTextView.text = bookingDetailsForTheDayItemList[position].slot.toString()
         if (bookingDetailsForTheDayItemList[position].isBooked!!) {
             changeColorToOccupied(holder)
+            makeVisibilityGoneForSlotStatus(holder)
             if (bookingDetailsForTheDayItemList[position].status == mContext.getString(R.string.middle_slot)) {
                 makeVisibilityGoneForVerticalLine(holder)
                 holder.horizontalLine.visibility = View.VISIBLE
@@ -56,14 +56,16 @@ class TimeSlotAdapter(
             }
         } else {
             holder.horizontalLine.visibility = View.GONE
+            makeVisibilityVisibleForSlotStatus(holder)
             makeVisibilityVisibleForVerticalLine(holder)
-            holder.mainLayout.setBackgroundColor(Color.parseColor("#00D4AB"))
+            holder.mainLayout.setBackgroundColor(Color.parseColor("#479F78"))
         }
         if (bookingDetailsForTheDayItemList[position].inPast == false && bookingDetailsForTheDayItemList[position].isBooked != true) {
-            holder.mainLayout.setBackgroundColor(Color.parseColor("#808080"))
+            makeVisibilityGoneForSlotStatus(holder)
+            holder.mainLayout.setBackgroundColor(Color.parseColor("#4B5365"))
         } else {
             if (!bookingDetailsForTheDayItemList[position].isBooked!!)
-                holder.mainLayout.setBackgroundColor(Color.parseColor("#00D4AB"))
+                holder.mainLayout.setBackgroundColor(Color.parseColor("#479F78"))
         }
         holder.itemView.setOnClickListener {
             if (bookingDetailsForTheDayItemList[position].inPast!! && !bookingDetailsForTheDayItemList[position].isBooked!!) {
@@ -73,7 +75,7 @@ class TimeSlotAdapter(
     }
 
     private fun changeColorToOccupied(holder: ViewHolder) {
-        holder.mainLayout.setBackgroundColor(Color.parseColor("#FF0000"))
+        holder.mainLayout.setBackgroundColor(Color.parseColor("#E54B4B"))
     }
 
     private fun clearTextOfTimeSlot(holder: ViewHolder) {
@@ -82,6 +84,14 @@ class TimeSlotAdapter(
 
     private fun makeVisibilityGoneForVerticalLine(holder: ViewHolder) {
         holder.verticalLine.visibility = View.GONE
+    }
+
+    private fun makeVisibilityGoneForSlotStatus(holder: ViewHolder) {
+        holder.availableLebal.visibility = View.GONE
+    }
+
+    private fun makeVisibilityVisibleForSlotStatus(holder: ViewHolder) {
+        holder.availableLebal.visibility = View.VISIBLE
     }
 
     private fun makeVisibilityVisibleForVerticalLine(holder: ViewHolder) {
@@ -97,6 +107,7 @@ class TimeSlotAdapter(
         var meetingDurationTextView: TextView = itemView.findViewById(R.id.time_card_view_text)
         var verticalLine: View = itemView.findViewById(R.id.line0)
         val horizontalLine: View = itemView.findViewById(R.id.line_horizontal)
+        val availableLebal: View = itemView.findViewById(R.id.slot_status_text_view)
     }
 
     interface BookMeetingClickListener {

@@ -34,6 +34,10 @@ class BookingForTheDayViewModel : ViewModel() {
 
     private var mFailureCodeForFeedback = MutableLiveData<Any>()
 
+    private var mSuccessCodeForBlockRoom =  MutableLiveData<Any>()
+    private var mFailureCodeForBlockRoom =  MutableLiveData<Any>()
+
+
 
     /**
      * a MutableLivedata variable which will hold the Value for the Livedata
@@ -259,5 +263,31 @@ class BookingForTheDayViewModel : ViewModel() {
      */
     fun returnFailureForFeedback(): MutableLiveData<Any> {
         return mFailureCodeForFeedback
+    }
+
+
+    /**token
+     * -------------------------------------unblock room-------------------------------------
+     */
+    fun unBlockRoom(bookingId: Int) {
+        mBookingDetailsForTheDayRepository = BookingDetailsForTheDayRepository.getInstance()
+        mBookingDetailsForTheDayRepository!!.unblockRoom(bookingId, object:
+            ResponseListener {
+            override fun onSuccess(success: Any) {
+                mSuccessCodeForBlockRoom.value = success
+            }
+
+            override fun onFailure(failure: Any) {
+                mFailureCodeForBlockRoom.value = failure
+            }
+
+        })
+    }
+
+    fun returnSuccessCodeForUnBlockRoom(): MutableLiveData<Any> {
+        return mSuccessCodeForBlockRoom
+    }
+    fun returnFailureCodeForUnBlockRoom(): MutableLiveData<Any> {
+        return mFailureCodeForBlockRoom
     }
 }

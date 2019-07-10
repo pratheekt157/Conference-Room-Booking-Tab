@@ -41,4 +41,10 @@ interface ConferenceService {
     fun conferencelist(
             @Query("buildingId") id: Int
     ): Call<List<ConferenceList>>
+
+    @PUT("api/UnblockRoom")
+    fun unBlockingConferenceRoom(
+        @Body meetId: Int
+    ): Call<ResponseBody>
+
 }

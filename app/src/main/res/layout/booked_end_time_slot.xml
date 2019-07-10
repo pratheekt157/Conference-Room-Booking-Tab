@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <RelativeLayout
+            android:id="@+id/main_relative_layout"
+            android:background="#E54B4B"
+            android:layout_width="97dp"
+            android:layout_height="84dp">
+        <View
+                android:layout_centerInParent="true"
+                android:id="@+id/line_horizontal"
+                android:visibility="gone"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"/>
+
+        <TextView
+                android:layout_marginTop="20dp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/time_card_view_text"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_18"
+                android:alpha="0.75"
+                android:fontFamily="@font/nunito"
+                android:text="@string/_2_30pm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </RelativeLayout>
+    <View
+            android:id="@+id/line0"
+            android:background="@color/grey"
+            android:layout_width="3dp"
+            android:layout_height="match_parent"/>
+</LinearLayout>
+

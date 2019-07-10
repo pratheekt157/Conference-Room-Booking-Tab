@@ -89,18 +89,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
             goForSetup()
         }
     }
-
-    private fun hideSoftKeyboard1() {
-        book_now_main_layout.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                hideSoftKeyboard()
-                return false
-            }
-
-
-        })
-    }
-
     /**
      * init recycler view
      */
@@ -212,7 +200,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
                             if (mBookingList.isNotEmpty()) {
                                 flag = false
                                 for (booking in mBookingList) {
-                                    if (booking.status == getString(R.string.booked)) {
+                                    if (booking.status == getString(R.string.booked) || booking.status == getString(R.string.blocked)) {
                                         val timeDifference = getMillisecondsDifference(booking.fromTime!!)
                                         if (timeDifference > 0) {
                                             mNextMeeting = booking
@@ -243,7 +231,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
                                     visibilityToGoneForLayoutForNextMeeting()
                                 }
                                 for (booking in mBookingList) {
-                                    if (booking.status == getString(R.string.booked) || booking.status == getString(R.string.started) || booking.status == "Blocked") {
+                                    if (booking.status == getString(R.string.booked) || booking.status == getString(R.string.started) || booking.status == getString(R.string.blocked)) {
                                         val startTimeInMillis = getMilliseconds(booking.fromTime!!)
                                         val endTimeInMillis = getMilliseconds(booking.toTime!!)
                                         if (System.currentTimeMillis() in startTimeInMillis..endTimeInMillis) {
@@ -253,23 +241,28 @@ class ConferenceBookingActivity : AppCompatActivity() {
                                                 mRunningMeetingId = booking.bookingId!!
                                                 mRunningMeeting = booking
                                                 setDataToUiForRunningMeeting(booking)
-                                                if (booking.status == getString(R.string.meeting_started)) {
-                                                    // occupied status
-                                                    setVisibilityToGoneForStartMeeting()
-                                                    setVisibilityToVisibleForEndMeeting()
-                                                    setVisibilityToVisibleForExtendMeeting()
-                                                    unblock_room.visibility = View.GONE
-                                                    startTimer(getMeetingDurationInMilliseonds(booking.toTime!!))
-                                                } else if (booking.status == getString(R.string.booked)) {
-                                                    visibilityToVisibleForLayoutForNextMeeting()
-                                                    unblock_room.visibility = View.GONE
-                                                    setVisibilityToVisibleForStartMeeting()
-                                                } else if(booking.status == "Blocked") {
-                                                    status_of_room.text = "Under Maintenance"
-                                                    setVisibilityToGoneForStartMeeting()
-                                                    setVisibilityToGoneForStartMeeting()
-                                                    setVisibilityToGoneForStartMeeting()
-                                                    unblock_room.visibility = View.VISIBLE
+                                                when {
+                                                    booking.status == getString(R.string.meeting_started) -> {
+                                                        // occupied status
+                                                        setVisibilityToGoneForStartMeeting()
+                                                        setVisibilityToVisibleForEndMeeting()
+                                                        setVisibilityToVisibleForExtendMeeting()
+                                                        unblock_room.visibility = View.GONE
+                                                        startTimer(getMeetingDurationInMilliseonds(booking.toTime!!))
+                                                    }
+                                                    booking.status == getString(R.string.booked) -> {
+                                                        visibilityToVisibleForLayoutForNextMeeting()
+                                                        unblock_room.visibility = View.GONE
+                                                        setVisibilityToVisibleForStartMeeting()
+                                                    }
+                                                    booking.status == getString(R.string.blocked) -> {
+                                                        changeStatusToUnderMaintenance()
+                                                        setVisibilityToGoneForStartMeeting()
+                                                        setVisibilityToGoneForStartMeeting()
+                                                        setVisibilityToGoneForStartMeeting()
+                                                        setVisibilityToVisibleForUnblockRoom()
+                                                        startTimer(getMeetingDurationInMilliseonds(booking.toTime!!))
+                                                    }
                                                 }
                                             }
                                             break
@@ -442,6 +435,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
     fun cancelFeedback(view: View) {
         makeVisibilityVisibleForMainLayout()
         makeVisibilityGoneForFeedbackLayout()
+        feedback_edit_text.text.clear()
         setDefaultImageForFeedback()
     }
 
@@ -466,6 +460,19 @@ class ConferenceBookingActivity : AppCompatActivity() {
         DateAndTimePicker.getTimePickerDialog(this, end_time_text_view, startTimeFromSelectedSlot)
     }
 
+    fun unBlockRoom(view: View) {
+        makeVisibilityVisibleForUnblockRoomLayout()
+        makeVisibilityGoneForMainLayout()
+    }
+
+    fun unblockBack(view: View) {
+        makeVisibilityVisibleForMainLayout()
+        makeVisibilityGoneForUnblockRoomLayout()
+    }
+
+    fun confirmUnblockRoom(view: View) {
+        unblockRoomCall(mRunningMeetingId)
+    }
     // -------------------------------------------------------------------------------------Handle Extend meeting button click functionality------------------------------
 
     private fun handleExtendMeetingClick() {
@@ -640,6 +647,18 @@ class ConferenceBookingActivity : AppCompatActivity() {
         feedback_main_layout.visibility = View.VISIBLE
     }
 
+    /**
+     * unblock confirm  layout visibility
+     */
+
+    private fun makeVisibilityGoneForUnblockRoomLayout() {
+        unblock_room_main_layout.visibility = View.GONE
+    }
+
+    private fun makeVisibilityVisibleForUnblockRoomLayout() {
+        unblock_room_main_layout.visibility = View.VISIBLE
+    }
+
 
 //---------------------------------------------------------------------------------------visibility of all action text views----------------------------------------------------
 
@@ -665,6 +684,14 @@ class ConferenceBookingActivity : AppCompatActivity() {
 
     private fun setVisibilityToVisibleForStartMeeting() {
         start_meeting.visibility = View.VISIBLE
+    }
+
+    private fun setVisibilityToVisibleForUnblockRoom() {
+        unblock_room.visibility = View.VISIBLE
+    }
+
+    private fun setVisibilityToGoneForUnblockRoom() {
+        unblock_room.visibility = View.GONE
     }
 
 //---------------------------------------------------------------------------------------visibility of end meeting time slots----------------------------------------------------
@@ -702,6 +729,10 @@ class ConferenceBookingActivity : AppCompatActivity() {
 
     private fun changeStatusToOccupied() {
         status_of_room.text = getString(R.string.occupied)
+    }
+
+    private fun changeStatusToUnderMaintenance() {
+        status_of_room.text = getString(R.string.under_maintenance)
     }
 
 
@@ -780,7 +811,10 @@ class ConferenceBookingActivity : AppCompatActivity() {
         observeDataForExtendMeeting()
         observeDateForStartMeeting()
         observeDataForFeedback()
+        observeDataForUnblockRoom()
     }
+
+
 
     /**
      * Schedule for the day (Booking list from server)
@@ -802,6 +836,8 @@ class ConferenceBookingActivity : AppCompatActivity() {
         mBookingForTheDayViewModel.returnSuccessForEndMeeting().observe(this, Observer {
             mProgressDialog.dismiss()
             isMeetingRunning = false
+            mCountDownTimer!!.cancel()
+            mTimeLeftInMillis = 0
             makeVisibilityGoneForEndMeetingMainLayout()
             makeVisibilityGoneForMainLayout()
             changeStatusToAvailable()
@@ -912,6 +948,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
             setDefaultImageForFeedback()
             makeVisibilityGoneForFeedbackLayout()
             makeVisibilityVisibleForMainLayout()
+            feedback_edit_text.text.clear()
             getViewModel()
         })
         // negative response from server
@@ -920,6 +957,36 @@ class ConferenceBookingActivity : AppCompatActivity() {
             ShowToast.show(this, it as Int)
             makeVisibilityGoneForFeedbackLayout()
             makeVisibilityVisibleForMainLayout()
+            feedback_edit_text.text.clear()
+        })
+    }
+
+    // unblock room observer
+    private fun observeDataForUnblockRoom() {
+        /**
+         * observing data for Unblocking
+         */
+        mBookingForTheDayViewModel.returnSuccessCodeForUnBlockRoom().observe(this, Observer {
+            mProgressDialog.dismiss()
+            Toasty.success(this,getString(R.string.room_unblocked), Toast.LENGTH_SHORT, true).show()
+            isMeetingRunning = false
+            mCountDownTimer!!.cancel()
+            mTimeLeftInMillis = 0
+            changeStatusToAvailable()
+            setGradientToAvailable()
+            setVisibilityToGoneForEndMeeting()
+            setVisibilityToGoneForExtendMeeting()
+            setVisibilityToGoneForStartMeeting()
+            setVisibilityToGoneForUnblockRoom()
+            getViewModel()
+            makeVisibilityVisibleForMainLayout()
+            makeVisibilityGoneForUnblockRoomLayout()
+        })
+        mBookingForTheDayViewModel.returnFailureCodeForUnBlockRoom().observe(this, Observer {
+            mProgressDialog.dismiss()
+            makeVisibilityVisibleForMainLayout()
+            makeVisibilityGoneForUnblockRoomLayout()
+            ShowToast.show(this, it as Int)
         })
     }
 
@@ -983,8 +1050,9 @@ class ConferenceBookingActivity : AppCompatActivity() {
             val finalSlot = SlotFinalList()
             val finalSlotNew = SlotFinalList()
             var flagForNewSlot = false
-            finalSlot.slot = timeSlotList[index]
-            finalSlotNew.slot = timeSlotList[index]
+            val timeIn12HourFormat = ConvertTimeTo12HourFormat.convert12(timeSlotList[index])
+            finalSlot.slot = timeIn12HourFormat
+            finalSlotNew.slot = timeIn12HourFormat
             for (itemIndex in mBookingListForSlotArrangment.indices) {
                 finalSlot.meetingDuration = mBookingListForSlotArrangment[itemIndex].meetingDuration
                 val startTimeDifference = getMilliSecondDifference(
@@ -1030,7 +1098,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
             }
             finalSlot.inPast = !checkTimeInFuture(timeSlotList[index])
             finalSlotList.add(finalSlot)
-            if (flagForNewSlot && !checkTimeInFuture(timeSlotList[index])) {
+            if (flagForNewSlot) {
                 finalSlotNew.inPast = !checkTimeInFuture(timeSlotList[index])
                 finalSlotNew.isBooked = false
                 timeSlotList.add(index + 1, timeSlotList[index])
@@ -1080,6 +1148,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
         }
         changeStatusToAvailable()
         setGradientToAvailable()
+        setVisibilityToGoneForUnblockRoom()
         setVisibilityToGoneForEndMeeting()
         setVisibilityToGoneForExtendMeeting()
         setVisibilityToGoneForStartMeeting()
@@ -1304,6 +1373,14 @@ class ConferenceBookingActivity : AppCompatActivity() {
         mBookingForTheDayViewModel.addFeedback(feedback)
     }
 
+    /**
+     * function calls the ViewModel of Unblock
+     */
+    private fun unblockRoomCall(mBookingId: Int) {
+        mProgressDialog.show()
+        mBookingForTheDayViewModel.unBlockRoom(mBookingId)
+    }
+
 //----------------------------------------------------------------------------------------End Meeting Functionality ------------------------------------------------------------------------------------------------
 
     // end meeting before time
@@ -1323,16 +1400,16 @@ class ConferenceBookingActivity : AppCompatActivity() {
         val sdf = SimpleDateFormat("m")
         var n = sdf.format(Date()).toInt()
         if (n % 15 != 0) {
-            if ((0 < n) && (n < 15)) {
-                n += (15 - n)
+            n += if ((0 < n) && (n < 15)) {
+                (15 - n)
 
             } else if ((15 < n) && (n < 30)) {
-                n += (30 - n)
+                (30 - n)
 
             } else if ((30 < n) && (n < 45)) {
-                n += (45 - n)
+                (45 - n)
             } else {
-                n += (60 - n)
+                (60 - n)
             }
         }
         return getNewExtendedEndTime(n)
@@ -1363,15 +1440,12 @@ class ConferenceBookingActivity : AppCompatActivity() {
             override fun onTick(millisUntilFinished: Long) {
                 mTimeLeftInMillis = millisUntilFinished
             }
-
             override fun onFinish() {
                 mTimerRunning = false
                 isMeetingRunning = false
                 changeStatusToAvailable()
                 setGradientToAvailable()
-                if (isCommingFromExtendedMeeting) {
-                    isCommingFromExtendedMeeting = false
-                } else {
+                if (mRunningMeeting.status != getString(R.string.blocked)) {
                     endMeetingNow(
                         EndMeeting(
                             mRunningMeetingId,
@@ -1379,6 +1453,8 @@ class ConferenceBookingActivity : AppCompatActivity() {
                             FormatTimeAccordingToZone.formatDateAsUTC(mRunningMeeting.toTime!!)
                         )
                     )
+                } else {
+                    setVisibilityToGoneForUnblockRoom()
                 }
             }
         }.start()
