@@ -887,7 +887,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
             ShowToast.show(this, it as Int)
         })
     }
-
     // observe data for end meeting
     private fun observerDataForEndMeeting() {
         // positive response from server for end meeting
@@ -896,16 +895,17 @@ class ConferenceBookingActivity : AppCompatActivity() {
             isMeetingRunning = false
             mCountDownTimer!!.cancel()
             mTimeLeftInMillis = 0
-            makeVisibilityGoneForEndMeetingMainLayout()
             makeVisibilityGoneForMainLayout()
-            changeStatusToAvailable()
-            setGradientToAvailable()
+            makeVisibilityGoneForEndMeetingMainLayout()
+            makeVisibilityVisibleForFeedbackLayout()
             setVisibilityToGoneForEndMeeting()
             setVisibilityToGoneForExtendMeeting()
             setVisibilityToGoneForStartMeeting()
+            changeStatusToAvailable()
+            setGradientToAvailable()
             getViewModel()
             mMeetingIdForFeedback = mRunningMeeting.bookingId!!
-            makeVisibilityVisibleForFeedbackLayout()
+
         })
         // negative response from server for end meeting
         mBookingForTheDayViewModel.returnFailureForEndMeeting().observe(this, Observer {
@@ -1263,7 +1263,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
         val toastContentView = toast!!.view as LinearLayout
         val group = toast.view as ViewGroup
         val messageTextView = group.getChildAt(0) as TextView
-        messageTextView.textSize = 30F
+        messageTextView.textSize = 24F
         val imageView = ImageView(applicationContext)
         imageView.setImageResource(R.drawable.ic_layers)
         toastContentView.addView(imageView, 0)
