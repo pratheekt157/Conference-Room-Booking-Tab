@@ -2,17 +2,30 @@ package com.example.conferenceroomtabletversion.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
+import android.view.MotionEvent
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.conferenceroomtabletversion.BaseApplication
 import com.example.conferenceroomtabletversion.R
 import com.example.conferenceroomtabletversion.helper.SolidAdapter
+import com.example.conferenceroomtabletversion.helper.TimeSlotAdapter
+import com.example.conferenceroomtabletversion.model.Buildings
 import com.example.conferenceroomtabletversion.model.SlotFinalList
 import com.github.nkzawa.socketio.client.Socket
+import kotlinx.android.synthetic.main.activity_setting_building_conference.*
 import kotlinx.android.synthetic.main.booking_layout.*
+import java.security.AccessController.getContext
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
+import android.app.Activity
+
+import android.view.inputmethod.InputMethodManager
 
 
 class MainActivity : AppCompatActivity() {
@@ -22,9 +35,13 @@ class MainActivity : AppCompatActivity() {
     private var timeSlotList = mutableListOf<String>()
     private var finalList = mutableListOf<SlotFinalList>()
 
+    @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.booking_layout)
+
+        val androidDeviceId = Settings.Secure.getString(this.contentResolver,
+            Settings.Secure.ANDROID_ID)
         val app = application as BaseApplication
         mSocket = app.getmSocket()!!
         mSocket.connect()
@@ -34,30 +51,41 @@ class MainActivity : AppCompatActivity() {
         mSocket.on("make_call") {
             //make api call to get refreshed data
         }
-        addMinutes()
+
+//        main_layout.setOnClickListener {
+//            //hideSoftKeyboard(this)
+//        }
+
+        edit_text.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+            if(!hasFocus) {
+                hide(v!!)
+            }
+        }
+
         makeList()
         initRecyclerView()
     }
+
+    fun hide(view: View) {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
         mSocket.disconnect()
     }
+
+
     private fun initRecyclerView() {
-        mCustomAdapter = SolidAdapter(finalList as ArrayList<SlotFinalList>)
+        mCustomAdapter = SolidAdapter(finalList as ArrayList<SlotFinalList>, this, object: TimeSlotAdapter.BookMeetingClickListener {
+            override fun bookSlot(time: String) {
+
+            }
+
+        })
         recycler_view_todays_booking_list.adapter = mCustomAdapter
-    }
-
-
-    private fun addMinutes() {
-        val myTime = "09:00"
-        val df = SimpleDateFormat("HH:mm")
-        val d = df.parse(myTime)
-        val cal = Calendar.getInstance()
-        cal.time = d
-        cal.add(Calendar.MINUTE, 15)
-        val newTime = df.format(cal.time)
-        Log.i("---------new time", newTime)
     }
 
     private fun makeList() {
@@ -84,7 +112,7 @@ class MainActivity : AppCompatActivity() {
 
         val item = SlotFinalList()
         item.isBooked = true
-        item.status = "Start"
+        item.status = getString(R.string.start)
         item.slot = "6:00 PM"
         item.organiser = "Prateek"
 
@@ -125,7 +153,7 @@ class MainActivity : AppCompatActivity() {
 
         val item8 = SlotFinalList()
         item8.isBooked = true
-        item8.status = "Start"
+        item8.status = getString(R.string.start)
         item8.slot = "7:45 PM"
         item8.organiser = "Dilna"
 
@@ -151,19 +179,19 @@ class MainActivity : AppCompatActivity() {
 
         val item13 = SlotFinalList()
         item13.isBooked = true
-        item13.status = "Start"
+        item13.status = getString(R.string.start)
         item13.slot = "8:45 PM"
         item13.endTime = "9:00 PM"
         item13.organiser = "Abhijeet Shah"
-        item13.meetingDuration = "15 minutes"
+        item13.meetingDuration = getString(R.string.for_15_minutes)
 
         val item14 = SlotFinalList()
         item14.isBooked = true
-        item14.status = "Start"
+        item14.status = getString(R.string.start)
         item14.slot = "9:00 PM"
         item14.endTime = "9:15 PM"
         item14.organiser = "Kapil Patel"
-        item14.meetingDuration = "15 minutes"
+        item14.meetingDuration = getString(R.string.for_15_minutes)
 
         val item15 = SlotFinalList()
         item15.isBooked = false
@@ -172,16 +200,21 @@ class MainActivity : AppCompatActivity() {
 
         val item16 = SlotFinalList()
         item16.isBooked = true
-        item16.status = "Start"
+        item16.status = getString(R.string.start)
         item16.slot = "9:30 PM"
         item16.endTime = "9:45 PM"
         item16.organiser = "Devshree"
-        item16.meetingDuration = "15 minutes"
+        item16.meetingDuration = getString(R.string.for_15_minutes)
 
         val item17 = SlotFinalList()
         item17.isBooked = false
         item17.status = "Available"
         item17.slot = "9:45 PM"
+
+        val item18 = SlotFinalList()
+        item18.isBooked = false
+        item18.status = "Available"
+        item18.slot = "10:45 PM"
 
 
         finalList.add(p1)
@@ -206,11 +239,10 @@ class MainActivity : AppCompatActivity() {
         finalList.add(item15)
         finalList.add(item16)
         finalList.add(item17)
+        finalList.add(item18)
 
 
     }
-
-
 
     @SuppressLint("SimpleDateFormat")
     private fun getTimeSlot() {
@@ -226,3 +258,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+

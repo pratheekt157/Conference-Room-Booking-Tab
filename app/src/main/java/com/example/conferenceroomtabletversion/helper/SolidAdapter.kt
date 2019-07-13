@@ -1,6 +1,7 @@
 package com.example.conferenceroomtabletversion.helper
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,9 @@ import com.example.conferenceroomtabletversion.model.SlotFinalList
 
 
 class SolidAdapter(
-    private val bookingDetailsForTheDayItemList: ArrayList<SlotFinalList>
+    private val bookingDetailsForTheDayItemList: ArrayList<SlotFinalList>,
+    private val mContext: Context,
+    private val listener: TimeSlotAdapter.BookMeetingClickListener
 ) : RecyclerView.Adapter<SolidAdapter.ViewHolder>() {
 
     /**
@@ -37,26 +40,24 @@ class SolidAdapter(
     override fun getItemViewType(position: Int): Int {
         return if (bookingDetailsForTheDayItemList[position].isBooked!!) {
             when {
-                bookingDetailsForTheDayItemList[position].status == "Middle" -> R.layout.booked_middle_time_slot
-                bookingDetailsForTheDayItemList[position].status == "Start" ->  {
-                    if(bookingDetailsForTheDayItemList[position].meetingDuration == "15 minutes") {
+                bookingDetailsForTheDayItemList[position].status == mContext.getString(R.string.middle) -> R.layout.booked_middle_time_slot
+                bookingDetailsForTheDayItemList[position].status == mContext.getString(R.string.start) ->  {
+                    if(bookingDetailsForTheDayItemList[position].meetingDuration == mContext.getString(R.string.for_15_minutes)) {
                         R.layout.booked_start_time_slot_for_15_minutes
                     } else {
                         R.layout.booked_start_time_slot
                     }
 
                 }
-                bookingDetailsForTheDayItemList[position].status == "End" -> R.layout.booked_end_time_slot
-                bookingDetailsForTheDayItemList[position].status == "Past" -> R.layout.past_time_slot_layout
+                bookingDetailsForTheDayItemList[position].status == mContext.getString(R.string.end) -> R.layout.booked_end_time_slot
                 else -> R.layout.available_time_slot
             }
         } else {
-            if(bookingDetailsForTheDayItemList[position].status == "Past") {
+            if(bookingDetailsForTheDayItemList[position].status == mContext.getString(R.string.past)) {
                 R.layout.past_time_slot_layout
             } else {
                 R.layout.available_time_slot
             }
-
         }
     }
 
@@ -68,6 +69,9 @@ class SolidAdapter(
         when(holder.itemViewType) {
             R.layout.available_time_slot ->  {
                 holder.bind(bookingDetailsForTheDayItemList[position])
+                holder.itemView.setOnClickListener {
+                    listener.bookSlot(bookingDetailsForTheDayItemList[position].slot!!)
+                }
             }
             R.layout.booked_start_time_slot ->  {
                 holder.bind(bookingDetailsForTheDayItemList[position])
@@ -139,6 +143,10 @@ class SolidAdapter(
         override fun bind(item: SlotFinalList) {
             slotTime.text = item.slot
         }
+    }
+
+    interface BookMeetingClickListener {
+        fun bookSlot(time: String)
     }
 }
 

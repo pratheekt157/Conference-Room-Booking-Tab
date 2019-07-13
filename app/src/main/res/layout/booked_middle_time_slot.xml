@@ -12,7 +12,7 @@
         <View
                 android:id="@+id/line_horizontal"
                 android:alpha="0.6"
-                android:layout_marginTop="@dimen/dp_32"
+                android:layout_marginTop="@dimen/dp_36"
                 android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"/>

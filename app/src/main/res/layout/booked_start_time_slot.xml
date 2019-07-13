@@ -11,13 +11,14 @@
             android:layout_height="84dp">
         <TextView
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginStart="12dp"
                 android:id="@+id/time_card_view_text"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_18"
+                android:gravity="left"
                 android:alpha="0.75"
                 android:fontFamily="@font/nunito"
-                android:text="@string/_2_30pm"
+                android:text="12:00 PM"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
@@ -26,19 +27,18 @@
                 android:id="@+id/line_horizontal"
                 android:alpha="0.6"
                 android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_32"
+                android:layout_marginTop="@dimen/dp_36"
                 android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"/>
 
         <TextView
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="12dp"
                 android:id="@+id/slot_status_text_view"
                 android:fontFamily="@font/nunito"
-                android:layout_marginTop="@dimen/dp_8"
                 android:layout_below="@+id/time_card_view_text"
                 android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:paddingRight="1dp"
                 android:ellipsize="end"
                 android:maxLines="1"

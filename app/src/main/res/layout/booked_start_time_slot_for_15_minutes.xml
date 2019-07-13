@@ -7,17 +7,18 @@
     <RelativeLayout
             android:id="@+id/main_relative_layout"
             android:background="#E54B4B"
-            android:layout_width="200dp"
+            android:layout_width="208dp"
             android:layout_height="84dp">
         <TextView
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginStart="12dp"
                 android:id="@+id/time_card_view_text"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_18"
                 android:alpha="0.75"
+                android:gravity="left"
                 android:fontFamily="@font/nunito"
-                android:text="@string/_2_30pm"
+                android:text="12:00 PM"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
@@ -25,7 +26,7 @@
                 android:layout_toRightOf="@+id/time_card_view_text"
                 android:id="@+id/line_horizontal"
                 android:alpha="0.6"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_36"
                 android:background="@color/white"
                 android:layout_width="8dp"
@@ -34,25 +35,27 @@
         <TextView
                 android:layout_toRightOf="@+id/line_horizontal"
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="@dimen/dp_8"
                 android:id="@+id/end_time_slot"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_18"
+                android:gravity="left"
                 android:alpha="0.75"
                 android:fontFamily="@font/nunito"
-                android:text="9:00 PM"
+                android:text="19:00 PM"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
 
         <TextView
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="12dp"
                 android:id="@+id/slot_status_text_view"
                 android:fontFamily="@font/nunito"
-                android:layout_marginTop="@dimen/dp_8"
                 android:layout_below="@+id/time_card_view_text"
                 android:textColor="@color/white"
                 android:textSize="12sp"
+                android:alpha="0.9"
+                android:text="@string/organiser"
                 android:paddingRight="1dp"
                 android:ellipsize="end"
                 android:maxLines="1"

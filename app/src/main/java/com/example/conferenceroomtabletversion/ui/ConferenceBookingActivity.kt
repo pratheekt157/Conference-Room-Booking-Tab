@@ -1,6 +1,7 @@
 package com.example.conferenceroomtabletversion.ui
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
@@ -10,7 +11,11 @@ import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -19,10 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.conferencerommapp.utils.FormatTimeAccordingToZone
 import com.example.conferencerommapp.utils.GetCurrentTimeInUTC
 import com.example.conferenceroomtabletversion.R
-import com.example.conferenceroomtabletversion.helper.Constants
-import com.example.conferenceroomtabletversion.helper.GetProgress
-import com.example.conferenceroomtabletversion.helper.ShowToast
-import com.example.conferenceroomtabletversion.helper.TimeSlotAdapter
+import com.example.conferenceroomtabletversion.helper.*
 import com.example.conferenceroomtabletversion.model.*
 import com.example.conferenceroomtabletversion.utils.ConvertTimeTo12HourFormat
 import com.example.conferenceroomtabletversion.utils.DateAndTimePicker
@@ -45,7 +47,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
     private var finalSlotList = mutableListOf<SlotFinalList>()
     private var mCountDownTimer: CountDownTimer? = null
     private lateinit var mRecyclerView: RecyclerView
-    private lateinit var mBookingListAdapter: TimeSlotAdapter
+    private lateinit var mBookingListAdapter: SolidAdapter
     private var mBookingList = ArrayList<BookingDeatilsForTheDay>()
     private var mBookingListForSlotArrangment = ArrayList<BookingDeatilsForTheDay>()
     private var mNextMeeting = BookingDeatilsForTheDay()
@@ -77,6 +79,17 @@ class ConferenceBookingActivity : AppCompatActivity() {
         observeTimeFromBookingList()
     }
 
+    /**
+     * code for hide soft keyboard
+     */
+    fun hideKeyboard(view: View) {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    /**
+     * function will check room details inside shared preference
+     */
     private fun checkForSetup() {
         val roomName = GetPreference.getRoomNameFromSharedPreference(this)
         val buildingName = GetPreference.getBuildingNameFromSharedPreference(this)
@@ -89,18 +102,45 @@ class ConferenceBookingActivity : AppCompatActivity() {
             goForSetup()
         }
     }
+
+    /**
+     * function will clear activity stack on press of back button
+     */
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAffinity()
+    }
+
+    /**
+     *  function will hide soft keyboard whenever focus is changed from edit text to other view
+     */
+    private fun initiateClickListener() {
+        feedback_edit_text.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                hideKeyboard(v!!)
+            }
+        }
+
+        passcode_edit_text.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                hideKeyboard(v!!)
+            }
+        }
+    }
+
     /**
      * init recycler view
      */
     private fun initRecyclerView() {
-        mBookingListAdapter = TimeSlotAdapter(
+        mBookingListAdapter = SolidAdapter(
             finalSlotList as ArrayList<SlotFinalList>,
             this,
             object : TimeSlotAdapter.BookMeetingClickListener {
                 override fun bookSlot(time: String) {
-                    startTimeFromSelectedSlot = time
+                    val timeIn24Hour = ConvertTimeTo12HourFormat.convertTo24(time)
+                    startTimeFromSelectedSlot = timeIn24Hour
                     start_time_text_view.text = startTimeFromSelectedSlot
-                    checkForNextMeeting(time)
+                    checkForNextMeeting(timeIn24Hour)
                 }
             }
         )
@@ -142,6 +182,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
         setRoomDetails()
         setClickListenerOnExtendMeetingSlots()
         setValuesFromSharedPreference()
+        initiateClickListener()
         initRecyclerView()
         hideSoftKeyboard()
         getTimeSlot()
@@ -231,7 +272,10 @@ class ConferenceBookingActivity : AppCompatActivity() {
                                     visibilityToGoneForLayoutForNextMeeting()
                                 }
                                 for (booking in mBookingList) {
-                                    if (booking.status == getString(R.string.booked) || booking.status == getString(R.string.started) || booking.status == getString(R.string.blocked)) {
+                                    if (booking.status == getString(R.string.booked) || booking.status == getString(R.string.started) || booking.status == getString(
+                                            R.string.blocked
+                                        )
+                                    ) {
                                         val startTimeInMillis = getMilliseconds(booking.fromTime!!)
                                         val endTimeInMillis = getMilliseconds(booking.toTime!!)
                                         if (System.currentTimeMillis() in startTimeInMillis..endTimeInMillis) {
@@ -347,7 +391,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
         mRecyclerView = findViewById(R.id.recycler_view_todays_booking_list)
     }
 
-
     // ---------------------------------------------------------------------------------------Adapter for All booking meetings----------------------------------------------------------------------
     @SuppressLint("SimpleDateFormat")
     private fun changeFormat(time: String): String {
@@ -396,7 +439,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
     }
 
     private fun startAndTimeTimeValidate(startTime: String, endTime: String): Boolean {
-        Log.e("----------", "$startTime  $endTime")
         val simpleDateFormat = SimpleDateFormat("hh:mm")
         val difference = simpleDateFormat.parse(startTime).time - simpleDateFormat.parse(endTime).time
         return difference >= 0
@@ -475,13 +517,14 @@ class ConferenceBookingActivity : AppCompatActivity() {
     }
     // -------------------------------------------------------------------------------------Handle Extend meeting button click functionality------------------------------
 
+    /**
+     * function will check for next meeting time and show slot for extension
+     */
     private fun handleExtendMeetingClick() {
-        if (!isNextMeetingPresent) {
-            setVisibilityToVisibleForAllTimeForExtendSlots()
-        } else {
+        setVisibilityToVisibleForAllTimeForExtendSlots()
+        if (isNextMeetingPresent) {
             setVisibilityToVisibleForAllTimeForExtendSlots()
             val difference = getMillisecondsDifferenceForExtendMeeting(mNextMeeting.fromTime!!)
-            //this will checked the item when user open the dialog
             when {
                 difference >= (Constants.MILLIS_60) -> {
                     setVisibilityToVisibleForAllTimeForExtendSlots()
@@ -505,8 +548,8 @@ class ConferenceBookingActivity : AppCompatActivity() {
                 return
             }
         }
-        makeVisibilityGoneForMainLayout()
         makeVisibilityVisibleForExtendMeetingMainLayout()
+        makeVisibilityGoneForMainLayout()
     }
 
 
@@ -738,7 +781,9 @@ class ConferenceBookingActivity : AppCompatActivity() {
 
 //---------------------------------------------------------------------------------------api call periodically-------------------------------------------------------------------
 
-    // make request in each 30 seconds with ExecutorService
+    /**
+     * function will make request for refreshed data from server in each 30 seconds with ExecutorService
+     */
     private fun makeRequestPeriodically() {
         val scheduler = Executors.newScheduledThreadPool(1)
         val makeCallPeriodically = Runnable {
@@ -747,13 +792,18 @@ class ConferenceBookingActivity : AppCompatActivity() {
         scheduler.scheduleAtFixedRate(makeCallPeriodically, 0, 30, TimeUnit.SECONDS)
     }
 
-    //call api to get the updated data
+    /**
+     *  call api to get the updated data
+     */
     private fun getViewModel() {
         mBookingForTheDayViewModel.getBookingList(roomId)
     }
 
     //-----------------------------------------------------------------------------------click listener on image view for feedback ------------------------------------------------
 
+    /**
+     * function invoked when user select negative feedback icon
+     */
     fun badFeedback(view: View) {
         setDefaultImageForFeedback()
         img_1.setImageResource(R.drawable.ic_rate_done_2)
@@ -766,6 +816,9 @@ class ConferenceBookingActivity : AppCompatActivity() {
         feedbackRating = 1
     }
 
+    /**
+     * function invoked when user select average feedback icon
+     */
     fun averageFeedback(view: View) {
         setDefaultImageForFeedback()
         img_2.setImageResource(R.drawable.ic_rate_done_3)
@@ -778,6 +831,9 @@ class ConferenceBookingActivity : AppCompatActivity() {
         feedbackRating = 2
     }
 
+    /**
+     * function invoked when user select positive feedback icon
+     */
     fun goodFeedback(view: View) {
         setDefaultImageForFeedback()
         img_3.setImageResource(R.drawable.ic_rate_done_5)
@@ -790,6 +846,9 @@ class ConferenceBookingActivity : AppCompatActivity() {
         feedbackRating = 3
     }
 
+    /**
+     * load default icons for feedback
+     */
     private fun setDefaultImageForFeedback() {
         img_1.setImageResource(R.drawable.ic_rate_2)
         img_2.setImageResource(R.drawable.ic_rate_3)
@@ -813,7 +872,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
         observeDataForFeedback()
         observeDataForUnblockRoom()
     }
-
 
 
     /**
@@ -882,7 +940,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
         mBookingForTheDayViewModel.returnFailureForBooking().observe(this, Observer {
             mProgressDialog.dismiss()
             when (it) {
-                Constants.NOT_FOUND_TAB -> showToastAtTop(getString(R.string.incorrect_passcode))
+                Constants.UNAUTHERISED -> showToastAtTop(getString(R.string.incorrect_passcode))
                 Constants.UNAVAILABLE_SLOT -> showToastAtTop(getString(R.string.slot_unavailable))
                 else -> {
                     ShowToast.show(this, it as Int)
@@ -968,7 +1026,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
          */
         mBookingForTheDayViewModel.returnSuccessCodeForUnBlockRoom().observe(this, Observer {
             mProgressDialog.dismiss()
-            Toasty.success(this,getString(R.string.room_unblocked), Toast.LENGTH_SHORT, true).show()
+            Toasty.success(this, getString(R.string.room_unblocked), Toast.LENGTH_SHORT, true).show()
             isMeetingRunning = false
             mCountDownTimer!!.cancel()
             mTimeLeftInMillis = 0
@@ -992,17 +1050,25 @@ class ConferenceBookingActivity : AppCompatActivity() {
 
     //----------------------------------------------------------------------------------------Set gradient for available room -----------------------------------------------
 
+    /**
+     * function will set background gradient to green color (Available)
+     */
     private fun setGradientToAvailable() {
         booking_details_layout.background = resources.getDrawable(R.drawable.gradiant_for_available_room)
     }
 
+    /**
+     * function will set background gradient to orange color(Occupied)
+     */
     private fun setGradientToOccupied() {
         booking_details_layout.background = resources.getDrawable(R.drawable.room_details_gradiant)
     }
 
 //----------------------------------------------------------------------------------------change time format for all bookings for the day -----------------------------------------------
 
-    // change start time and end time of meeting from UTC to Indian standard time zone
+    /**
+     * change start time and end time of meeting from UTC to Indian standard time zone
+     */
     private fun changeDateTimeZone(it: List<BookingDeatilsForTheDay>) {
         var startTimeInUtc: String
         var endTimeInUtc: String
@@ -1021,10 +1087,13 @@ class ConferenceBookingActivity : AppCompatActivity() {
         timeSlotList.clear()
         getTimeSlot()
         mBookingListForSlotArrangment.addAll(it)
-        Log.i("-------------list", mBookingList.toString())
+        Log.i("--------local time", mBookingList.toString())
         makeList()
     }
 
+    /**
+     * function will return 15 minute time slot of complete 24 hours
+     */
     @SuppressLint("SimpleDateFormat")
     private fun getTimeSlot() {
         val df = SimpleDateFormat(getString(R.string.format_in_hh_mm))
@@ -1055,6 +1124,9 @@ class ConferenceBookingActivity : AppCompatActivity() {
             finalSlotNew.slot = timeIn12HourFormat
             for (itemIndex in mBookingListForSlotArrangment.indices) {
                 finalSlot.meetingDuration = mBookingListForSlotArrangment[itemIndex].meetingDuration
+                finalSlot.endTime =
+                    ConvertTimeTo12HourFormat.convert12(mBookingListForSlotArrangment[itemIndex].toTime!!.split(" ")[1])
+                finalSlot.organiser = mBookingListForSlotArrangment[itemIndex].organizer!!.split(" ")[0]
                 val startTimeDifference = getMilliSecondDifference(
                     timeSlotList[index],
                     mBookingListForSlotArrangment[itemIndex].fromTime!!.split(" ")[1]
@@ -1096,17 +1168,20 @@ class ConferenceBookingActivity : AppCompatActivity() {
                     break
                 }
             }
-            finalSlot.inPast = !checkTimeInFuture(timeSlotList[index])
+            if (checkTimeInFuture(timeSlotList[index])) {
+                if (!finalSlot.isBooked!!) {
+                    finalSlot.status = getString(R.string.past)
+                }
+            }
             finalSlotList.add(finalSlot)
             if (flagForNewSlot) {
-                finalSlotNew.inPast = !checkTimeInFuture(timeSlotList[index])
-                finalSlotNew.isBooked = false
                 timeSlotList.add(index + 1, timeSlotList[index])
                 size += 1
             }
             index++
         }
         var position = 0
+        // check for current time slot position
         for (index in timeSlotList.indices) {
             if (!checkTimeInFuture(timeSlotList[index])) {
                 position = index
@@ -1114,14 +1189,20 @@ class ConferenceBookingActivity : AppCompatActivity() {
             }
         }
         mBookingListAdapter.notifyDataSetChanged()
-        val max = (96 - (position + 9))
+        scrollRecyclerViewToPostion(position)
+    }
+
+    /**
+     * function will scroll recycler view till current time
+     */
+    private fun scrollRecyclerViewToPostion(position: Int) {
+        val max = (96 - (position + 13))
         if (max > 10) {
             Handler().postDelayed({ recycler_view_todays_booking_list.scrollToPosition(position + 8) }, 200)
         } else {
             Handler().postDelayed({ recycler_view_todays_booking_list.scrollToPosition(position) }, 200)
         }
     }
-
 
     @SuppressLint("SimpleDateFormat")
     private fun getMilliSecondDifference(timeSlot: String, bookingTime: String): Long {
@@ -1131,6 +1212,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
         return bookingTimeInDateObject.time - timeSlotInDateObject.time
     }
 
+    // function will check whether the time slot is in past or in future
     @SuppressLint("SimpleDateFormat")
     private fun checkTimeInFuture(slotTime: String): Boolean {
         val simpleDateFormat = SimpleDateFormat(getString(R.string.format_in_hh_mm))
@@ -1142,6 +1224,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
 
 //----------------------------------------------------------------------------------------load Available room Ui -----------------------------------------------
 
+    // load layout for available room
     private fun loadAvailableRoomUi() {
         if (!isMeetingRunning) {
             visibilityToGoneForLayoutForNextMeeting()
@@ -1154,11 +1237,13 @@ class ConferenceBookingActivity : AppCompatActivity() {
         setVisibilityToGoneForStartMeeting()
     }
 
+    // hide layout for next meeting
     private fun visibilityToGoneForLayoutForNextMeeting() {
         line.visibility = View.GONE
         meeting_details_relative_layout.visibility = View.GONE
     }
 
+    // unhide layout for next meeting
     private fun visibilityToVisibleForLayoutForNextMeeting() {
         line.visibility = View.VISIBLE
         meeting_details_relative_layout.visibility = View.VISIBLE
@@ -1168,7 +1253,9 @@ class ConferenceBookingActivity : AppCompatActivity() {
 //-----------------------------------------------------------------------------------------Show Toast at top ---------------------------------------------------------------------------------
 
 
-    // show Toast
+    /**
+     * custom toast code
+     */
     private fun showToastAtTop(message: String) {
         val toast =
             Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT)
@@ -1188,60 +1275,27 @@ class ConferenceBookingActivity : AppCompatActivity() {
     private fun setClickListenerOnExtendMeetingSlots() {
 
         extend_min_15.setOnClickListener {
-            extend_min_30.background = resources.getDrawable(R.drawable.passcode_background)
-            extend_min_45.background = resources.getDrawable(R.drawable.passcode_background)
-            extend_min_60.background = resources.getDrawable(R.drawable.passcode_background)
-
-            extend_min_30.setTextColor(Color.WHITE)
-            extend_min_45.setTextColor(Color.WHITE)
-            extend_min_60.setTextColor(Color.WHITE)
-
-
+            loadDefaultSlot()
             extend_min_15.background = resources.getDrawable(R.drawable.duration_background_selected)
             extend_min_15.setTextColor(Color.parseColor("#F4733F"))
-
             mDurationForExtendBooking = 15
-
-
         }
 
         extend_min_30.setOnClickListener {
-            extend_min_15.background = resources.getDrawable(R.drawable.passcode_background)
-            extend_min_45.background = resources.getDrawable(R.drawable.passcode_background)
-            extend_min_60.background = resources.getDrawable(R.drawable.passcode_background)
-
-            extend_min_15.setTextColor(Color.WHITE)
-            extend_min_45.setTextColor(Color.WHITE)
-            extend_min_60.setTextColor(Color.WHITE)
-
-
+            loadDefaultSlot()
             extend_min_30.background = resources.getDrawable(R.drawable.duration_background_selected)
             extend_min_30.setTextColor(Color.parseColor("#F4733F"))
             mDurationForExtendBooking = 30
         }
 
         extend_min_45.setOnClickListener {
-            extend_min_15.background = resources.getDrawable(R.drawable.passcode_background)
-            extend_min_30.background = resources.getDrawable(R.drawable.passcode_background)
-            extend_min_60.background = resources.getDrawable(R.drawable.passcode_background)
-
-            extend_min_15.setTextColor(Color.WHITE)
-            extend_min_30.setTextColor(Color.WHITE)
-            extend_min_60.setTextColor(Color.WHITE)
-
+            loadDefaultSlot()
             extend_min_45.background = resources.getDrawable(R.drawable.duration_background_selected)
             extend_min_45.setTextColor(Color.parseColor("#F4733F"))
             mDurationForExtendBooking = 45
         }
         extend_min_60.setOnClickListener {
-            extend_min_15.background = resources.getDrawable(R.drawable.passcode_background)
-            extend_min_30.background = resources.getDrawable(R.drawable.passcode_background)
-            extend_min_45.background = resources.getDrawable(R.drawable.passcode_background)
-
-            extend_min_15.setTextColor(Color.WHITE)
-            extend_min_30.setTextColor(Color.WHITE)
-            extend_min_45.setTextColor(Color.WHITE)
-
+            loadDefaultSlot()
             extend_min_60.background = resources.getDrawable(R.drawable.duration_background_selected)
             extend_min_60.setTextColor(Color.parseColor("#F4733F"))
 
@@ -1250,18 +1304,23 @@ class ConferenceBookingActivity : AppCompatActivity() {
     }
 
     private fun loadDefaultTimeSlotForExtendMeeting() {
+
+        loadDefaultSlot()
+        extend_min_15.background = resources.getDrawable(R.drawable.duration_background_selected)
+        extend_min_15.setTextColor(Color.parseColor("#F4733F"))
+        mDurationForExtendBooking = 15
+    }
+
+    private fun loadDefaultSlot() {
+        extend_min_15.background = resources.getDrawable(R.drawable.passcode_background)
         extend_min_30.background = resources.getDrawable(R.drawable.passcode_background)
         extend_min_45.background = resources.getDrawable(R.drawable.passcode_background)
         extend_min_60.background = resources.getDrawable(R.drawable.passcode_background)
 
+        extend_min_15.setTextColor(Color.WHITE)
         extend_min_30.setTextColor(Color.WHITE)
         extend_min_45.setTextColor(Color.WHITE)
         extend_min_60.setTextColor(Color.WHITE)
-
-
-        extend_min_15.background = resources.getDrawable(R.drawable.duration_background_selected)
-        extend_min_15.setTextColor(Color.parseColor("#F4733F"))
-        mDurationForExtendBooking = 15
     }
 
 // -----------------------------------------------------------------------------------------validate passcode and text change listener--------------------------------------------------------------------------
@@ -1342,7 +1401,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
 
 
 //------------------------------------------------------------------------------------------all api call request ----------------------------------------------------------------------------------------------------
-
     // add new Booking api call
     private fun addBookingDetails(mBooking: NewBookingInput) {
         mProgressDialog.show()
@@ -1440,6 +1498,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
             override fun onTick(millisUntilFinished: Long) {
                 mTimeLeftInMillis = millisUntilFinished
             }
+
             override fun onFinish() {
                 mTimerRunning = false
                 isMeetingRunning = false

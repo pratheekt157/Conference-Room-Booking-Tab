@@ -48,7 +48,6 @@
                 android:layout_width="500dp"
                 android:layout_height="64dp"
                 android:layout_centerHorizontal="true"
-
                 android:id="@+id/building_spinner"
                 android:layout_marginStart="300dp"
                 android:layout_below="@id/setup_label"

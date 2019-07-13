@@ -4,18 +4,39 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         android:weightSum="4"
+        android:onClick="hide"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:id="@+id/main_layout"
         android:padding="@dimen/dp_48"
-        android:background="@drawable/room_details_gradiant"
+        android:background="@drawable/gradiant_for_available_room"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:orientation="horizontal"
-            android:visibility="visible"
-            android:layout_marginBottom="@dimen/dp_24"
-            android:id="@+id/recycler_view_todays_booking_list"
+    <LinearLayout
+            android:background="@color/light_color_gradiant"
             android:layout_width="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:layout_height="wrap_content"/>
+            android:layout_height="190dp">
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:id="@+id/recycler_view_todays_booking_list"
+                android:layout_width="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/dp_48"
+            android:layout_height="64dp"
+            android:id="@+id/edit_text"
+            android:textColorHint="#FFFFFF"
+            android:background="@color/white"
+            android:dropDownVerticalOffset="50dp"/>
+
+
 
 </LinearLayout>

@@ -34,6 +34,7 @@ class TimeSlotAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.meetingDurationTextView.text = bookingDetailsForTheDayItemList[position].slot.toString()
+
         if (bookingDetailsForTheDayItemList[position].isBooked!!) {
             changeColorToOccupied(holder)
             makeVisibilityGoneForSlotStatus(holder)

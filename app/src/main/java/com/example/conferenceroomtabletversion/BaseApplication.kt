@@ -10,6 +10,7 @@ class BaseApplication : Application() {
     private var mSocket: Socket? = null
     override fun onCreate() {
         super.onCreate()
+
         try {
             mSocket = IO.socket(URL)
         } catch (e: URISyntaxException) {
@@ -22,6 +23,7 @@ class BaseApplication : Application() {
     }
 
     companion object {
-        private val URL = "http://192.168.1.189/CRB/Dashboard"
+        private val URL = ""
     }
 }
+

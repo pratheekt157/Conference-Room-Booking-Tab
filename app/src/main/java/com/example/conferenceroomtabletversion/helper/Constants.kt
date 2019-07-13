@@ -54,7 +54,7 @@ class Constants {
 
         const val NOT_FOUND = 400
 
-        const val NOT_FOUND_TAB = 404
+        const val UNAUTHERISED = 401
 
         const val SUCCESSFULLY_CREATED = 201
 
