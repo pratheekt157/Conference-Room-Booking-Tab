@@ -11,6 +11,18 @@ class Constants {
          */
         const val OK_RESPONSE = 200
 
+        const val DATA = "DATA"
+
+        const val IS_NEXT_MEETING_PRESENT = "IS_NEXT_MEETING_PRESENT"
+
+        const val START_TIME = "START_TIME"
+
+        const val END_TIME = "END_TIME"
+
+        const val MEET_ID = "MEET_ID"
+
+        const val RUNNING_MEET_START_TIME = "RUNNING_START_TIME"
+
         const val TAG = "ConferenceBooking"
 
         const val DEFAULT_FEEDBACK_MEESAGE = "The app is pretty cool!"
@@ -21,7 +33,9 @@ class Constants {
         /**
          * ip address for api call
          */
-        const val IP_ADDRESS = "http://192.168.1.189/CRB/"
+        const val IP_ADDRESS = "http://192.168.3.189/CRB/"
+
+        const val IP_ADDRESS_WEB_SOCKET = "http://192.168.3.189/s/move"
 
         const val API_REQUEST_TIME: Long = (30 * 1000)
 
@@ -45,7 +59,6 @@ class Constants {
         const val MILLIS_30 = (30 * 60 * 1000)
 
         const val MILLIS_15 = (15 * 60 * 1000)
-
 
 
         const val NOT_ACCEPTABLE = 406

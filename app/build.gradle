@@ -10,7 +10,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.conferenceroomtabletversion"
-        minSdkVersion 19
+        minSdkVersion 26
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -21,6 +21,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
     }
 }
 
@@ -78,5 +82,8 @@ dependencies {
 
     // for socket IO
     implementation 'com.github.nkzawa:socket.io-client:0.6.0'
-}
 
+    // signalR dependency
+    implementation 'com.microsoft.signalr:signalr:3.0.0-preview3-19153-02'
+
+}

@@ -30,6 +30,7 @@ import com.example.conferenceroomtabletversion.utils.ConvertTimeTo12HourFormat
 import com.example.conferenceroomtabletversion.utils.DateAndTimePicker
 import com.example.conferenceroomtabletversion.utils.GetPreference
 import com.example.conferenceroomtabletversion.viewmodel.BookingForTheDayViewModel
+import com.example.conferenceroomtabletversion.viewmodel.WebSocketViewModel
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_booking_status.*
 import java.text.SimpleDateFormat
@@ -41,6 +42,8 @@ import kotlin.collections.ArrayList
 @Suppress("DEPRECATED_IDENTITY_EQUALS", "DEPRECATION", "UNUSED_PARAMETER")
 class ConferenceBookingActivity : AppCompatActivity() {
 
+
+    private lateinit var mWebSocketViewModel: WebSocketViewModel
     private var timeSlotList = mutableListOf<String>()
     private lateinit var mBookingForTheDayViewModel: BookingForTheDayViewModel
     private lateinit var mProgressDialog: ProgressDialog
@@ -74,10 +77,13 @@ class ConferenceBookingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_booking_status)
         checkForSetup()
         init()
+        connectToHub()
+        observeFromHub()
         observeData()
         makeRequestPeriodically()
         observeTimeFromBookingList()
     }
+
 
     /**
      * code for hide soft keyboard
@@ -351,6 +357,16 @@ class ConferenceBookingActivity : AppCompatActivity() {
         setVisibilityToGoneForExtendMeeting()
     }
 
+    private fun connectToHub() {
+        mWebSocketViewModel.connectToHub()
+    }
+
+    private fun observeFromHub() {
+        mWebSocketViewModel.returnPositiveAcknoledge().observe(this, Observer {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            //getViewModel()
+        })
+    }
 
     @SuppressLint("SetTextI18n")
     private fun setNextMeetingDetails() {
@@ -385,6 +401,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
      */
     private fun initLateInitFields() {
         mProgressDialog = GetProgress.getProgressDialog(getString(R.string.progress_message), this)
+        mWebSocketViewModel = ViewModelProviders.of(this).get(WebSocketViewModel::class.java)
         mBookingForTheDayViewModel = ViewModelProviders.of(this).get(BookingForTheDayViewModel::class.java)
         mEndMeetingMainRelativeLayout = findViewById(R.id.end_meeting_main_layout)
         mBookMeetingMainRelativeLayout = findViewById(R.id.book_now_main_layout)
@@ -1243,7 +1260,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
         meeting_details_relative_layout.visibility = View.GONE
     }
 
-    // unhide layout for next meeting
+    // un hide layout for next meeting
     private fun visibilityToVisibleForLayoutForNextMeeting() {
         line.visibility = View.VISIBLE
         meeting_details_relative_layout.visibility = View.VISIBLE

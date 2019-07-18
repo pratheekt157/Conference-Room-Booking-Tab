@@ -65,7 +65,7 @@
 
         <TextClock
                 android:textColorHint="@color/white"
-                android:format24Hour="hh:mm a"
+                android:format24Hour="hh:mm:ss a"
                 android:layout_alignParentEnd="true"
                 android:id="@+id/current_time"
                 android:layout_width="wrap_content"
@@ -105,7 +105,7 @@
         <!--running and available meeting layout-->
         <RelativeLayout
                 android:visibility="visible"
-                android:background="@drawable/room_details_gradiant"
+                android:background="@drawable/gradiant_for_available_room"
                 android:id="@+id/booking_details_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">

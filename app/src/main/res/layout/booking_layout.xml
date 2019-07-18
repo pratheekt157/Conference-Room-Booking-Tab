@@ -2,41 +2,109 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:weightSum="4"
-        android:onClick="hide"
         android:clickable="true"
         android:focusableInTouchMode="true"
+        android:onClick="hideKeyboard"
         android:id="@+id/main_layout"
-        android:padding="@dimen/dp_48"
-        android:background="@drawable/gradiant_for_available_room"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+    <!--for room details,current time and date-->
+    <RelativeLayout
+            android:background="@color/room_details_background_color"
+            android:layout_weight="1"
+            android:id="@+id/room_details_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+        <TextView
+                android:id="@+id/room_name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_24"
+                android:hint="@string/room_name_hint"
+                android:textColorHint="@color/white"
+                android:layout_marginTop="@dimen/dp_24"
+                android:textSize="@dimen/sp_22"
+                android:textStyle="bold"
+                android:fontFamily="@font/nunito"
+                android:textColor="@color/white"
+        />
+
+        <TextView
+                android:id="@+id/room_capacity"
+                android:layout_below="@id/room_name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_24"
+                android:hint="@string/room_capacity_hint"
+                android:textColorHint="@color/white"
+                android:layout_marginTop="@dimen/dp_8"
+                android:textSize="@dimen/sp_18"
+                android:fontFamily="@font/nunito"
+                android:textColor="@color/white"
+        />
+
+        <TextView
+                android:id="@+id/room_amenities"
+                android:layout_alignParentBottom="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:hint="@string/amenities_hint"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_24"
+                android:textColorHint="@color/amenities_text_color"
+                android:textSize="@dimen/sp_18"
+                android:fontFamily="@font/nunito"
+                android:textColor="@color/amenities_text_color"
+        />
+
+        <TextClock
+                android:textColorHint="@color/white"
+                android:format24Hour="hh:mm a"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/current_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_24"
+                android:textSize="@dimen/sp_36"
+                android:fontFamily="@font/nunito"
+                android:textColor="@color/white"/>
+
+        <TextClock
+                android:format24Hour="EEEE MMMM, dd"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/current_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/white"
+                android:layout_marginEnd="@dimen/dp_24"
+                android:layout_marginBottom="@dimen/dp_24"
+                android:textSize="@dimen/sp_18"
+                android:fontFamily="@font/nunito_light"
+                android:textColor="#FFFFFF"/>
+
+    </RelativeLayout>
+
+    <!--main layout for booking-->
     <LinearLayout
-            android:background="@color/light_color_gradiant"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            android:layout_weight="3"
+            android:visibility="visible"
+            android:id="@+id/relative_main2"
             android:layout_width="match_parent"
-            android:layout_height="190dp">
-        <androidx.recyclerview.widget.RecyclerView
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:visibility="visible"
-                android:id="@+id/recycler_view_todays_booking_list"
-                android:layout_width="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:layout_height="wrap_content"/>
+            android:layout_height="0dp">
+    <FrameLayout
+            android:id="@+id/container_frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+    </FrameLayout>
     </LinearLayout>
-
-
-    <EditText
-            android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/dp_48"
-            android:layout_height="64dp"
-            android:id="@+id/edit_text"
-            android:textColorHint="#FFFFFF"
-            android:background="@color/white"
-            android:dropDownVerticalOffset="50dp"/>
-
-
-
 </LinearLayout>
