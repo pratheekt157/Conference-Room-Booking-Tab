@@ -15,6 +15,9 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
 
+        <meta-data
+                android:name="io.fabric.ApiKey"
+                android:value="b461e1369818e034fe68e4a7d2dd12bb7919959b" />
         <activity android:name=".ui.Connection">
         </activity>
         <activity

@@ -95,6 +95,7 @@
     <string name="organiser">Organiser :</string>
     <string name="no_internet">No Internet</string>
     <string name="past">Past</string>
+    <string name="format_in_hh">HH</string>
 
 
 </resources>

@@ -33,7 +33,7 @@ class Constants {
         /**
          * ip address for api call
          */
-        const val IP_ADDRESS = "http://192.168.3.189/CRB/"
+        const val IP_ADDRESS = "http://192.168.3.188/CRB/"
 
         const val IP_ADDRESS_WEB_SOCKET = "http://192.168.3.189/s/move"
 

@@ -10,7 +10,8 @@
         android:onClick="hideKeyboard"
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:focusable="true">
 
     <!--for room details,current time and date-->
     <RelativeLayout

@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.crashlytics.android.Crashlytics
 import com.example.conferencerommapp.utils.FormatTimeAccordingToZone
 import com.example.conferencerommapp.utils.GetCurrentTimeInUTC
 import com.example.conferenceroomtabletversion.R
@@ -32,6 +33,7 @@ import com.example.conferenceroomtabletversion.utils.GetPreference
 import com.example.conferenceroomtabletversion.viewmodel.BookingForTheDayViewModel
 import com.example.conferenceroomtabletversion.viewmodel.WebSocketViewModel
 import es.dmoral.toasty.Toasty
+import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_booking_status.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -75,6 +77,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_booking_status)
+        Fabric.with(this, Crashlytics())
         checkForSetup()
         init()
         connectToHub()
@@ -83,7 +86,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
         makeRequestPeriodically()
         observeTimeFromBookingList()
     }
-
 
     /**
      * code for hide soft keyboard
@@ -322,7 +324,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
                             } else {
                                 isNextMeetingPresent = false
                                 loadAvailableRoomUi()
-                                setNextMeetingTextToFree()
                             }
                         }
                         sleep(1000)
@@ -381,12 +382,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
                 )
         }
     }
-
-    // set next meeting text view to free
-    private fun setNextMeetingTextToFree() {
-        //duration_text_view.text = getString(R.string.free_for_the_day)
-    }
-
     /**
      * hide status bar
      */
@@ -411,7 +406,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
     // ---------------------------------------------------------------------------------------Adapter for All booking meetings----------------------------------------------------------------------
     @SuppressLint("SimpleDateFormat")
     private fun changeFormat(time: String): String {
-        val simpleDateFormat = SimpleDateFormat("HH:mm")
+        val simpleDateFormat = SimpleDateFormat(getString(R.string.format_in_hh_mm))
         val simpleDateFormat1 = SimpleDateFormat(getString(R.string.format_in_hh_mm))
         return simpleDateFormat1.format(simpleDateFormat.parse(time))
     }
@@ -754,8 +749,6 @@ class ConferenceBookingActivity : AppCompatActivity() {
         unblock_room.visibility = View.GONE
     }
 
-//---------------------------------------------------------------------------------------visibility of end meeting time slots----------------------------------------------------
-
 
 //--------------------------------------------------------------------------------visibility for extend time slot -------------------------------------------------
 
@@ -904,6 +897,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
             ShowToast.show(this, it as Int)
         })
     }
+
     // observe data for end meeting
     private fun observerDataForEndMeeting() {
         // positive response from server for end meeting
@@ -1276,12 +1270,12 @@ class ConferenceBookingActivity : AppCompatActivity() {
     private fun showToastAtTop(message: String) {
         val toast =
             Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.TOP, 0, 0)
         val toastContentView = toast!!.view as LinearLayout
         val group = toast.view as ViewGroup
         val messageTextView = group.getChildAt(0) as TextView
-        messageTextView.textSize = 24F
         val imageView = ImageView(applicationContext)
+        toast.setGravity(Gravity.TOP, 0, 0)
+        messageTextView.textSize = 24F
         imageView.setImageResource(R.drawable.ic_layers)
         toastContentView.addView(imageView, 0)
         toast.show()
@@ -1311,6 +1305,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
             extend_min_45.setTextColor(Color.parseColor("#F4733F"))
             mDurationForExtendBooking = 45
         }
+
         extend_min_60.setOnClickListener {
             loadDefaultSlot()
             extend_min_60.background = resources.getDrawable(R.drawable.duration_background_selected)
@@ -1417,7 +1412,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
     }
 
 
-//------------------------------------------------------------------------------------------all api call request ----------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------all api call request ----------------------------------------------------------------------------------------------------
     // add new Booking api call
     private fun addBookingDetails(mBooking: NewBookingInput) {
         mProgressDialog.show()
@@ -1493,9 +1488,9 @@ class ConferenceBookingActivity : AppCompatActivity() {
     // extend meeting duration
     @SuppressLint("SimpleDateFormat")
     private fun getNewExtendedEndTime(duration: Int): String {
-        val dateFormat = SimpleDateFormat("yyyy-mm-dd")
-        val timeFormat = SimpleDateFormat("HH:mm")
-        val timeFormatInHHMM = SimpleDateFormat("HH")
+        val dateFormat = SimpleDateFormat(getString(R.string.format_in_yyyy_mm_dd))
+        val timeFormat = SimpleDateFormat(getString(R.string.format_in_hh_mm))
+        val timeFormatInHHMM = SimpleDateFormat(getString(R.string.format_in_hh))
         val cal = Calendar.getInstance()
         val hours = timeFormatInHHMM.format(Date())
         cal.time = timeFormatInHHMM.parse(hours)
