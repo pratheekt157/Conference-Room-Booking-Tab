@@ -41,7 +41,7 @@ class MainFragment : Fragment() {
     private var finalSlotList = mutableListOf<SlotFinalList>()
     private var mCountDownTimer: CountDownTimer? = null
     private lateinit var mRecyclerView: RecyclerView
-    private lateinit var mBookingListAdapter: SolidAdapter
+    private lateinit var mBookingListAdapter: TimeLineAdapter
     private var mBookingList = ArrayList<BookingDeatilsForTheDay>()
     private var mBookingListForSlotArrangment = ArrayList<BookingDeatilsForTheDay>()
     private var mNextMeeting = BookingDeatilsForTheDay()
@@ -138,7 +138,7 @@ class MainFragment : Fragment() {
      * init recycler view
      */
     private fun initRecyclerView() {
-        mBookingListAdapter = SolidAdapter(
+        mBookingListAdapter = TimeLineAdapter(
             finalSlotList as ArrayList<SlotFinalList>,
             activity!!,
             object : TimeSlotAdapter.BookMeetingClickListener {

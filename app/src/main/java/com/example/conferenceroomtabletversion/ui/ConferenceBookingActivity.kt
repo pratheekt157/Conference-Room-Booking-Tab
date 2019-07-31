@@ -52,7 +52,7 @@ class ConferenceBookingActivity : AppCompatActivity() {
     private var finalSlotList = mutableListOf<SlotFinalList>()
     private var mCountDownTimer: CountDownTimer? = null
     private lateinit var mRecyclerView: RecyclerView
-    private lateinit var mBookingListAdapter: SolidAdapter
+    private lateinit var mBookingListAdapter: TimeLineAdapter
     private var mBookingList = ArrayList<BookingDeatilsForTheDay>()
     private var mBookingListForSlotArrangment = ArrayList<BookingDeatilsForTheDay>()
     private var mNextMeeting = BookingDeatilsForTheDay()
@@ -140,10 +140,10 @@ class ConferenceBookingActivity : AppCompatActivity() {
      * init recycler view
      */
     private fun initRecyclerView() {
-        mBookingListAdapter = SolidAdapter(
+        mBookingListAdapter = TimeLineAdapter(
             finalSlotList as ArrayList<SlotFinalList>,
             this,
-            object : TimeSlotAdapter.BookMeetingClickListener {
+            object : TimeLineAdapter.BookMeetingClickListener {
                 override fun bookSlot(time: String) {
                     val timeIn24Hour = ConvertTimeTo12HourFormat.convertTo24(time)
                     startTimeFromSelectedSlot = timeIn24Hour

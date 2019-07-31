@@ -7,7 +7,7 @@ class Constants {
     companion object {
 
         /**
-         * response code for response IsSuccessfull
+         * response code for response Is Successfull
          */
         const val OK_RESPONSE = 200
 

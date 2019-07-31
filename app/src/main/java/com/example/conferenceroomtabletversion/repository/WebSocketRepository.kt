@@ -5,6 +5,7 @@ import android.util.Log
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
 import com.microsoft.signalr.TransportEnum
+import es.dmoral.toasty.Toasty
 
 class WebSocketRepository {
     lateinit var hubConnection: HubConnection
@@ -20,7 +21,7 @@ class WebSocketRepository {
 
     fun connectToHub(listener: SocketListener) {
         try {
-           hubConnection = HubConnectionBuilder.create("http://192.168.3.189/s/move")
+           hubConnection = HubConnectionBuilder.create("http://192.168.3.188/s/move")
                 .withTransport(TransportEnum.LONG_POLLING)
                 .build()
             hubConnection.on("ReceiveMessage", { message -> println("New Message: $message")

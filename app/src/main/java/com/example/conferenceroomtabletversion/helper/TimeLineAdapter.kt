@@ -2,7 +2,6 @@ package com.example.conferenceroomtabletversion.helper
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +11,11 @@ import com.example.conferenceroomtabletversion.R
 import com.example.conferenceroomtabletversion.model.SlotFinalList
 
 
-class SolidAdapter(
+class TimeLineAdapter(
     private val bookingDetailsForTheDayItemList: ArrayList<SlotFinalList>,
     private val mContext: Context,
-    private val listener: TimeSlotAdapter.BookMeetingClickListener
-) : RecyclerView.Adapter<SolidAdapter.ViewHolder>() {
+    private val listener: BookMeetingClickListener
+) : RecyclerView.Adapter<TimeLineAdapter.ViewHolder>() {
 
     /**
      * this override function will set a view for the recycler view items
@@ -148,5 +147,6 @@ class SolidAdapter(
     interface BookMeetingClickListener {
         fun bookSlot(time: String)
     }
+
 }
 
